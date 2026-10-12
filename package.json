@@ -1,0 +1,73 @@
+{
+  "name": "mavi-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio web de MAVI Proyectos e Inversiones — alquiler de maquinaria y equipos para construcción en Envigado, Antioquia.",
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "images": "tsx scripts/process-images.ts",
+    "analyze": "cross-env ANALYZE=true next build",
+    "secrets": "secretlint \"**/*\"",
+    "lhci": "lhci autorun",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@gsap/react": "2.1.2",
+    "@hookform/resolvers": "5.9.1",
+    "@react-three/drei": "10.7.9",
+    "@react-three/fiber": "9.8.1",
+    "gsap": "3.15.0",
+    "lenis": "1.3.26",
+    "next": "15.5.27",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "7.90.0",
+    "three": "0.186.1",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@eslint/eslintrc": "3.3.7",
+    "@lhci/cli": "0.15.1",
+    "@next/bundle-analyzer": "15.5.27",
+    "@playwright/test": "1.64.0",
+    "@secretlint/secretlint-rule-preset-recommend": "13.0.7",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.186.0",
+    "cross-env": "10.1.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "15.5.27",
+    "husky": "9.1.7",
+    "prettier": "3.9.10",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "secretlint": "13.0.7",
+    "sharp": "0.35.5",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "5.0.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp"
+    ]
+  }
+}

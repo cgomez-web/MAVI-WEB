@@ -1,0 +1,33 @@
+# deps
+/node_modules
+/.pnp
+.pnp.*
+
+# next
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# testing
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/.lighthouseci/
+
+# env — nunca se commitean secretos
+.env
+.env*.local
+.env.development
+.env.production
+!.env.example
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+pnpm-debug.log*
+.vercel
+/.cache/
