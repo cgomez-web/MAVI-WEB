@@ -31,3 +31,7 @@ npm-debug.log*
 pnpm-debug.log*
 .vercel
 /.cache/
+
+# pruebas
+/test-results/
+/playwright-report/

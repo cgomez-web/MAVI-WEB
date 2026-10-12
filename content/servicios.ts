@@ -1,7 +1,7 @@
 /**
  * Las seis líneas de servicio, transcritas del brochure (págs. 3–8).
  * Orden = orden narrativo del home y de la escena 3D.
- * Corrección aplicada: el brochure dice "formaltría"; aquí se escribe "Formaletería".
+ * Corrección aplicada: la pág. 6 del brochure trae una errata en "Formaletería"; aquí va bien escrita.
  */
 import type { IconoId } from "./iconos";
 

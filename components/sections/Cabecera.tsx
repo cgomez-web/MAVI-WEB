@@ -80,11 +80,13 @@ export function Cabecera() {
   }, [abierto, cerrar]);
 
   const alternarMovimiento = () => guardarMovimiento(movimiento === "on" ? "off" : "on");
+  // Transparente solo sobre el hero oscuro del home; en el resto (p. ej. páginas de fondo claro) es sólida.
+  const transparente = ruta === "/" && !solida && !abierto;
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-[var(--dur-ui)] ease-[var(--ease-weight)] ${
-        solida || abierto ? "border-b-2 border-line bg-ink" : "border-b-2 border-transparent bg-transparent"
+        transparente ? "border-b-2 border-transparent bg-transparent" : "border-b-2 border-line bg-ink"
       }`}
     >
       <div className="flex h-[var(--header-h)] items-center justify-between gap-4 px-[var(--margin)]">
