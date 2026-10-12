@@ -597,6 +597,16 @@
   html[data-cursor="on"] button {
     cursor: none;
   }
+
+  /* El <dialog> (lightbox) se pinta en la top layer, encima del cursor propio: cursor nativo dentro. */
+  html[data-cursor="on"] dialog {
+    cursor: auto;
+  }
+
+  html[data-cursor="on"] dialog a,
+  html[data-cursor="on"] dialog button {
+    cursor: pointer;
+  }
 }
 
 /* ───────────────────────── Lenis (scroll suave opcional) ───────────────────────── */
@@ -759,13 +769,13 @@ html[data-js="on"][data-movimiento="on"]
 }
 
 html[data-js="on"][data-movimiento="on"] [data-revelar="cinta"][data-visible="true"]::after {
-  animation: cinta-barre 900ms var(--ease-weight) both;
+  animation: cinta-barre 520ms var(--ease-weight) both;
 }
 
 html[data-js="on"][data-movimiento="on"]
   [data-revelar="cinta"][data-visible="true"]
   > .revelar-contenido {
-  animation: contenido-revela 900ms var(--ease-weight) both;
+  animation: contenido-revela 300ms var(--ease-weight) both;
 }
 
 /* Revelado simple (fundido + ascenso corto) para bloques de texto. */
@@ -928,5 +938,69 @@ html[data-js="on"][data-movimiento="on"] [data-revelar="sube"]:not([data-visible
   .cinta-revela,
   .nivelando {
     display: none !important;
+  }
+}
+
+/* ───────────────────────── Acceso fijo a WhatsApp ───────────────────────── */
+:root {
+  --alto-barra-wa: 3.5rem;
+}
+
+/* Móvil y tablet: barra inferior a todo lo ancho. */
+.cta-whatsapp {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 40;
+  justify-content: center;
+  min-height: calc(var(--alto-barra-wa) + env(safe-area-inset-bottom));
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  border-width: 3px 0 0;
+  border-color: var(--color-ink);
+  box-shadow: none;
+  font-size: var(--text-1);
+  transition:
+    transform var(--dur-ui) var(--ease-weight),
+    color var(--dur-ui) var(--ease-weight);
+}
+
+.cta-whatsapp[data-oculto="true"] {
+  transform: translateY(110%);
+}
+
+@media (max-width: 1023.98px) {
+  /* El cuerpo reserva la altura de la barra: el final de la página nunca queda debajo. */
+  body {
+    padding-bottom: calc(var(--alto-barra-wa) + env(safe-area-inset-bottom));
+  }
+
+  html {
+    scroll-padding-bottom: calc(var(--alto-barra-wa) + env(safe-area-inset-bottom) + 0.75rem);
+  }
+}
+
+/* Escritorio: botón cuadrado centrado en el margen derecho, fuera de la columna de contenido. */
+@media (min-width: 1024px) {
+  .cta-whatsapp {
+    inset: auto calc((var(--margin) - 3.25rem) / 2) 1.5rem auto;
+    width: 3.25rem;
+    min-height: 3.25rem;
+    height: 3.25rem;
+    padding: 0;
+    border-width: 3px;
+    border-color: var(--color-brand-yellow);
+    box-shadow: 4px 4px 0 0 var(--color-ink);
+  }
+
+  .cta-whatsapp[data-oculto="true"] {
+    transform: none;
+  }
+
+  .cta-whatsapp .cta-whatsapp-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 }

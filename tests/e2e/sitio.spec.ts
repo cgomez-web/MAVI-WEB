@@ -168,3 +168,45 @@ test.describe("cabeceras de seguridad", () => {
     expect(a).not.toBe(b);
   });
 });
+
+test.describe("acceso fijo a WhatsApp", () => {
+  test("en móvil es una barra inferior que no tapa el texto de la galería", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "solo móvil");
+    await page.goto("/");
+    const barra = page.locator(".cta-whatsapp");
+    const caja = (await barra.boundingBox())!;
+    const ancho = page.viewportSize()!.width;
+    expect(Math.round(caja.width)).toBe(ancho);
+    // El texto de ayuda llevado al borde inferior visible queda por encima de la barra.
+    const ayuda = page.getByText(/Arrastre o use las flechas/);
+    await ayuda.evaluate((el) => el.scrollIntoView({ block: "end" }));
+    const a = (await ayuda.boundingBox())!;
+    const b = (await barra.boundingBox())!;
+    expect(a.y + a.height).toBeLessThanOrEqual(b.y + 1);
+  });
+
+  test("en móvil se oculta mientras se escribe en el formulario", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "solo móvil");
+    await page.goto("/contacto");
+    await page.getByLabel("Nombre completo").focus();
+    await expect(page.locator(".cta-whatsapp")).toHaveAttribute("data-oculto", "true");
+  });
+
+  test("en escritorio vive en el margen, fuera de la columna de contenido", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, "solo escritorio");
+    await page.goto("/");
+    const borde = await page.evaluate(() => {
+      const r = document.querySelector("#servicios .reticula")!;
+      const estilo = getComputedStyle(r);
+      return r.getBoundingClientRect().right - parseFloat(estilo.paddingRight);
+    });
+    const boton = (await page.locator(".cta-whatsapp").boundingBox())!;
+    expect(boton.x).toBeGreaterThanOrEqual(borde);
+  });
+});

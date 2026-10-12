@@ -8,7 +8,7 @@ import { CorreoProtegido, TelefonoProtegido } from "@/components/ui/ContactoProt
 export function Pie() {
   const anio = new Date().getFullYear();
   return (
-    <footer className="con-grano border-line bg-ink relative border-t-2 pt-20 pb-28 sm:pb-16">
+    <footer className="con-grano border-line bg-ink relative border-t-2 pt-20 pb-16">
       <div className="reticula gap-y-14">
         <div className="col-span-12 md:col-span-4">
           <LogoCompleto className="h-auto w-44" idTitulo="logo-pie" />

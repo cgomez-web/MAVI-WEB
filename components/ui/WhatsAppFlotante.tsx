@@ -3,12 +3,19 @@
 import { useEffect, useState } from "react";
 import { contacto, urlWhatsApp } from "@/content/contacto";
 
+const CAMPOS = "input, textarea, select";
+
 /**
- * Botón flotante de WhatsApp. El mensaje precargado cambia según la sección visible:
- * cualquier elemento con `data-whatsapp="…"` aporta su mensaje mientras está en pantalla.
+ * Acceso fijo a WhatsApp, sin tapar contenido:
+ *  - Móvil y tablet (< 1024 px): barra a todo lo ancho en el borde inferior. El cuerpo reserva su
+ *    altura (padding-bottom + scroll-padding), así nada queda "medio tapado" por un botón en la
+ *    esquina. Se oculta mientras se escribe en un formulario (el teclado la empujaría encima).
+ *  - Escritorio: botón cuadrado dentro del margen lateral, fuera de la columna de contenido.
+ * El mensaje precargado cambia según la sección visible (`data-whatsapp="…"`).
  */
 export function WhatsAppFlotante() {
   const [mensaje, setMensaje] = useState<string>(contacto.whatsapp.mensajeGeneral);
+  const [escribiendo, setEscribiendo] = useState(false);
 
   useEffect(() => {
     const visibles = new Map<Element, number>();
@@ -37,9 +44,22 @@ export function WhatsAppFlotante() {
     const mutaciones = new MutationObserver(() => conectar());
     const main = document.getElementById("contenido");
     if (main) mutaciones.observe(main, { childList: true, subtree: false });
+
+    const alEnfocar = (e: FocusEvent) =>
+      setEscribiendo(e.target instanceof Element && e.target.matches(CAMPOS));
+    const alDesenfocar = () =>
+      // Espera un instante: el foco puede saltar de un campo a otro.
+      window.setTimeout(
+        () => setEscribiendo(document.activeElement?.matches(CAMPOS) ?? false),
+        50,
+      );
+    document.addEventListener("focusin", alEnfocar);
+    document.addEventListener("focusout", alDesenfocar);
     return () => {
       observador.disconnect();
       mutaciones.disconnect();
+      document.removeEventListener("focusin", alEnfocar);
+      document.removeEventListener("focusout", alDesenfocar);
     };
   }, []);
 
@@ -48,12 +68,13 @@ export function WhatsAppFlotante() {
       href={urlWhatsApp(mensaje)}
       target="_blank"
       rel="noopener noreferrer"
-      className="boton boton-primario no-imprimir fixed right-4 bottom-4 z-40 min-h-14 gap-3 px-4 shadow-[4px_4px_0_0_var(--color-ink)] sm:right-6 sm:bottom-6"
+      className="cta-whatsapp boton boton-primario no-imprimir"
+      data-oculto={escribiendo ? "true" : "false"}
       aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
     >
       <svg
         viewBox="0 0 32 32"
-        className="h-6 w-6"
+        className="h-6 w-6 shrink-0"
         fill="none"
         stroke="currentColor"
         strokeWidth={3}
@@ -66,7 +87,7 @@ export function WhatsAppFlotante() {
           strokeWidth={2}
         />
       </svg>
-      <span className="hidden sm:inline">WhatsApp</span>
+      <span className="cta-whatsapp-texto">Cotizar por WhatsApp</span>
     </a>
   );
 }
