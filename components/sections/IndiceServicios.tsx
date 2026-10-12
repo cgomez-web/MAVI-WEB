@@ -38,7 +38,11 @@ export function IndiceServicios() {
                     {l.nombre}
                   </a>
                 </span>
-                <span className="ficha-fila col-span-12 grid grid-cols-2 gap-x-6 gap-y-2 md:col-span-5">
+                <span className="cifra-fila mono-etiqueta col-span-12 text-concrete md:col-span-5 md:col-start-8 md:row-start-1 md:self-center md:text-right">
+                  {l.cifra.prefijo}
+                  {l.cifra.valor} {l.cifra.unidad} · {l.cifra.etiqueta}
+                </span>
+                <span className="ficha-fila col-span-12 grid grid-cols-2 gap-x-6 gap-y-2 md:col-span-5 md:col-start-8 md:row-start-1">
                   {l.equipos.slice(0, 4).map((e) => (
                     <span key={e.nombre} className="flex flex-col">
                       <span className="text-0 text-bone/85">{e.nombre}</span>

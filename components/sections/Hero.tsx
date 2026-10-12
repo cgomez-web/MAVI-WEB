@@ -36,8 +36,7 @@ export function Hero() {
                 const i = indice++;
                 return (
                   <span key={`${palabra}-${i}`} className="palabra" style={{ ["--i" as string]: i }}>
-                    {palabra}
-                    {" "}
+                    {palabra}{" "}
                   </span>
                 );
               })}

@@ -16,7 +16,7 @@ export function BarraConfianza() {
           >
             {"valor" in item ? (
               <>
-                <span className="font-display text-figure font-black leading-[0.8] text-brand-yellow [font-stretch:110%] [letter-spacing:-0.04em]">
+                <span className="font-display text-[clamp(4rem,2rem+4vw,6.5rem)] font-black leading-[0.8] text-brand-yellow [font-stretch:100%] [letter-spacing:-0.04em]">
                   <Odometro valor={item.valor} prefijo={item.prefijo} />
                 </span>
                 <span className="pb-1">

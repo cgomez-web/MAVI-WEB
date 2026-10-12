@@ -51,7 +51,7 @@ export function Odometro({ valor, prefijo, className }: PropsOdometro) {
             <span
               className="odometro-rodillo"
               style={{
-                transform: `translateY(${girado ? -Number(c) * 10 : 0}%)`,
+                transform: `translateY(${girado ? -Number(c) : 0}em)`,
                 transitionDelay: `${i * 90}ms`,
               }}
             >

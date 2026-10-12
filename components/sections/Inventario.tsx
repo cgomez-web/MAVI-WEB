@@ -179,7 +179,7 @@ export function Inventario({ fotos }: { fotos: FotoPublica[] }) {
 
         <ul
           ref={pista}
-          className="mt-8 flex snap-x snap-proximity gap-[var(--gutter)] overflow-x-auto px-[var(--margin)] pb-6 [scrollbar-color:var(--color-concrete-dark)_transparent] [scrollbar-width:thin]"
+          className="mt-8 flex snap-x snap-proximity scroll-px-[var(--margin)] gap-[var(--gutter)] overflow-x-auto px-[var(--margin)] pb-6 [scrollbar-color:var(--color-concrete-dark)_transparent] [scrollbar-width:thin]"
           data-cursor="gancho"
           aria-label="Fotografías del inventario"
           onPointerDown={alPresionar}

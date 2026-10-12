@@ -17,23 +17,38 @@ interface Props {
 export function FichaTecnica({ linea }: { linea: LineaDeServicio }) {
   const conRango = linea.equipos.some((e) => e.rango);
   return (
-    <table className="ficha">
+    // Roles explícitos: en móvil las filas cambian de display y algunos lectores perderían la semántica.
+    <table className="ficha" role="table">
       <caption className="solo-lectores">Ficha técnica — {linea.nombre}</caption>
-      <thead>
-        <tr>
-          <th scope="col">Equipo</th>
-          {conRango ? <th scope="col">Rango</th> : null}
-          <th scope="col">Uso</th>
+      <thead role="rowgroup">
+        <tr role="row">
+          <th scope="col" role="columnheader">
+            Equipo
+          </th>
+          {conRango ? (
+            <th scope="col" role="columnheader">
+              Rango
+            </th>
+          ) : null}
+          <th scope="col" role="columnheader">
+            Uso
+          </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody role="rowgroup">
         {linea.equipos.map((e, i) => (
-          <tr key={e.nombre} style={{ ["--fila" as string]: i }}>
-            <th scope="row" className="font-display text-2 font-bold [font-stretch:85%]">
+          <tr key={e.nombre} role="row" style={{ ["--fila" as string]: i }}>
+            <th scope="row" role="rowheader" className="font-display text-2 font-bold [font-stretch:85%]">
               {e.nombre}
             </th>
-            {conRango ? <td className="cifras whitespace-nowrap text-1 text-brand-yellow">{e.rango ?? "—"}</td> : null}
-            <td className="text-0 text-concrete-light">{e.descripcion}</td>
+            {conRango ? (
+              <td role="cell" className="ficha-rango cifras whitespace-nowrap text-1 text-brand-yellow">
+                {e.rango ?? "—"}
+              </td>
+            ) : null}
+            <td role="cell" className="ficha-uso text-0 text-concrete-light">
+              {e.descripcion}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -44,7 +59,8 @@ export function FichaTecnica({ linea }: { linea: LineaDeServicio }) {
 /** Lámina técnica propia para líneas sin fotografías reales (nunca fotos de stock). */
 function LaminaTecnica({ linea }: { linea: LineaDeServicio }) {
   return (
-    <figure className="relative border-2 border-line bg-ink-2 p-6">
+    // En móvil se omite: repetiría la tabla y alargaría demasiado la página.
+    <figure className="relative hidden border-2 border-line bg-ink-2 p-6 sm:block">
       <div className="regla text-concrete" aria-hidden="true" />
       <div className="grid grid-cols-2 gap-6 py-8">
         {linea.equipos.map((e) => (
@@ -79,7 +95,7 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
     >
       {variante === "home" ? (
         // Ventana a la escena 3D: la cifra protagonista flota sobre la obra.
-        <div className="reticula min-h-[62svh] items-end pb-10 pt-28">
+        <div className="reticula min-h-[46svh] items-end pb-10 pt-24 md:min-h-[62svh] md:pt-28">
           <p className="codigo-vertical col-span-1 hidden self-end text-concrete-light md:block" aria-hidden="true">
             {linea.codigo} — {linea.nombre}
           </p>
