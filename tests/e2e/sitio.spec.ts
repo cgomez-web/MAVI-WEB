@@ -12,8 +12,11 @@ test.describe("humo", () => {
     await expect(page).toHaveTitle(/MAVI Proyectos e Inversiones/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Su obra avanza.");
     await expect(page.locator("html")).toHaveAttribute("lang", "es-CO");
-    const anchos = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
-    expect(anchos[0]).toBeLessThanOrEqual(anchos[1]!);
+    // Se compara con el ancho del dispositivo: en móvil, si algo desborda, innerWidth también crece.
+    await page.waitForLoadState("networkidle");
+    const ancho = page.viewportSize()!.width;
+    const scroll = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scroll).toBeLessThanOrEqual(ancho);
     expect(errores, errores.join("\n")).toEqual([]);
   });
 

@@ -1,5 +1,6 @@
 import { lineasDeServicio } from "@/content/servicios";
 import { fotosPublicas } from "@/lib/galeria";
+import { aFotoCliente } from "@/lib/imagenes";
 import { jsonLdPreguntas } from "@/lib/jsonld";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CapaEscena } from "@/components/three/CapaEscena";
@@ -28,7 +29,8 @@ export default function Inicio() {
       ))}
       <Marquee />
       <Nosotros />
-      <Inventario fotos={fotosPublicas} />
+      {/* Miniaturas en duotono: sin LQIP (el fondo tinta basta) para aligerar el HTML. */}
+      <Inventario fotos={fotosPublicas.map((f) => aFotoCliente(f))} />
       <Proceso />
       <PreguntasFrecuentes />
       <Cierre />

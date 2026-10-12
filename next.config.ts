@@ -26,6 +26,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
+  // Metadatos siempre en el <head> (sin "streaming metadata"): los rastreadores y Lighthouse
+  // leen title/description/canonical/OG del HTML inicial.
+  htmlLimitedBots: /.*/,
   images: {
     formats: ["image/avif", "image/webp"],
   },

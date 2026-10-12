@@ -162,7 +162,7 @@ async function procesar(foto: FotoGaleria): Promise<ImagenGenerada> {
     await redim.clone().webp({ quality: 74, effort: 6 }).toFile(path.join(SALIDA, `${foto.id}-${a}.webp`));
   }
 
-  const lqipBuf = await sharp(maestro).resize({ width: 24 }).webp({ quality: 40 }).toBuffer();
+  const lqipBuf = await sharp(maestro).resize({ width: 16 }).blur(0.6).webp({ quality: 32 }).toBuffer();
   return {
     id: foto.id,
     ancho,

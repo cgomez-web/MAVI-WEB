@@ -16,8 +16,12 @@ export function Cierre() {
     >
       <div className="reticula w-full gap-y-8">
         <IsotipoMavi className="col-span-12 h-14 w-14" />
-        <h2 id="titulo-cierre" className="col-span-12 text-hero uppercase leading-[0.86] md:col-span-10">
-          <span className="block [font-stretch:112%]">Facilitamos</span>
+        <h2
+          id="titulo-cierre"
+          className="col-span-12 text-[clamp(2.75rem,0.5rem+7.2vw,8.5rem)] uppercase leading-[0.86] md:col-span-10"
+        >
+          {/* En móvil, ancho moderado: "FACILITAMOS" a 112 % no cabe en 360 px y ensancharía la página. */}
+          <span className="block [font-stretch:88%] sm:[font-stretch:112%]">Facilitamos</span>
           <span className="block text-brand-yellow [font-stretch:66%]">su avance.</span>
         </h2>
         <p className="col-span-12 max-w-[44ch] text-2 text-bone/90 md:col-span-6">

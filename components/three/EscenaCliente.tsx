@@ -44,9 +44,22 @@ export function EscenaCliente() {
       if (cancelado) return;
       setEscena(() => modulo.default);
     };
+    // La escena se carga con la primera interacción (puntero, toque, scroll, tecla) o, si no la hay,
+    // tras 6,5 s de la carga en tiempo ocioso: así nunca compite con el render inicial ni con el LCP.
+    const EVENTOS = ["pointermove", "pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
+    let disparado = false;
+    let espera = 0;
+    const disparar = () => {
+      if (disparado) return;
+      disparado = true;
+      window.clearTimeout(espera);
+      for (const ev of EVENTOS) window.removeEventListener(ev, disparar);
+      const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 120));
+      idle(() => void intentar(), { timeout: 1500 });
+    };
     const programar = () => {
-      const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 300));
-      idle(() => void intentar(), { timeout: 2500 });
+      for (const ev of EVENTOS) window.addEventListener(ev, disparar, { passive: true, once: true });
+      espera = window.setTimeout(disparar, 6500);
     };
     if (document.readyState === "complete") programar();
     else window.addEventListener("load", programar, { once: true });
@@ -62,6 +75,8 @@ export function EscenaCliente() {
     window.addEventListener(EVENTO_MOVIMIENTO, alCambiar);
     return () => {
       cancelado = true;
+      window.clearTimeout(espera);
+      for (const ev of EVENTOS) window.removeEventListener(ev, disparar);
       window.removeEventListener("load", programar);
       window.removeEventListener(EVENTO_MOVIMIENTO, alCambiar);
     };

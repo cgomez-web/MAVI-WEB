@@ -1,0 +1,73 @@
+{
+  "/": {
+    "performance": 93,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "LCP_ms": 2615,
+    "CLS": 0,
+    "TBT_ms": 190,
+    "FCP_ms": 1818,
+    "SI_ms": 1818,
+    "pesoTotal_kB": 450,
+    "fallidas": [
+      "first-contentful-paint (0.89)",
+      "largest-contentful-paint (0.87)",
+      "interactive (0.88)",
+      "mainthread-work-breakdown (0)",
+      "largest-contentful-paint-element (0)",
+      "render-blocking-resources (0.5)",
+      "unused-javascript (0.5)",
+      "legacy-javascript (0.5)",
+      "dom-size (0)",
+      "dom-size-insight (0)",
+      "forced-reflow-insight (0)",
+      "legacy-javascript-insight (0.5)"
+    ]
+  },
+  "/servicios/andamiaje": {
+    "performance": 99,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "LCP_ms": 2038,
+    "CLS": 0,
+    "TBT_ms": 55,
+    "FCP_ms": 916,
+    "SI_ms": 1250,
+    "pesoTotal_kB": 656,
+    "fallidas": [
+      "render-blocking-resources (0.5)",
+      "uses-responsive-images (0.5)",
+      "legacy-javascript (0.5)",
+      "dom-size-insight (0)",
+      "image-delivery-insight (0.5)",
+      "legacy-javascript-insight (0.5)",
+      "network-dependency-tree-insight (0)",
+      "render-blocking-insight (0.5)"
+    ]
+  },
+  "/contacto": {
+    "performance": 94,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "LCP_ms": 2776,
+    "CLS": 0,
+    "TBT_ms": 55,
+    "FCP_ms": 1971,
+    "SI_ms": 1971,
+    "pesoTotal_kB": 387,
+    "fallidas": [
+      "first-contentful-paint (0.85)",
+      "largest-contentful-paint (0.84)",
+      "largest-contentful-paint-element (0)",
+      "render-blocking-resources (0.5)",
+      "legacy-javascript (0.5)",
+      "dom-size-insight (0)",
+      "legacy-javascript-insight (0.5)",
+      "network-dependency-tree-insight (0)",
+      "render-blocking-insight (0)"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
-import { srcPorDefecto, srcSet, type FotoPublica } from "@/lib/imagenes";
+import { srcPorDefecto, srcSet, type FotoCliente } from "@/lib/imagenes";
 
 interface PropsFoto {
-  foto: FotoPublica;
+  foto: FotoCliente;
   sizes: string;
   className?: string;
   /** Duotono amarillo/tinta en miniaturas (vuelve a color con hover/foco). */
@@ -19,7 +19,10 @@ export function FotoBodega({ foto, sizes, className = "", duotono, prioridad, pr
   return (
     <div
       className={`foto-bodega ${duotono ? "foto-duotono" : ""} ${className}`}
-      style={{ aspectRatio: proporcion ?? `${foto.ancho} / ${foto.alto}`, backgroundImage: `url(${foto.lqip})` }}
+      style={{
+        aspectRatio: proporcion ?? `${foto.ancho} / ${foto.alto}`,
+        ...(foto.lqip ? { backgroundImage: `url(${foto.lqip})` } : {}),
+      }}
     >
       <picture>
         <source type="image/avif" srcSet={srcSet(foto, "avif")} sizes={sizes} />

@@ -536,6 +536,23 @@
   }
 }
 
+/* Titular del hero: tamaño calibrado para que cada renglón quepa sin ajuste de línea
+   (móvil: el renglón más ancho mide ≈5,5 em; escritorio: ≈11 em). */
+.titular-hero {
+  font-size: clamp(2.75rem, 15.5vw, 5.5rem);
+  line-height: 0.86;
+}
+
+@media (min-width: 768px) {
+  .titular-hero {
+    font-size: min(8.4rem, 7.8vw);
+  }
+}
+
+.titular-hero .linea {
+  white-space: nowrap;
+}
+
 .titular-peso .linea {
   display: block;
   overflow: hidden;

@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { home } from "@/content/home";
 import { urlWhatsApp } from "@/content/contacto";
 
@@ -16,14 +17,14 @@ export function Hero() {
       aria-labelledby="titulo-hero"
       data-fase="inicio"
       data-ventana-3d=""
-      className="relative flex min-h-[100svh] flex-col justify-end pb-[max(2.5rem,6vh)] pt-[calc(var(--header-h)+3rem)]"
+      className="relative flex min-h-[100svh] flex-col justify-end pb-[max(1.5rem,5vh)] pt-[calc(var(--header-h)+1.5rem)] md:pt-[calc(var(--header-h)+3rem)]"
     >
       <p className="solo-lectores">{hero.descripcionEscena}</p>
       <div className="reticula">
-        <p className="mono-etiqueta col-span-12 mb-6 text-brand-yellow md:col-span-7">{hero.eyebrow}</p>
+        <p className="mono-etiqueta col-span-12 mb-4 text-brand-yellow md:col-span-7 md:mb-6">{hero.eyebrow}</p>
         <h1
           id="titulo-hero"
-          className="titular-peso col-span-12 font-display text-hero font-black uppercase [letter-spacing:-0.035em]"
+          className="titular-peso titular-hero col-span-12 font-display font-black uppercase [letter-spacing:-0.035em]"
           style={{ ["--n" as string]: totalPalabras }}
         >
           {hero.titular.map((linea, l) => (
@@ -34,12 +35,18 @@ export function Hero() {
                 l === 0 ? "[font-stretch:112%]" : "text-brand-yellow [font-stretch:66%] md:pl-[calc((100%-11*var(--gutter))/12+var(--gutter))]"
               }`}
             >
-              {linea.split(" ").map((palabra) => {
+              {linea.split(" ").map((palabra, j, palabras) => {
                 const i = indice++;
+                // Cortes de línea fijos (4 renglones en móvil, 2 en escritorio): la altura del titular
+                // no depende de la fuente cargada, así el cambio de fuente no desplaza el hero (CLS).
+                const corteMovil = j === Math.ceil(palabras.length / 2) - 1;
                 return (
-                  <span key={`${palabra}-${i}`} className="palabra" style={{ ["--i" as string]: i }}>
-                    {palabra}{" "}
-                  </span>
+                  <Fragment key={`${palabra}-${i}`}>
+                    <span className="palabra" style={{ ["--i" as string]: i }}>
+                      {palabra}{" "}
+                    </span>
+                    {corteMovil ? <br className="md:hidden" /> : null}
+                  </Fragment>
                 );
               })}
             </span>
@@ -47,9 +54,9 @@ export function Hero() {
           <span className="base" aria-hidden="true" />
         </h1>
 
-        <p className="col-span-12 mt-8 max-w-[52ch] text-2 text-bone/90 md:col-span-6">{hero.entradilla}</p>
+        <p className="col-span-12 mt-6 max-w-[52ch] text-1 text-bone/90 md:col-span-6 md:mt-8 md:text-2">{hero.entradilla}</p>
 
-        <div className="col-span-12 mt-10 flex flex-wrap items-center gap-5 md:col-span-7">
+        <div className="col-span-12 mt-7 flex flex-wrap items-center gap-4 md:col-span-7 md:mt-10 md:gap-5">
           <a href={urlWhatsApp()} target="_blank" rel="noopener noreferrer" className="boton boton-primario text-1">
             {hero.ctaPrimario}
             <span aria-hidden="true">→</span>
@@ -60,7 +67,7 @@ export function Hero() {
         </div>
 
         <ul
-          className="mono-etiqueta col-span-12 mt-12 flex flex-wrap gap-x-6 gap-y-2 border-t-2 border-bone/30 pt-4 text-concrete-light md:col-span-5 md:col-start-8 md:mt-0 md:self-end md:justify-end md:border-t-0 md:pt-0"
+          className="mono-etiqueta col-span-12 hidden flex-wrap gap-x-6 gap-y-2 text-concrete-light md:col-span-5 md:col-start-8 md:flex md:self-end md:justify-end"
           aria-label="Datos clave"
         >
           {hero.ficha.map((dato) => (

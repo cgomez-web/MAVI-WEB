@@ -5,13 +5,13 @@ import { home } from "@/content/home";
 import { categoriasGaleria } from "@/content/categorias";
 import type { CategoriaGaleria } from "@/content/servicios";
 import { mensajeWhatsApp, urlWhatsApp } from "@/content/contacto";
-import { srcSet, srcPorDefecto, type FotoPublica } from "@/lib/imagenes";
+import { srcSet, srcPorDefecto, type FotoCliente } from "@/lib/imagenes";
 import { FotoBodega } from "@/components/ui/FotoBodega";
 import { movimientoPermitido } from "@/lib/preferencias";
 
 type Filtro = CategoriaGaleria | "todo";
 
-export function Inventario({ fotos }: { fotos: FotoPublica[] }) {
+export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
   const [filtro, setFiltro] = useState<Filtro>("todo");
   const [abierta, setAbierta] = useState<number | null>(null);
   const pista = useRef<HTMLUListElement>(null);
