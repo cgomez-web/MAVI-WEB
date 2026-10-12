@@ -12,7 +12,10 @@ export function turnstileActivo(): boolean {
 export async function verificarTurnstile(token: string | undefined, ip?: string): Promise<boolean> {
   if (!turnstileActivo()) return true;
   if (!token) return false;
-  const cuerpo = new URLSearchParams({ secret: process.env.TURNSTILE_SECRET_KEY ?? "", response: token });
+  const cuerpo = new URLSearchParams({
+    secret: process.env.TURNSTILE_SECRET_KEY ?? "",
+    response: token,
+  });
   if (ip) cuerpo.set("remoteip", ip);
   try {
     const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
@@ -22,10 +25,13 @@ export async function verificarTurnstile(token: string | undefined, ip?: string)
       signal: AbortSignal.timeout(4000),
     });
     const datos = (await r.json()) as { success?: boolean; "error-codes"?: string[] };
-    if (!datos.success) registrar("warn", "turnstile_rechazo", { codigos: (datos["error-codes"] ?? []).join(",") });
+    if (!datos.success)
+      registrar("warn", "turnstile_rechazo", { codigos: (datos["error-codes"] ?? []).join(",") });
     return datos.success === true;
   } catch (error) {
-    registrar("error", "turnstile_fallo", { motivo: error instanceof Error ? error.message : "desconocido" });
+    registrar("error", "turnstile_fallo", {
+      motivo: error instanceof Error ? error.message : "desconocido",
+    });
     return false;
   }
 }

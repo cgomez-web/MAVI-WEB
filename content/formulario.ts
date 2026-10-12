@@ -55,6 +55,7 @@ export const textosFormulario = {
   exito: "Recibimos su solicitud. Le contactaremos pronto con disponibilidad y valor.",
   errorGenerico:
     "No pudimos enviar la solicitud en este momento. Escríbanos por WhatsApp y le atendemos de inmediato.",
-  errorLimite: "Recibimos demasiadas solicitudes desde su conexión. Intente de nuevo en unos minutos o escríbanos por WhatsApp.",
+  errorLimite:
+    "Recibimos demasiadas solicitudes desde su conexión. Intente de nuevo en unos minutos o escríbanos por WhatsApp.",
   alternativaWhatsApp: "Escribir por WhatsApp",
 } as const;

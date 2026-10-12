@@ -51,7 +51,10 @@ export function Movimiento() {
     let limpiarLenis: (() => void) | undefined;
 
     const iniciar = async () => {
-      const [{ gsap }, { ScrollTrigger }] = await Promise.all([import("gsap"), import("gsap/ScrollTrigger")]);
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
       if (cancelado) return;
       gsap.registerPlugin(ScrollTrigger);
 

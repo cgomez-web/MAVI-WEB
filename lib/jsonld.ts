@@ -18,7 +18,7 @@ export function jsonLdNegocio() {
     logo: `${url}/icon.svg`,
     image: `${url}/opengraph-image`,
     telephone: contacto.telefono.e164,
-    email: `${contacto.correos[0].usuario}@${contacto.correos[0].dominio}`,
+    // El correo no se publica en datos estructurados (anti-scraping básico); el teléfono sí, es público.
     address: {
       "@type": "PostalAddress",
       streetAddress: contacto.direccion.linea,
@@ -26,7 +26,10 @@ export function jsonLdNegocio() {
       addressRegion: contacto.direccion.departamento,
       addressCountry: contacto.direccion.codigoPais,
     },
-    areaServed: contacto.zonaDeServicio.map((nombre) => ({ "@type": "AdministrativeArea", name: nombre })),
+    areaServed: contacto.zonaDeServicio.map((nombre) => ({
+      "@type": "AdministrativeArea",
+      name: nombre,
+    })),
     sameAs: [contacto.instagram.url],
     knowsLanguage: "es-CO",
     // El horario solo se publica en datos estructurados cuando el dueño lo confirme
@@ -55,7 +58,10 @@ export function jsonLdServicio(linea: LineaDeServicio) {
     description: linea.seo.descripcion,
     url: `${url}/servicios/${linea.slug}`,
     provider: { "@id": idNegocio() },
-    areaServed: contacto.zonaDeServicio.map((nombre) => ({ "@type": "AdministrativeArea", name: nombre })),
+    areaServed: contacto.zonaDeServicio.map((nombre) => ({
+      "@type": "AdministrativeArea",
+      name: nombre,
+    })),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: linea.nombre,
@@ -99,5 +105,8 @@ export function jsonLdPreguntas() {
 
 /** Serializa evitando que un "</script>" dentro de los datos cierre la etiqueta. */
 export function serializarJsonLd(datos: unknown): string {
-  return JSON.stringify(datos).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026");
+  return JSON.stringify(datos)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
 }

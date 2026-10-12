@@ -30,7 +30,12 @@ describe("Content-Security-Policy", () => {
 
   it("solo abre Cloudflare cuando Turnstile está configurado", () => {
     expect(prod).not.toContain("challenges.cloudflare.com");
-    const conTurnstile = construirCsp({ nonce: "n", desarrollo: false, local: false, turnstile: true });
+    const conTurnstile = construirCsp({
+      nonce: "n",
+      desarrollo: false,
+      local: false,
+      turnstile: true,
+    });
     expect(directiva(conTurnstile, "frame-src")).toContain("https://challenges.cloudflare.com");
     expect(directiva(conTurnstile, "connect-src")).toContain("https://challenges.cloudflare.com");
   });

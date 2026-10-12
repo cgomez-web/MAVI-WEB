@@ -13,7 +13,13 @@ const LETRAS = {
 } as const;
 
 /** Polígono de engranaje: dientes trapezoidales entre radio interior y exterior. */
-export function rutaEngranaje(cx: number, cy: number, rExt: number, rInt: number, dientes: number): string {
+export function rutaEngranaje(
+  cx: number,
+  cy: number,
+  rExt: number,
+  rInt: number,
+  dientes: number,
+): string {
   const paso = (Math.PI * 2) / dientes;
   const puntos: string[] = [];
   for (let i = 0; i < dientes; i++) {
@@ -40,10 +46,16 @@ interface PropsWordmark {
 }
 
 /** Wordmark "MAVI" solo (para header y pie). */
-export function WordmarkMavi({ className, tono = "hueso", titulo = "MAVI Proyectos e Inversiones" }: PropsWordmark) {
+export function WordmarkMavi({
+  className,
+  tono = "hueso",
+  titulo = "MAVI Proyectos e Inversiones",
+}: PropsWordmark) {
   const color = tono === "hueso" ? "var(--color-bone)" : "var(--color-ink)";
   // Con título vacío el wordmark es decorativo (el enlace contenedor ya tiene nombre accesible).
-  const accesible = titulo ? { role: "img", "aria-label": titulo } : { "aria-hidden": true as const };
+  const accesible = titulo
+    ? { role: "img", "aria-label": titulo }
+    : { "aria-hidden": true as const };
   return (
     <svg viewBox="0 0 292 100" className={className} {...accesible}>
       <g fill={color}>
@@ -85,13 +97,26 @@ export function IsotipoMavi({ className, titulo }: { className?: string; titulo?
 }
 
 /** Logo completo: engranaje que enmarca el wordmark, banda y lema. */
-export function LogoCompleto({ className, idTitulo = "logo-mavi" }: { className?: string; idTitulo?: string }) {
+export function LogoCompleto({
+  className,
+  idTitulo = "logo-mavi",
+}: {
+  className?: string;
+  idTitulo?: string;
+}) {
   return (
     <svg viewBox="0 0 400 400" className={className} role="img" aria-labelledby={idTitulo}>
       <title id={idTitulo}>MAVI Proyectos e Inversiones — Facilitamos su avance</title>
       <path d={rutaEngranaje(200, 200, 196, 168, 16)} fill="var(--color-brand-yellow)" />
       <circle cx="200" cy="200" r="150" fill="var(--color-ink)" />
-      <circle cx="200" cy="200" r="138" fill="none" stroke="var(--color-brand-yellow)" strokeWidth="4" />
+      <circle
+        cx="200"
+        cy="200"
+        r="138"
+        fill="none"
+        stroke="var(--color-brand-yellow)"
+        strokeWidth="4"
+      />
       <g transform="translate(73 120) scale(0.87)">
         <g fill="var(--color-bone)">
           <path d={LETRAS.M} />
@@ -115,7 +140,13 @@ export function LogoCompleto({ className, idTitulo = "logo-mavi" }: { className?
         y="253"
         textAnchor="middle"
         fill="var(--color-ink)"
-        style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontStretch: "88%", fontSize: "22px", letterSpacing: "0.02em" }}
+        style={{
+          fontFamily: "var(--font-display)",
+          fontWeight: 900,
+          fontStretch: "88%",
+          fontSize: "22px",
+          letterSpacing: "0.02em",
+        }}
       >
         PROYECTOS E INVERSIONES
       </text>
@@ -124,7 +155,12 @@ export function LogoCompleto({ className, idTitulo = "logo-mavi" }: { className?
         y="296"
         textAnchor="middle"
         fill="var(--color-bone)"
-        style={{ fontFamily: "var(--font-hanken)", fontWeight: 700, fontStyle: "italic", fontSize: "19px" }}
+        style={{
+          fontFamily: "var(--font-hanken)",
+          fontWeight: 700,
+          fontStyle: "italic",
+          fontSize: "19px",
+        }}
       >
         Facilitamos su avance
       </text>

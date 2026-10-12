@@ -7,18 +7,8 @@
  */
 import { useFrame } from "@react-three/fiber";
 import { useLayoutEffect, useMemo, useRef } from "react";
-import type {
-  Group,
-  InstancedMesh,
-  Mesh} from "three";
-import {
-  BoxGeometry,
-  Color,
-  MeshStandardMaterial,
-  Object3D,
-  ShaderMaterial,
-  Vector3,
-} from "three";
+import type { Group, InstancedMesh, Mesh } from "three";
+import { BoxGeometry, Color, MeshStandardMaterial, Object3D, ShaderMaterial, Vector3 } from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { PALETA } from "./paleta";
 import { enFase, limitar } from "./fases";
@@ -42,8 +32,10 @@ const COLUMNAS: Array<[number, number]> = [
 ];
 const MARCOS: Array<{ x: number; y: number; z: number; giro: number }> = [];
 for (let n = 0; n < 4; n++) {
-  for (let i = 0; i < 6; i++) MARCOS.push({ x: -3.75 + i * 1.5, y: n * 1.9, z: FONDO / 2 + 0.9, giro: 0 });
-  for (let i = 0; i < 4; i++) MARCOS.push({ x: ANCHO / 2 + 0.9, y: n * 1.9, z: -2.25 + i * 1.5, giro: Math.PI / 2 });
+  for (let i = 0; i < 6; i++)
+    MARCOS.push({ x: -3.75 + i * 1.5, y: n * 1.9, z: FONDO / 2 + 0.9, giro: 0 });
+  for (let i = 0; i < 4; i++)
+    MARCOS.push({ x: ANCHO / 2 + 0.9, y: n * 1.9, z: -2.25 + i * 1.5, giro: Math.PI / 2 });
 }
 
 /** Shader sencillo de "vaciado": descarta lo que está sobre el nivel de llenado y pinta una banda húmeda. */
@@ -115,7 +107,10 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
   const geoMarco = useMemo(geometriaMarco, []);
   const colorTablero = useMemo(() => new Color(PALETA.madera), []);
   const colorConcreto = useMemo(() => new Color(PALETA.concreto), []);
-  const matLosa1 = useMemo(() => new MeshStandardMaterial({ color: PALETA.madera, roughness: 0.85, flatShading: true }), []);
+  const matLosa1 = useMemo(
+    () => new MeshStandardMaterial({ color: PALETA.madera, roughness: 0.85, flatShading: true }),
+    [],
+  );
 
   // Estado inicial: todo oculto (escala 0).
   useLayoutEffect(() => {
@@ -209,7 +204,11 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
           for (let lado = 0; lado < 4; lado++) {
             const ang = (lado * Math.PI) / 2;
             const dist = 0.33 + (1 - cierra) * 1.2 + retira * 0.8;
-            aux.position.set(cx + Math.cos(ang) * dist, NIVEL + 0.2 + NIVEL / 2, cz + Math.sin(ang) * dist);
+            aux.position.set(
+              cx + Math.cos(ang) * dist,
+              NIVEL + 0.2 + NIVEL / 2,
+              cz + Math.sin(ang) * dist,
+            );
             aux.rotation.set(0, -ang, 0);
             const s = cierra * (1 - retira);
             aux.scale.set(Math.max(0.0001, s), Math.max(0.0001, s), Math.max(0.0001, s));
@@ -227,7 +226,9 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
         losa2.current.position.y = NIVEL * 2 + 0.11 + (1 - k) * 1.5;
       }
       // La primera losa pasa de tablero (madera) a concreto cuando se vacía la estructura.
-      matLosa1.color.copy(colorTablero).lerp(colorConcreto, enFase(p, "encofrados-y-formaleteria", 0.4, 0.8));
+      matLosa1.color
+        .copy(colorTablero)
+        .lerp(colorConcreto, enFase(p, "encofrados-y-formaleteria", 0.4, 0.8));
     }
 
     /* ── Andamiaje ── */
@@ -238,7 +239,12 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
       if (m) {
         MARCOS.forEach((mc, i) => {
           const nivel = Math.floor(i / 10);
-          const k = enFase(p, "andamiaje", nivel * 0.2 + (i % 10) * 0.012, nivel * 0.2 + (i % 10) * 0.012 + 0.2);
+          const k = enFase(
+            p,
+            "andamiaje",
+            nivel * 0.2 + (i % 10) * 0.012,
+            nivel * 0.2 + (i % 10) * 0.012 + 0.2,
+          );
           aux.position.set(mc.x, mc.y + (1 - k) * 0.8, mc.z);
           aux.rotation.set(0, mc.giro, 0);
           // Un marco aún no montado se oculta del todo (aplastado seguiría viéndose como un listón).
@@ -260,17 +266,32 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
         <meshStandardMaterial color={PALETA.concreto} roughness={1} />
       </mesh>
 
-      <instancedMesh ref={puntales} args={[undefined, undefined, PUNTALES.length]} castShadow={sombras}>
+      <instancedMesh
+        ref={puntales}
+        args={[undefined, undefined, PUNTALES.length]}
+        castShadow={sombras}
+      >
         <cylinderGeometry args={[0.055, 0.055, 1, 6]} />
         <meshStandardMaterial color={PALETA.rojoPuntal} roughness={0.6} flatShading />
       </instancedMesh>
 
-      <instancedMesh ref={correas} args={[undefined, undefined, CORREAS.length]} castShadow={sombras}>
+      <instancedMesh
+        ref={correas}
+        args={[undefined, undefined, CORREAS.length]}
+        castShadow={sombras}
+      >
         <boxGeometry args={[ANCHO + 0.2, 0.16, 0.16]} />
         <meshStandardMaterial color={PALETA.amarillo} roughness={0.6} flatShading />
       </instancedMesh>
 
-      <mesh ref={losa1} position={[0, NIVEL + 0.11, 0]} material={matLosa1} castShadow={sombras} receiveShadow visible={false}>
+      <mesh
+        ref={losa1}
+        position={[0, NIVEL + 0.11, 0]}
+        material={matLosa1}
+        castShadow={sombras}
+        receiveShadow
+        visible={false}
+      >
         <boxGeometry args={[ANCHO + 0.6, 0.22, FONDO + 0.6]} />
       </mesh>
 
@@ -279,9 +300,18 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
         <meshStandardMaterial color="#6B3B22" roughness={0.8} />
       </instancedMesh>
 
-      <instancedMesh ref={formaletas} args={[undefined, undefined, COLUMNAS.length * 4]} castShadow={sombras}>
+      <instancedMesh
+        ref={formaletas}
+        args={[undefined, undefined, COLUMNAS.length * 4]}
+        castShadow={sombras}
+      >
         <boxGeometry args={[0.06, NIVEL, 0.72]} />
-        <meshStandardMaterial color={PALETA.rojoPuntal} roughness={0.55} metalness={0.2} flatShading />
+        <meshStandardMaterial
+          color={PALETA.rojoPuntal}
+          roughness={0.55}
+          metalness={0.2}
+          flatShading
+        />
       </instancedMesh>
 
       {/* Concreto de columnas y muro posterior (shader de vaciado) */}
@@ -296,13 +326,24 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
         </mesh>
       </group>
 
-      <mesh ref={losa2} position={[0, NIVEL * 2 + 0.11, 0]} castShadow={sombras} receiveShadow visible={false}>
+      <mesh
+        ref={losa2}
+        position={[0, NIVEL * 2 + 0.11, 0]}
+        castShadow={sombras}
+        receiveShadow
+        visible={false}
+      >
         <boxGeometry args={[ANCHO + 0.6, 0.22, FONDO + 0.6]} />
         <meshStandardMaterial color={PALETA.concretoClaro} roughness={0.95} flatShading />
       </mesh>
 
       <instancedMesh ref={marcos} args={[geoMarco, undefined, MARCOS.length]} castShadow={sombras}>
-        <meshStandardMaterial color={PALETA.rojoPuntal} roughness={0.55} metalness={0.15} flatShading />
+        <meshStandardMaterial
+          color={PALETA.rojoPuntal}
+          roughness={0.55}
+          metalness={0.15}
+          flatShading
+        />
       </instancedMesh>
     </group>
   );
@@ -329,7 +370,9 @@ export function EquiposTerraza({ progreso }: { progreso: { p: number } }) {
     caer(generador.current, 0, 0.35);
     caer(compresor.current, 0.2, 0.55);
     caer(pluma.current, 0.4, 0.8);
-    if (brazo.current) brazo.current.rotation.y = Math.sin(clock.elapsedTime * 0.5) * 0.4 * limitar(enFase(p, "otros-equipos", 0.8, 1));
+    if (brazo.current)
+      brazo.current.rotation.y =
+        Math.sin(clock.elapsedTime * 0.5) * 0.4 * limitar(enFase(p, "otros-equipos", 0.8, 1));
   });
 
   return (

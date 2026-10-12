@@ -46,4 +46,9 @@ export const saira = localFont({
   adjustFontFallback: false,
 });
 
-export const variablesDeFuente = [archivo.variable, hanken.variable, martian.variable, saira.variable].join(" ");
+export const variablesDeFuente = [
+  archivo.variable,
+  hanken.variable,
+  martian.variable,
+  saira.variable,
+].join(" ");

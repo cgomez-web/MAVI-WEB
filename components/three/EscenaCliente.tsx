@@ -13,7 +13,8 @@ type PropsEscena = {
   alRendimientoBajo: () => void;
 };
 
-type Modo = { tipo: "poster"; motivo?: MotivoSin3D | "rendimiento" } | { tipo: "cargando" } | { tipo: "3d" };
+type Modo =
+  { tipo: "poster"; motivo?: MotivoSin3D | "rendimiento" } | { tipo: "cargando" } | { tipo: "3d" };
 
 /**
  * Decide si se monta la escena 3D y la carga en diferido (después de `load` y en tiempo ocioso),
@@ -46,7 +47,14 @@ export function EscenaCliente() {
     };
     // La escena se carga con la primera interacción (puntero, toque, scroll, tecla) o, si no la hay,
     // tras 6,5 s de la carga en tiempo ocioso: así nunca compite con el render inicial ni con el LCP.
-    const EVENTOS = ["pointermove", "pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
+    const EVENTOS = [
+      "pointermove",
+      "pointerdown",
+      "touchstart",
+      "wheel",
+      "scroll",
+      "keydown",
+    ] as const;
     let disparado = false;
     let espera = 0;
     const disparar = () => {
@@ -58,7 +66,8 @@ export function EscenaCliente() {
       idle(() => void intentar(), { timeout: 1500 });
     };
     const programar = () => {
-      for (const ev of EVENTOS) window.addEventListener(ev, disparar, { passive: true, once: true });
+      for (const ev of EVENTOS)
+        window.addEventListener(ev, disparar, { passive: true, once: true });
       espera = window.setTimeout(disparar, 6500);
     };
     if (document.readyState === "complete") programar();
@@ -174,11 +183,14 @@ export function EscenaCliente() {
 /** Preloader "nivelando": una burbuja de nivel que oscila y se centra. Nunca cubre el contenido. */
 function Nivelando() {
   return (
-    <div className="nivelando absolute bottom-6 right-6 hidden items-center gap-3 md:flex" aria-hidden="true">
+    <div
+      className="nivelando absolute right-6 bottom-6 hidden items-center gap-3 md:flex"
+      aria-hidden="true"
+    >
       <span className="mono-etiqueta text-concrete-light">Nivelando escena</span>
-      <span className="relative block h-4 w-28 border-2 border-bone/70 bg-ink/60">
-        <span className="absolute inset-y-0 left-1/2 w-px bg-bone/50" />
-        <span className="nivel-burbuja absolute top-1/2 h-2 w-5 -translate-y-1/2 bg-brand-yellow" />
+      <span className="border-bone/70 bg-ink/60 relative block h-4 w-28 border-2">
+        <span className="bg-bone/50 absolute inset-y-0 left-1/2 w-px" />
+        <span className="nivel-burbuja bg-brand-yellow absolute top-1/2 h-2 w-5 -translate-y-1/2" />
       </span>
     </div>
   );

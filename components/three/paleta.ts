@@ -20,7 +20,22 @@ export const PALETA = {
 
 /** Estados de luz del día (amanecer → mediodía → atardecer). Tonos cálidos: nada de cielos morados. */
 export const CIELOS = {
-  amanecer: { arriba: new Color("#16120E"), horizonte: new Color("#E08A1E"), suelo: new Color("#1E1810"), sol: new Color("#FFC870") },
-  dia: { arriba: new Color("#6B6355"), horizonte: new Color("#D8C6A6"), suelo: new Color("#2A241C"), sol: new Color("#FFF1D6") },
-  atardecer: { arriba: new Color("#120D0A"), horizonte: new Color("#D2561C"), suelo: new Color("#1A120C"), sol: new Color("#FF9A4A") },
+  amanecer: {
+    arriba: new Color("#16120E"),
+    horizonte: new Color("#E08A1E"),
+    suelo: new Color("#1E1810"),
+    sol: new Color("#FFC870"),
+  },
+  dia: {
+    arriba: new Color("#6B6355"),
+    horizonte: new Color("#D8C6A6"),
+    suelo: new Color("#2A241C"),
+    sol: new Color("#FFF1D6"),
+  },
+  atardecer: {
+    arriba: new Color("#120D0A"),
+    horizonte: new Color("#D2561C"),
+    suelo: new Color("#1A120C"),
+    sol: new Color("#FF9A4A"),
+  },
 } as const;

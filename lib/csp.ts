@@ -20,7 +20,13 @@ export interface OpcionesCsp {
   analitica?: string;
 }
 
-export function construirCsp({ nonce, desarrollo, local, turnstile, analitica }: OpcionesCsp): string {
+export function construirCsp({
+  nonce,
+  desarrollo,
+  local,
+  turnstile,
+  analitica,
+}: OpcionesCsp): string {
   const cloudflare = "https://challenges.cloudflare.com";
   const directivas: Record<string, string[]> = {
     "default-src": ["'self'"],
@@ -51,7 +57,9 @@ export function construirCsp({ nonce, desarrollo, local, turnstile, analitica }:
     "frame-ancestors": ["'none'"],
   };
 
-  const partes = Object.entries(directivas).map(([clave, valores]) => `${clave} ${valores.join(" ")}`);
+  const partes = Object.entries(directivas).map(
+    ([clave, valores]) => `${clave} ${valores.join(" ")}`,
+  );
   if (!desarrollo && !local) partes.push("upgrade-insecure-requests");
   return partes.join("; ");
 }

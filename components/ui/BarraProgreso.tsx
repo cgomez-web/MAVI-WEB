@@ -28,10 +28,13 @@ export function BarraProgreso() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="no-imprimir pointer-events-none fixed inset-x-0 top-0 z-[60] h-1">
+    <div
+      aria-hidden="true"
+      className="no-imprimir pointer-events-none fixed inset-x-0 top-0 z-[60] h-1"
+    >
       <div
         ref={barra}
-        className="h-full origin-left scale-x-0 bg-brand-yellow"
+        className="bg-brand-yellow h-full origin-left scale-x-0"
         style={{
           backgroundImage:
             "repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 8px)",

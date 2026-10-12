@@ -13,7 +13,10 @@ export const fotosPublicas: FotoPublica[] = fotosGaleria
     return g ? [{ ...f, ...g }] : [];
   });
 
-export function fotosDeCategoria(categoria: CategoriaGaleria | undefined, limite?: number): FotoPublica[] {
+export function fotosDeCategoria(
+  categoria: CategoriaGaleria | undefined,
+  limite?: number,
+): FotoPublica[] {
   if (!categoria) return [];
   const lista = fotosPublicas.filter((f) => f.categoria === categoria);
   return typeof limite === "number" ? lista.slice(0, limite) : lista;

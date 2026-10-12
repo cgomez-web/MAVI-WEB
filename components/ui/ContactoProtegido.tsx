@@ -7,7 +7,15 @@ import { useEffect, useState } from "react";
  * una sola cadena ni el esquema mailto:/tel:, que se arma en el cliente. El texto visible sigue siendo
  * legible para lectores de pantalla y se puede copiar.
  */
-export function CorreoProtegido({ usuario, dominio, className }: { usuario: string; dominio: string; className?: string }) {
+export function CorreoProtegido({
+  usuario,
+  dominio,
+  className,
+}: {
+  usuario: string;
+  dominio: string;
+  className?: string;
+}) {
   const [href, setHref] = useState<string | undefined>(undefined);
   useEffect(() => setHref(`mailto:${usuario}@${dominio}`), [usuario, dominio]);
   return (

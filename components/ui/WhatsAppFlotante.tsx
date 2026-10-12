@@ -30,7 +30,8 @@ export function WhatsAppFlotante() {
       },
       { threshold: [0, 0.25, 0.5, 0.75] },
     );
-    const conectar = () => document.querySelectorAll("[data-whatsapp]").forEach((el) => observador.observe(el));
+    const conectar = () =>
+      document.querySelectorAll("[data-whatsapp]").forEach((el) => observador.observe(el));
     conectar();
     // Las páginas cambian sin recargar: se vuelve a conectar ante cambios del DOM principal.
     const mutaciones = new MutationObserver(() => conectar());
@@ -47,7 +48,7 @@ export function WhatsAppFlotante() {
       href={urlWhatsApp(mensaje)}
       target="_blank"
       rel="noopener noreferrer"
-      className="boton boton-primario no-imprimir fixed bottom-4 right-4 z-40 min-h-14 gap-3 px-4 shadow-[4px_4px_0_0_var(--color-ink)] sm:bottom-6 sm:right-6"
+      className="boton boton-primario no-imprimir fixed right-4 bottom-4 z-40 min-h-14 gap-3 px-4 shadow-[4px_4px_0_0_var(--color-ink)] sm:right-6 sm:bottom-6"
       aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
     >
       <svg
@@ -60,7 +61,10 @@ export function WhatsAppFlotante() {
         aria-hidden="true"
       >
         <path d="M4 28l2.5-6.5A12 12 0 1 1 11 26z" />
-        <path d="M12 12c0 5 3 8 8 8l2-3-3-1.5-1.5 1.5c-1.5-.5-3-2-3.5-3.5L15.5 12 14 9z" strokeWidth={2} />
+        <path
+          d="M12 12c0 5 3 8 8 8l2-3-3-1.5-1.5 1.5c-1.5-.5-3-2-3.5-3.5L15.5 12 14 9z"
+          strokeWidth={2}
+        />
       </svg>
       <span className="hidden sm:inline">WhatsApp</span>
     </a>

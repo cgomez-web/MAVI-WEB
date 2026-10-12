@@ -2,17 +2,17 @@
 
 Valores asumidos para no bloquear el trabajo. Cada uno aparece marcado en el código o el contenido con `TODO(owner)`.
 
-| # | Tema | Valor asumido | Dónde se cambia |
-|---|---|---|---|
-| 1 | **Dominio definitivo** | `https://www.maviproyectos.com` (placeholder) | `.env` → `NEXT_PUBLIC_SITE_URL` |
-| 2 | **Proveedor de correo** | Resend; remitente `cotizaciones@<dominio>` (requiere verificar el dominio en Resend); destino `maviproyectoseinversiones@gmail.com` | `.env` → `RESEND_API_KEY`, `QUOTE_FROM_EMAIL`, `QUOTE_TO_EMAIL` |
-| 3 | **Logo vectorial** | Redibujado en SVG desde el brochure | `components/brand/Logo.tsx` |
-| 4 | **Horario de atención** | "Lunes a viernes 7:00–17:00, sábados 7:00–12:00 — *a confirmar*" (visible como pendiente) | `content/contacto.ts` |
-| 5 | **Uso de imagen de trabajadores** | Las 2 fotos de obra se publican (personas lejanas, no identificables) | `content/galeria.ts` → `publicar: false` para ocultarlas |
-| 6 | **Rótulos de otra empresa en fotos** | **Decidido por el dueño (2026-10-12): no deben aparecer.** Se tapan/recortan en el pipeline | `content/galeria.ts` → `parches` / `recorte` |
-| 7 | **Identificación de 2 fotos** | `10-19-07` = "equipos de izaje"; `10-19-10` = "moldes metálicos cilíndricos" | `content/galeria.ts` → `alt`, `titulo` |
-| 8 | **Claves de Cloudflare Turnstile** | Desactivado hasta configurar (el formulario sigue protegido por honeypot, tiempo mínimo y rate limit) | `.env` → `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` |
-| 9 | **Upstash Redis** (rate limit global) | Fallback en memoria por instancia | `.env` → `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` |
-| 10 | **NIT / razón social** para la política de privacidad | "MAVI Proyectos e Inversiones" sin NIT | `content/legal.ts` |
-| 11 | **Correo para `security.txt`** | `maviproyectoseinversiones@gmail.com` | `public/.well-known/security.txt` |
-| 12 | **Analítica** | Ninguna | `.env` → `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` (opcional, sin cookies) |
+| #   | Tema                                                  | Valor asumido                                                                                                                       | Dónde se cambia                                                   |
+| --- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1   | **Dominio definitivo**                                | `https://www.maviproyectos.com` (placeholder)                                                                                       | `.env` → `NEXT_PUBLIC_SITE_URL`                                   |
+| 2   | **Proveedor de correo**                               | Resend; remitente `cotizaciones@<dominio>` (requiere verificar el dominio en Resend); destino `maviproyectoseinversiones@gmail.com` | `.env` → `RESEND_API_KEY`, `QUOTE_FROM_EMAIL`, `QUOTE_TO_EMAIL`   |
+| 3   | **Logo vectorial**                                    | Redibujado en SVG desde el brochure                                                                                                 | `components/brand/Logo.tsx`                                       |
+| 4   | **Horario de atención**                               | "Lunes a viernes 7:00–17:00, sábados 7:00–12:00 — _a confirmar_" (visible como pendiente)                                           | `content/contacto.ts`                                             |
+| 5   | **Uso de imagen de trabajadores**                     | Las 2 fotos de obra se publican (personas lejanas, no identificables)                                                               | `content/galeria.ts` → `publicar: false` para ocultarlas          |
+| 6   | **Rótulos de otra empresa en fotos**                  | **Decidido por el dueño (2026-10-12): no deben aparecer.** Se tapan/recortan en el pipeline                                         | `content/galeria.ts` → `parches` / `recorte`                      |
+| 7   | **Identificación de 2 fotos**                         | `10-19-07` = "equipos de izaje"; `10-19-10` = "moldes metálicos cilíndricos"                                                        | `content/galeria.ts` → `alt`, `titulo`                            |
+| 8   | **Claves de Cloudflare Turnstile**                    | Desactivado hasta configurar (el formulario sigue protegido por honeypot, tiempo mínimo y rate limit)                               | `.env` → `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` |
+| 9   | **Upstash Redis** (rate limit global)                 | Fallback en memoria por instancia                                                                                                   | `.env` → `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`     |
+| 10  | **NIT / razón social** para la política de privacidad | "MAVI Proyectos e Inversiones" sin NIT                                                                                              | `content/legal.ts`                                                |
+| 11  | **Correo para `security.txt`**                        | `maviproyectoseinversiones@gmail.com`                                                                                               | `public/.well-known/security.txt`                                 |
+| 12  | **Analítica**                                         | Ninguna                                                                                                                             | `.env` → `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` (opcional, sin cookies)   |

@@ -10,7 +10,11 @@ import { Cotizacion } from "@/components/sections/Cotizacion";
 import { FotoBodega } from "@/components/ui/FotoBodega";
 import { Icono } from "@/components/icons/Icono";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const linea = lineaPorSlug(slug);
   if (!linea) return {};
@@ -18,7 +22,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: linea.seo.titulo,
     description: linea.seo.descripcion,
     alternates: { canonical: `/servicios/${linea.slug}` },
-    openGraph: { title: linea.seo.titulo, description: linea.seo.descripcion, url: `/servicios/${linea.slug}` },
+    openGraph: {
+      title: linea.seo.titulo,
+      description: linea.seo.descripcion,
+      url: `/servicios/${linea.slug}`,
+    },
   };
 }
 
@@ -32,9 +40,12 @@ export default async function PaginaServicio({ params }: { params: Promise<{ slu
 
   return (
     <>
-      <section className="con-grano relative pb-16 pt-[calc(var(--header-h)+4rem)]" aria-labelledby="titulo-pagina">
+      <section
+        className="con-grano relative pt-[calc(var(--header-h)+4rem)] pb-16"
+        aria-labelledby="titulo-pagina"
+      >
         <div className="reticula gap-y-6">
-          <nav aria-label="Migas de pan" className="mono-etiqueta col-span-12 text-concrete">
+          <nav aria-label="Migas de pan" className="mono-etiqueta text-concrete col-span-12">
             <ol className="flex flex-wrap gap-2">
               <li>
                 <Link href="/" className="enlace-cinta">
@@ -53,15 +64,20 @@ export default async function PaginaServicio({ params }: { params: Promise<{ slu
               </li>
             </ol>
           </nav>
-          <p className="mono-etiqueta col-span-12 text-brand-yellow">
+          <p className="mono-etiqueta text-brand-yellow col-span-12">
             Línea {linea.codigo} · {linea.cifra.etiqueta}
           </p>
-          <h1 id="titulo-pagina" className="col-span-12 text-5 uppercase [font-stretch:92%] lg:col-span-10">
+          <h1
+            id="titulo-pagina"
+            className="text-5 col-span-12 uppercase [font-stretch:92%] lg:col-span-10"
+          >
             {linea.seo.h1}
           </h1>
-          <p className="col-span-12 max-w-[60ch] text-2 text-bone/90 md:col-span-7">{linea.seo.introduccion}</p>
+          <p className="text-2 text-bone/90 col-span-12 max-w-[60ch] md:col-span-7">
+            {linea.seo.introduccion}
+          </p>
           <div className="col-span-12 flex items-end justify-start gap-4 md:col-span-5 md:justify-end">
-            <Icono id={linea.icono} className="h-24 w-24 text-brand-yellow md:h-32 md:w-32" />
+            <Icono id={linea.icono} className="text-brand-yellow h-24 w-24 md:h-32 md:w-32" />
           </div>
         </div>
       </section>
@@ -71,30 +87,39 @@ export default async function PaginaServicio({ params }: { params: Promise<{ slu
       {fotos.length > 3 ? (
         <section aria-labelledby="titulo-fotos" className="py-16">
           <div className="reticula gap-y-8">
-            <h2 id="titulo-fotos" className="col-span-12 text-4 uppercase [font-stretch:85%]">
+            <h2 id="titulo-fotos" className="text-4 col-span-12 uppercase [font-stretch:85%]">
               Inventario real de {linea.nombre.toLowerCase()}
             </h2>
             {fotos.slice(3).map((f) => (
               <figure key={f.id} className="col-span-12 sm:col-span-6 lg:col-span-4">
-                <FotoBodega foto={f} proporcion="4 / 3" sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw" />
-                <figcaption className="mono-etiqueta mt-2 text-concrete">{f.titulo}</figcaption>
+                <FotoBodega
+                  foto={f}
+                  proporcion="4 / 3"
+                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw"
+                />
+                <figcaption className="mono-etiqueta text-concrete mt-2">{f.titulo}</figcaption>
               </figure>
             ))}
           </div>
         </section>
       ) : null}
 
-      <nav aria-labelledby="titulo-otras" className="border-t-2 border-line py-16">
+      <nav aria-labelledby="titulo-otras" className="border-line border-t-2 py-16">
         <div className="reticula gap-y-6">
-          <h2 id="titulo-otras" className="mono-etiqueta col-span-12 text-brand-yellow">
+          <h2 id="titulo-otras" className="mono-etiqueta text-brand-yellow col-span-12">
             Otras líneas de servicio
           </h2>
           <ul className="col-span-12 grid grid-cols-1 gap-x-[var(--gutter)] sm:grid-cols-2 lg:grid-cols-3">
             {otras.map((l) => (
-              <li key={l.slug} className="border-b-2 border-line">
-                <Link href={`/servicios/${l.slug}`} className="flex items-center gap-4 py-4 hover:text-brand-yellow">
-                  <Icono id={l.icono} className="h-9 w-9 shrink-0 text-brand-yellow" />
-                  <span className="font-display text-2 font-bold uppercase [font-stretch:80%]">{l.nombre}</span>
+              <li key={l.slug} className="border-line border-b-2">
+                <Link
+                  href={`/servicios/${l.slug}`}
+                  className="hover:text-brand-yellow flex items-center gap-4 py-4"
+                >
+                  <Icono id={l.icono} className="text-brand-yellow h-9 w-9 shrink-0" />
+                  <span className="font-display text-2 font-bold uppercase [font-stretch:80%]">
+                    {l.nombre}
+                  </span>
                 </Link>
               </li>
             ))}

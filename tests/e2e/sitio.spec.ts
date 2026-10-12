@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("humo", () => {
-  test("el home carga con su titular, sin errores de consola y sin scroll horizontal", async ({ page }) => {
+  test("el home carga con su titular, sin errores de consola y sin scroll horizontal", async ({
+    page,
+  }) => {
     const errores: string[] = [];
     page.on("console", (m) => {
       if (m.type() === "error") errores.push(m.text());
@@ -33,12 +35,20 @@ test.describe("navegación", () => {
   test("del índice de servicios a una página de línea", async ({ page, isMobile }) => {
     await page.goto("/");
     if (!isMobile) {
-      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Equipos" }).click();
+      await page
+        .getByRole("navigation", { name: "Principal" })
+        .getByRole("link", { name: "Equipos" })
+        .click();
       await expect(page).toHaveURL(/#servicios$/);
     }
     await page.goto("/servicios/andamiaje");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Alquiler de andamios certificados");
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/servicios\/andamiaje$/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Alquiler de andamios certificados",
+    );
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      /\/servicios\/andamiaje$/,
+    );
   });
 
   test("menú móvil accesible", async ({ page, isMobile }) => {
@@ -46,7 +56,10 @@ test.describe("navegación", () => {
     await page.goto("/");
     const boton = page.getByRole("button", { name: "Abrir menú" });
     await boton.click();
-    await expect(page.getByRole("button", { name: "Cerrar menú" })).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("button", { name: "Cerrar menú" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
     await page.keyboard.press("Escape");
     await expect(page.getByRole("button", { name: "Abrir menú" })).toBeFocused();
   });
@@ -74,21 +87,29 @@ test.describe("formulario de cotización", () => {
     await expect(page.getByLabel("Nombre completo")).toHaveAttribute("aria-invalid", "true");
     await page.getByLabel("Celular / WhatsApp").fill("123");
     await page.getByLabel("Celular / WhatsApp").blur();
-    await expect(page.locator('[id$="-telefono-error"]')).toContainText("celular colombiano de 10 dígitos");
+    await expect(page.locator('[id$="-telefono-error"]')).toContainText(
+      "celular colombiano de 10 dígitos",
+    );
   });
 
   test("acepta una solicitud válida (respuesta del servidor simulada)", async ({ page }) => {
     let cuerpo: Record<string, unknown> = {};
     await page.route("**/api/cotizacion", async (ruta) => {
       cuerpo = ruta.request().postDataJSON() as Record<string, unknown>;
-      await ruta.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, codigo: "ok" }) });
+      await ruta.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, codigo: "ok" }),
+      });
     });
     await page.goto("/contacto");
     await page.getByLabel("Nombre completo").fill("Laura Gómez");
     await page.getByLabel("Celular / WhatsApp").fill("322 559 9325");
     await page.getByLabel("Municipio de la obra").selectOption("Envigado");
     await page.getByLabel("Línea de servicio").selectOption("Andamiaje");
-    await page.getByLabel(/Qué necesita/).fill("Cuarenta cuerpos de andamio para fachada de cuatro pisos.");
+    await page
+      .getByLabel(/Qué necesita/)
+      .fill("Cuarenta cuerpos de andamio para fachada de cuatro pisos.");
     await page.getByLabel(/Autorizo a MAVI/).check();
     await page.waitForTimeout(3100); // tiempo mínimo humano de llenado
     await page.getByRole("button", { name: "Enviar solicitud" }).click();
@@ -100,7 +121,15 @@ test.describe("formulario de cotización", () => {
   test("el servidor valida aunque se salte el cliente", async ({ request, baseURL }) => {
     const r = await request.post("/api/cotizacion", {
       headers: { origin: baseURL!, "content-type": "application/json" },
-      data: { nombre: "x", telefono: "1", ciudad: "Narnia", servicio: "Otra", mensaje: "", consentimiento: false, iniciado: 1 },
+      data: {
+        nombre: "x",
+        telefono: "1",
+        ciudad: "Narnia",
+        servicio: "Otra",
+        mensaje: "",
+        consentimiento: false,
+        iniciado: 1,
+      },
     });
     expect(r.status()).toBe(400);
     const cuerpo = (await r.json()) as { codigo: string };
@@ -120,7 +149,9 @@ test.describe("cabeceras de seguridad", () => {
   test("CSP con nonce y cabeceras estrictas", async ({ request }) => {
     const r = await request.get("/");
     const h = r.headers();
-    expect(h["content-security-policy"]).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    expect(h["content-security-policy"]).toMatch(
+      /script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/,
+    );
     expect(h["content-security-policy"]).not.toMatch(/script-src[^;]*unsafe-inline/);
     expect(h["strict-transport-security"]).toContain("max-age=63072000");
     expect(h["x-content-type-options"]).toBe("nosniff");

@@ -83,7 +83,9 @@ export function Icono({ id, className, titulo }: PropsIcono) {
       ) : (
         <path d={TRAZOS[id]} />
       )}
-      {RUEDAS[id]?.map(([cx, cy, r]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={r} />)}
+      {RUEDAS[id]?.map(([cx, cy, r]) => (
+        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={r} />
+      ))}
     </svg>
   );
 }

@@ -58,8 +58,19 @@ function Director({ estado, progreso }: { estado: EstadoEscena; progreso: { p: n
 
   // En escritorio ancho la acción se compone a la derecha del texto (desplazamiento de la vista).
   useEffect(() => {
-    const persp = camera as typeof camera & { setViewOffset?: (...a: number[]) => void; clearViewOffset?: () => void };
-    if (estado.ancho && size.width >= 1024) persp.setViewOffset?.(size.width, size.height, -size.width * 0.18, 0, size.width, size.height);
+    const persp = camera as typeof camera & {
+      setViewOffset?: (...a: number[]) => void;
+      clearViewOffset?: () => void;
+    };
+    if (estado.ancho && size.width >= 1024)
+      persp.setViewOffset?.(
+        size.width,
+        size.height,
+        -size.width * 0.18,
+        0,
+        size.width,
+        size.height,
+      );
     else persp.clearViewOffset?.();
   }, [camera, size, estado.ancho]);
 
@@ -105,7 +116,18 @@ export default function Escena3D({ estado, activa, alListo, alRendimientoBajo }:
         toneMapping: ACESFilmicToneMapping,
         toneMappingExposure: 1.05,
       }}
-      onCreated={() => alListo()}
+      onCreated={({ gl }) => {
+        // Diagnóstico (?escena=3d): expone métricas del renderer para medir el presupuesto.
+        if (new URLSearchParams(window.location.search).get("escena") === "3d") {
+          (window as unknown as { __maviInfo?: () => object }).__maviInfo = () => ({
+            triangulos: gl.info.render.triangles,
+            llamadas: gl.info.render.calls,
+            geometrias: gl.info.memory.geometries,
+            texturas: gl.info.memory.textures,
+          });
+        }
+        alListo();
+      }}
       style={{ position: "absolute", inset: 0 }}
     >
       <PerformanceMonitor onDecline={alRendimientoBajo} flipflops={2} />

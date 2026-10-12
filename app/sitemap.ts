@@ -15,6 +15,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     { url: `${base}/nosotros`, lastModified: fecha, changeFrequency: "yearly", priority: 0.6 },
     { url: `${base}/contacto`, lastModified: fecha, changeFrequency: "yearly", priority: 0.8 },
-    { url: `${base}/politica-de-privacidad`, lastModified: fecha, changeFrequency: "yearly", priority: 0.2 },
+    {
+      url: `${base}/politica-de-privacidad`,
+      lastModified: fecha,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 }

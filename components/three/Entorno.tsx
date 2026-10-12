@@ -6,11 +6,7 @@
  */
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import type {
-  DirectionalLight,
-  Group,
-  HemisphereLight,
-  Points} from "three";
+import type { DirectionalLight, Group, HemisphereLight, Points } from "three";
 import {
   AdditiveBlending,
   BackSide,
@@ -170,20 +166,30 @@ export function Terreno() {
       ))}
       <mesh position={[0, 0.85, 5.6]}>
         <boxGeometry args={[12, 0.05, 0.02]} />
-        <meshStandardMaterial color={PALETA.amarillo} emissive={PALETA.amarillo} emissiveIntensity={0.3} />
+        <meshStandardMaterial
+          color={PALETA.amarillo}
+          emissive={PALETA.amarillo}
+          emissiveIntensity={0.3}
+        />
       </mesh>
     </group>
   );
 }
 
 /** Polvo en suspensión: partículas aditivas que suben y derivan. Más densas en hero y excavación. */
-export function Polvo({ progreso, cantidad = 520 }: { progreso: { p: number }; cantidad?: number }) {
+export function Polvo({
+  progreso,
+  cantidad = 520,
+}: {
+  progreso: { p: number };
+  cantidad?: number;
+}) {
   const puntos = useRef<Points>(null);
   const { geometria, velocidades } = useMemo(() => {
     const pos = new Float32Array(cantidad * 3);
     const vel = new Float32Array(cantidad);
     let semilla = 7;
-    const azar = () => ((semilla = (semilla * 16807) % 2147483647) / 2147483647);
+    const azar = () => (semilla = (semilla * 16807) % 2147483647) / 2147483647;
     for (let i = 0; i < cantidad; i++) {
       pos[i * 3] = (azar() - 0.5) * 34;
       pos[i * 3 + 1] = azar() * 9;
@@ -200,7 +206,11 @@ export function Polvo({ progreso, cantidad = 520 }: { progreso: { p: number }; c
         transparent: true,
         depthWrite: false,
         blending: AdditiveBlending,
-        uniforms: { uOpacidad: { value: 0.6 }, uColor: { value: new Color("#FFD27A") }, uTamano: { value: 26 } },
+        uniforms: {
+          uOpacidad: { value: 0.6 },
+          uColor: { value: new Color("#FFD27A") },
+          uTamano: { value: 26 },
+        },
         vertexShader: /* glsl */ `
           uniform float uTamano;
           void main() {
@@ -242,7 +252,13 @@ export function Polvo({ progreso, cantidad = 520 }: { progreso: { p: number }; c
     }
     attr.needsUpdate = true;
     const p = progreso.p;
-    const densidad = 0.25 + 0.75 * Math.max(1 - enFase(p, "inicio", 0.6, 1), enFase(p, "maquinaria-pesada") * (1 - enFase(p, "transporte-y-elevacion", 0, 0.5)));
+    const densidad =
+      0.25 +
+      0.75 *
+        Math.max(
+          1 - enFase(p, "inicio", 0.6, 1),
+          enFase(p, "maquinaria-pesada") * (1 - enFase(p, "transporte-y-elevacion", 0, 0.5)),
+        );
     material.uniforms.uOpacidad!.value = 0.55 * densidad;
   });
 
@@ -278,7 +294,14 @@ export function Engranaje({ progreso }: { progreso: { p: number } }) {
     const hueco = new Shape();
     hueco.absarc(0, 0, 1.25, 0, Math.PI * 2, true);
     forma.holes.push(hueco);
-    const g = new ExtrudeGeometry(forma, { depth: 0.35, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.03, bevelSegments: 1, curveSegments: 24 });
+    const g = new ExtrudeGeometry(forma, {
+      depth: 0.35,
+      bevelEnabled: true,
+      bevelSize: 0.03,
+      bevelThickness: 0.03,
+      bevelSegments: 1,
+      curveSegments: 24,
+    });
     g.center();
     return g;
   }, []);
@@ -301,7 +324,12 @@ export function Engranaje({ progreso }: { progreso: { p: number } }) {
   return (
     <group ref={grupo} position={[5, 5.6, -12]}>
       <mesh geometry={geometria} castShadow>
-        <meshStandardMaterial color={PALETA.amarillo} roughness={0.35} metalness={0.55} flatShading />
+        <meshStandardMaterial
+          color={PALETA.amarillo}
+          roughness={0.35}
+          metalness={0.55}
+          flatShading
+        />
       </mesh>
       <mesh position={[0, 0, 0.02]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[1.25, 1.25, 0.32, 32]} />

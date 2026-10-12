@@ -68,6 +68,14 @@
       "@tailwindcss/oxide",
       "esbuild",
       "sharp"
+    ],
+    "overrides": {
+      "postcss": "8.5.29",
+      "tmp": "0.2.6",
+      "basic-ftp": "6.2.1"
+    },
+    "ignoredBuiltDependencies": [
+      "unrs-resolver"
     ]
   },
   "browserslist": [

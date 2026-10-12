@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { esquemaCotizacion, normalizarTelefono, tiempoDeLlenadoValido, TIEMPO_MINIMO_MS } from "@/lib/validacion";
+import {
+  esquemaCotizacion,
+  normalizarTelefono,
+  tiempoDeLlenadoValido,
+  TIEMPO_MINIMO_MS,
+} from "@/lib/validacion";
 
 const valido = {
   nombre: "María José Pérez",
@@ -44,7 +49,9 @@ describe("esquemaCotizacion", () => {
   });
 
   it("rechaza servicios y ciudades fuera de las listas cerradas", () => {
-    expect(esquemaCotizacion.safeParse({ ...valido, servicio: "Levantamientos topográficos" }).success).toBe(false);
+    expect(
+      esquemaCotizacion.safeParse({ ...valido, servicio: "Levantamientos topográficos" }).success,
+    ).toBe(false);
     expect(esquemaCotizacion.safeParse({ ...valido, ciudad: "Springfield" }).success).toBe(false);
   });
 
@@ -54,22 +61,35 @@ describe("esquemaCotizacion", () => {
   });
 
   it("rechaza saltos de línea en campos de una línea (inyección de cabeceras)", () => {
-    expect(esquemaCotizacion.safeParse({ ...valido, empresa: "ACME\r\nBcc: x@y.co" }).success).toBe(false);
-    expect(esquemaCotizacion.safeParse({ ...valido, correo: "a@b.co\nBcc: c@d.co" }).success).toBe(false);
+    expect(esquemaCotizacion.safeParse({ ...valido, empresa: "ACME\r\nBcc: x@y.co" }).success).toBe(
+      false,
+    );
+    expect(esquemaCotizacion.safeParse({ ...valido, correo: "a@b.co\nBcc: c@d.co" }).success).toBe(
+      false,
+    );
   });
 
   it("permite saltos de línea en el mensaje pero no otros caracteres de control", () => {
-    expect(esquemaCotizacion.safeParse({ ...valido, mensaje: "Línea uno\nLínea dos del pedido" }).success).toBe(true);
-    expect(esquemaCotizacion.safeParse({ ...valido, mensaje: "Texto con \u0007 campana" }).success).toBe(false);
+    expect(
+      esquemaCotizacion.safeParse({ ...valido, mensaje: "Línea uno\nLínea dos del pedido" })
+        .success,
+    ).toBe(true);
+    expect(
+      esquemaCotizacion.safeParse({ ...valido, mensaje: "Texto con \u0007 campana" }).success,
+    ).toBe(false);
   });
 
   it("aplica longitudes máximas", () => {
-    expect(esquemaCotizacion.safeParse({ ...valido, mensaje: "x".repeat(1501) }).success).toBe(false);
+    expect(esquemaCotizacion.safeParse({ ...valido, mensaje: "x".repeat(1501) }).success).toBe(
+      false,
+    );
     expect(esquemaCotizacion.safeParse({ ...valido, nombre: "a".repeat(81) }).success).toBe(false);
   });
 
   it("el honeypot debe venir vacío", () => {
-    expect(esquemaCotizacion.safeParse({ ...valido, sitioWeb: "http://spam.example" }).success).toBe(false);
+    expect(
+      esquemaCotizacion.safeParse({ ...valido, sitioWeb: "http://spam.example" }).success,
+    ).toBe(false);
   });
 });
 

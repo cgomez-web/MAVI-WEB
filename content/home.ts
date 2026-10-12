@@ -12,7 +12,12 @@ export const home = {
       "Ilustración animada: un terreno vacío al amanecer donde, a medida que se avanza en la página, entran una excavadora, una volqueta y una grúa, se levantan puntales, formaletas y andamios, y la obra queda terminada al atardecer con el logo de MAVI.",
   },
   confianza: [
-    { valor: 15, prefijo: "+", unidad: "AÑOS", texto: "de experiencia en construcción e infraestructura" },
+    {
+      valor: 15,
+      prefijo: "+",
+      unidad: "AÑOS",
+      texto: "de experiencia en construcción e infraestructura",
+    },
     { texto: "Envigado, Antioquia", detalle: "Bodega con inventario disponible" },
     { texto: "Equipos en óptimas condiciones", detalle: "Calidad en cada entrega" },
     { texto: "Acompañamiento en todo el proceso", detalle: "De la cotización al soporte técnico" },

@@ -3,13 +3,17 @@ import { chromium, expect, test } from "@playwright/test";
 
 test.describe("escena 3D y degradación", () => {
   test("sin WebGL el sitio es 100 % usable con el póster 2D", async ({ baseURL }) => {
-    const navegador = await chromium.launch({ args: ["--disable-webgl", "--disable-webgl2", "--use-gl=disabled"] });
+    const navegador = await chromium.launch({
+      args: ["--disable-webgl", "--disable-webgl2", "--use-gl=disabled"],
+    });
     const pagina = await navegador.newPage();
     await pagina.goto(`${baseURL}/`);
     await pagina.waitForTimeout(2500);
     await expect(pagina.locator(".escena-lienzo canvas")).toHaveCount(0);
     await expect(pagina.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(pagina.getByRole("heading", { name: "Inventario real, listo para su obra" })).toBeAttached();
+    await expect(
+      pagina.getByRole("heading", { name: "Inventario real, listo para su obra" }),
+    ).toBeAttached();
     await expect(pagina.getByRole("button", { name: "Enviar solicitud" })).toBeAttached();
     await navegador.close();
   });
@@ -27,15 +31,26 @@ test.describe("escena 3D y degradación", () => {
     await page.goto("/?escena=3d");
     const capa = page.locator(".escena-lienzo").first();
     if ((await capa.count()) > 0) {
-      await expect(page.locator(".escena-lienzo canvas").first()).toHaveAttribute("aria-hidden", "true");
+      await expect(page.locator(".escena-lienzo canvas").first()).toHaveAttribute(
+        "aria-hidden",
+        "true",
+      );
     }
     // La descripción textual equivalente existe siempre.
-    await expect(page.locator("#inicio .solo-lectores").first()).toContainText("Ilustración animada");
+    await expect(page.locator("#inicio .solo-lectores").first()).toContainText(
+      "Ilustración animada",
+    );
   });
 });
 
 test.describe("accesibilidad (axe, WCAG 2.2 AA)", () => {
-  for (const ruta of ["/", "/servicios/encofrados-y-formaleteria", "/contacto", "/nosotros", "/politica-de-privacidad"]) {
+  for (const ruta of [
+    "/",
+    "/servicios/encofrados-y-formaleteria",
+    "/contacto",
+    "/nosotros",
+    "/politica-de-privacidad",
+  ]) {
     test(`sin violaciones graves en ${ruta}`, async ({ browser, baseURL }) => {
       // Movimiento reducido: el contenido queda en su estado final y axe evalúa lo que se lee.
       const contexto = await browser.newContext({ reducedMotion: "reduce" });
@@ -45,8 +60,18 @@ test.describe("accesibilidad (axe, WCAG 2.2 AA)", () => {
       const resultado = await new AxeBuilder({ page: pagina })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
         .analyze();
-      const graves = resultado.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
-      expect(graves.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(" | ")}`)).toEqual([]);
+      const graves = resultado.violations.filter(
+        (v) => v.impact === "critical" || v.impact === "serious",
+      );
+      expect(
+        graves.map(
+          (v) =>
+            `${v.id}: ${v.nodes
+              .map((n) => n.target.join(" "))
+              .slice(0, 3)
+              .join(" | ")}`,
+        ),
+      ).toEqual([]);
       await contexto.close();
     });
   }

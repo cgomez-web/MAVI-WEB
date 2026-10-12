@@ -88,7 +88,14 @@ function promedio(
  * Reconstruye el rectángulo a partir de sus cuatro bordes (interpolación bilineal de los contornos)
  * y añade grano. Modifica `px` en sitio.
  */
-function aplicarParche(px: Buffer, ancho: number, alto: number, canales: number, r: Rect, azar: () => number) {
+function aplicarParche(
+  px: Buffer,
+  ancho: number,
+  alto: number,
+  canales: number,
+  r: Rect,
+  azar: () => number,
+) {
   const { x, y, ancho: w, alto: h } = r;
   const sup: RGB[] = [];
   const inf: RGB[] = [];
@@ -133,11 +140,18 @@ async function procesar(foto: FotoGaleria): Promise<ImagenGenerada> {
   if (!existsSync(origen)) throw new Error(`No existe el original ${origen}`);
 
   // rotate() aplica la orientación EXIF y la descarta; luego se trabaja en crudo.
-  const { data, info } = await sharp(origen).rotate().removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { data, info } = await sharp(origen)
+    .rotate()
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
   const azar = prng(semillaDe(foto.id));
-  for (const parche of foto.parches ?? []) aplicarParche(data, info.width, info.height, info.channels, parche, azar);
+  for (const parche of foto.parches ?? [])
+    aplicarParche(data, info.width, info.height, info.channels, parche, azar);
 
-  let base = sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } });
+  let base = sharp(data, {
+    raw: { width: info.width, height: info.height, channels: info.channels },
+  });
   let ancho = info.width;
   let alto = info.height;
   if (foto.recorte) {
@@ -158,11 +172,21 @@ async function procesar(foto: FotoGaleria): Promise<ImagenGenerada> {
   for (const a of unicos) {
     const redim = sharp(maestro).resize({ width: a, withoutEnlargement: true });
     // sharp no copia metadatos (EXIF/XMP/ICC) salvo que se pida con withMetadata(): se omite a propósito.
-    await redim.clone().avif({ quality: 52, effort: 6 }).toFile(path.join(SALIDA, `${foto.id}-${a}.avif`));
-    await redim.clone().webp({ quality: 74, effort: 6 }).toFile(path.join(SALIDA, `${foto.id}-${a}.webp`));
+    await redim
+      .clone()
+      .avif({ quality: 52, effort: 6 })
+      .toFile(path.join(SALIDA, `${foto.id}-${a}.avif`));
+    await redim
+      .clone()
+      .webp({ quality: 74, effort: 6 })
+      .toFile(path.join(SALIDA, `${foto.id}-${a}.webp`));
   }
 
-  const lqipBuf = await sharp(maestro).resize({ width: 16 }).blur(0.6).webp({ quality: 32 }).toBuffer();
+  const lqipBuf = await sharp(maestro)
+    .resize({ width: 16 })
+    .blur(0.6)
+    .webp({ quality: 32 })
+    .toBuffer();
   return {
     id: foto.id,
     ancho,

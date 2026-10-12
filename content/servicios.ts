@@ -144,10 +144,22 @@ export const lineasDeServicio: LineaDeServicio[] = [
     cifra: { valor: 5, unidad: "PIEZAS", etiqueta: "Componentes del sistema de losa" },
     equipos: [
       { nombre: "Correas", descripcion: "Soportan el peso de la losa.", icono: "correa" },
-      { nombre: "Portacorreas", descripcion: "Distribuyen la carga de manera uniforme.", icono: "correa" },
+      {
+        nombre: "Portacorreas",
+        descripcion: "Distribuyen la carga de manera uniforme.",
+        icono: "correa",
+      },
       { nombre: "Sopandas", descripcion: "Diferentes alturas y capacidades.", icono: "puntal" },
-      { nombre: "Puntales / tacos", descripcion: "Estabilidad y seguridad en la estructura.", icono: "puntal" },
-      { nombre: "Tableros", descripcion: "Superficies resistentes y de alta durabilidad.", icono: "encofrado" },
+      {
+        nombre: "Puntales / tacos",
+        descripcion: "Estabilidad y seguridad en la estructura.",
+        icono: "puntal",
+      },
+      {
+        nombre: "Tableros",
+        descripcion: "Superficies resistentes y de alta durabilidad.",
+        icono: "encofrado",
+      },
     ],
     categoriaGaleria: "losas",
     seo: {
@@ -168,7 +180,11 @@ export const lineasDeServicio: LineaDeServicio[] = [
     icono: "encofrado",
     cifra: { valor: 3, unidad: "ELEMENTOS", etiqueta: "Columnas, vigas y muros" },
     equipos: [
-      { nombre: "Encofrados metálicos y de madera", descripcion: "Sistemas versátiles para todo tipo de estructuras.", icono: "encofrado" },
+      {
+        nombre: "Encofrados metálicos y de madera",
+        descripcion: "Sistemas versátiles para todo tipo de estructuras.",
+        icono: "encofrado",
+      },
       { nombre: "Formaletería", descripcion: "Para columnas, vigas y muros.", icono: "encofrado" },
       { nombre: "Tableros", descripcion: "Resistentes y reutilizables.", icono: "encofrado" },
       { nombre: "Accesorios", descripcion: "Abrazaderas, cuñas, puntales y más.", icono: "puntal" },
@@ -192,10 +208,26 @@ export const lineasDeServicio: LineaDeServicio[] = [
     cifra: { valor: 2, unidad: "SISTEMAS", etiqueta: "Andamio de fachada y en torre" },
     sello: "CERTIFICADOS",
     equipos: [
-      { nombre: "Andamios certificados", descripcion: "Seguridad y soporte en cada nivel.", icono: "andamio" },
-      { nombre: "Fachada y en torre", descripcion: "Configuraciones para cada frente de obra.", icono: "andamio" },
-      { nombre: "Accesorios y complementos", descripcion: "Todo lo necesario para armar y asegurar.", icono: "puntal" },
-      { nombre: "Montaje y asesoría técnica", descripcion: "Acompañamiento técnico en el armado.", icono: "engranaje" },
+      {
+        nombre: "Andamios certificados",
+        descripcion: "Seguridad y soporte en cada nivel.",
+        icono: "andamio",
+      },
+      {
+        nombre: "Fachada y en torre",
+        descripcion: "Configuraciones para cada frente de obra.",
+        icono: "andamio",
+      },
+      {
+        nombre: "Accesorios y complementos",
+        descripcion: "Todo lo necesario para armar y asegurar.",
+        icono: "puntal",
+      },
+      {
+        nombre: "Montaje y asesoría técnica",
+        descripcion: "Acompañamiento técnico en el armado.",
+        icono: "engranaje",
+      },
     ],
     categoriaGaleria: "andamiaje",
     seo: {

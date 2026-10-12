@@ -33,5 +33,7 @@ export function prefiereMovimientoReducido(): boolean {
 /** ¿Están permitidas las animaciones no esenciales ahora mismo? */
 export function movimientoPermitido(): boolean {
   if (prefiereMovimientoReducido()) return false;
-  return (document.documentElement.dataset.movimiento ?? leerMovimientoGuardado() ?? "on") !== "off";
+  return (
+    (document.documentElement.dataset.movimiento ?? leerMovimientoGuardado() ?? "on") !== "off"
+  );
 }

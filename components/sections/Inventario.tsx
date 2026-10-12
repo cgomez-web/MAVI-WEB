@@ -19,7 +19,10 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
   const disparador = useRef<HTMLButtonElement | null>(null);
   const arrastre = useRef({ activo: false, x: 0, inicio: 0, v: 0, t: 0, movido: false, raf: 0 });
 
-  const visibles = useMemo(() => (filtro === "todo" ? fotos : fotos.filter((f) => f.categoria === filtro)), [filtro, fotos]);
+  const visibles = useMemo(
+    () => (filtro === "todo" ? fotos : fotos.filter((f) => f.categoria === filtro)),
+    [filtro, fotos],
+  );
   const conteos = useMemo(() => {
     const c = new Map<CategoriaGaleria, number>();
     for (const f of fotos) c.set(f.categoria, (c.get(f.categoria) ?? 0) + 1);
@@ -64,7 +67,8 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
     const a = arrastre.current;
     if (!a.activo) return;
     a.activo = false;
-    if (pista.current?.hasPointerCapture(e.pointerId)) pista.current.releasePointerCapture(e.pointerId);
+    if (pista.current?.hasPointerCapture(e.pointerId))
+      pista.current.releasePointerCapture(e.pointerId);
     if (!a.movido || !movimientoPermitido()) return;
     let v = a.v * 16; // px por fotograma
     const inercia = () => {
@@ -88,7 +92,10 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
   const desplazar = (dir: 1 | -1) => {
     const el = pista.current;
     if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: movimientoPermitido() ? "smooth" : "auto" });
+    el.scrollBy({
+      left: dir * el.clientWidth * 0.8,
+      behavior: movimientoPermitido() ? "smooth" : "auto",
+    });
   };
 
   /* ── Lightbox ── */
@@ -119,7 +126,8 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
   }, []);
 
   const mover = useCallback(
-    (dir: 1 | -1) => setAbierta((i) => (i === null ? i : (i + dir + visibles.length) % visibles.length)),
+    (dir: 1 | -1) =>
+      setAbierta((i) => (i === null ? i : (i + dir + visibles.length) % visibles.length)),
     [visibles.length],
   );
 
@@ -129,21 +137,32 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
     <section
       id="inventario"
       aria-labelledby="titulo-inventario"
-      className="con-grano relative bg-ink py-24 md:py-32"
+      className="con-grano bg-ink relative py-24 md:py-32"
       data-revelar="cinta"
       data-whatsapp="Hola MAVI, vi su inventario en la web y quiero cotizar equipos para una obra en ___"
     >
       <div className="revelar-contenido">
         <div className="reticula items-end gap-y-6">
-          <p className="mono-etiqueta col-span-12 text-brand-yellow md:col-span-3">{home.inventario.eyebrow}</p>
-          <h2 id="titulo-inventario" className="col-span-12 text-5 uppercase [font-stretch:90%] md:col-span-9">
+          <p className="mono-etiqueta text-brand-yellow col-span-12 md:col-span-3">
+            {home.inventario.eyebrow}
+          </p>
+          <h2
+            id="titulo-inventario"
+            className="text-5 col-span-12 uppercase [font-stretch:90%] md:col-span-9"
+          >
             {home.inventario.titular}
           </h2>
-          <p className="col-span-12 max-w-[52ch] text-2 text-concrete-light md:col-span-6 md:col-start-4">{home.inventario.texto}</p>
+          <p className="text-2 text-concrete-light col-span-12 max-w-[52ch] md:col-span-6 md:col-start-4">
+            {home.inventario.texto}
+          </p>
         </div>
 
         <div className="reticula mt-12 gap-y-4">
-          <div role="group" aria-label="Filtrar por línea" className="col-span-12 flex flex-wrap gap-2 md:col-span-9">
+          <div
+            role="group"
+            aria-label="Filtrar por línea"
+            className="col-span-12 flex flex-wrap gap-2 md:col-span-9"
+          >
             {(["todo", ...Object.keys(categoriasGaleria)] as Filtro[]).map((c) => {
               const activo = filtro === c;
               const n = c === "todo" ? fotos.length : (conteos.get(c) ?? 0);
@@ -155,7 +174,9 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                   aria-pressed={activo}
                   onClick={() => setFiltro(c)}
                   className={`mono-etiqueta border-2 px-3 py-2 transition-colors duration-[var(--dur-micro)] ${
-                    activo ? "border-brand-yellow bg-brand-yellow text-ink" : "border-line text-bone hover:border-bone"
+                    activo
+                      ? "border-brand-yellow bg-brand-yellow text-ink"
+                      : "border-line text-bone hover:border-bone"
                   }`}
                 >
                   {c === "todo" ? home.inventario.todos : categoriasGaleria[c]}
@@ -165,21 +186,31 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
             })}
           </div>
           <div className="col-span-12 flex items-center justify-end gap-2 md:col-span-3">
-            <button type="button" onClick={() => desplazar(-1)} className="boton boton-secundario h-12 w-12 justify-center p-0" aria-label="Fotos anteriores">
+            <button
+              type="button"
+              onClick={() => desplazar(-1)}
+              className="boton boton-secundario h-12 w-12 justify-center p-0"
+              aria-label="Fotos anteriores"
+            >
               <span aria-hidden="true">←</span>
             </button>
-            <button type="button" onClick={() => desplazar(1)} className="boton boton-secundario h-12 w-12 justify-center p-0" aria-label="Fotos siguientes">
+            <button
+              type="button"
+              onClick={() => desplazar(1)}
+              className="boton boton-secundario h-12 w-12 justify-center p-0"
+              aria-label="Fotos siguientes"
+            >
               <span aria-hidden="true">→</span>
             </button>
           </div>
-          <p className="mono-etiqueta col-span-12 text-concrete" aria-live="polite">
+          <p className="mono-etiqueta text-concrete col-span-12" aria-live="polite">
             {visibles.length} fotos · {home.inventario.ayudaArrastre}
           </p>
         </div>
 
         <ul
           ref={pista}
-          className="mt-8 flex snap-x snap-proximity scroll-px-[var(--margin)] gap-[var(--gutter)] overflow-x-auto px-[var(--margin)] pb-6 [scrollbar-color:var(--color-concrete-dark)_transparent] [scrollbar-width:thin]"
+          className="mt-8 flex snap-x snap-proximity scroll-px-[var(--margin)] [scrollbar-width:thin] [scrollbar-color:var(--color-concrete-dark)_transparent] gap-[var(--gutter)] overflow-x-auto px-[var(--margin)] pb-6"
           data-cursor="gancho"
           aria-label="Fotografías del inventario"
           onPointerDown={alPresionar}
@@ -204,11 +235,20 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                   aria-label={`Ampliar: ${f.titulo}`}
                   draggable={false}
                 >
-                  <FotoBodega foto={f} sizes="(min-width: 1024px) 40vw, 86vw" duotono className="pointer-events-none select-none" />
+                  <FotoBodega
+                    foto={f}
+                    sizes="(min-width: 1024px) 40vw, 86vw"
+                    duotono
+                    className="pointer-events-none select-none"
+                  />
                 </button>
                 <p className="mt-3 flex items-baseline justify-between gap-4">
-                  <span className="font-display text-1 font-bold uppercase [font-stretch:80%]">{f.titulo}</span>
-                  <span className="mono-etiqueta text-concrete">{categoriasGaleria[f.categoria]}</span>
+                  <span className="font-display text-1 font-bold uppercase [font-stretch:80%]">
+                    {f.titulo}
+                  </span>
+                  <span className="mono-etiqueta text-concrete">
+                    {categoriasGaleria[f.categoria]}
+                  </span>
                 </p>
               </li>
             );
@@ -219,7 +259,7 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
       <dialog
         ref={dialogo}
         aria-labelledby="titulo-lightbox"
-        className="m-0 h-[100dvh] max-h-none w-screen max-w-none bg-ink/97 p-0 text-bone backdrop:bg-ink/90"
+        className="bg-ink/97 text-bone backdrop:bg-ink/90 m-0 h-[100dvh] max-h-none w-screen max-w-none p-0"
         onKeyDown={(e) => {
           if (e.key === "ArrowRight") mover(1);
           if (e.key === "ArrowLeft") mover(-1);
@@ -232,10 +272,15 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
           <div className="flex h-full flex-col gap-4 p-4 md:p-8">
             <div className="flex items-center justify-between gap-4">
               <p className="mono-etiqueta text-concrete-light">
-                {String((abierta ?? 0) + 1).padStart(2, "0")} / {String(visibles.length).padStart(2, "0")} ·{" "}
-                {categoriasGaleria[actual.categoria]}
+                {String((abierta ?? 0) + 1).padStart(2, "0")} /{" "}
+                {String(visibles.length).padStart(2, "0")} · {categoriasGaleria[actual.categoria]}
               </p>
-              <button type="button" onClick={cerrar} className="boton boton-secundario min-h-11 px-4 py-2" autoFocus>
+              <button
+                type="button"
+                onClick={cerrar}
+                className="boton boton-secundario min-h-11 px-4 py-2"
+                autoFocus
+              >
                 Cerrar <span aria-hidden="true">✕</span>
               </button>
             </div>
@@ -248,18 +293,28 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                   alt={actual.alt}
                   width={actual.ancho}
                   height={actual.alto}
-                  className="h-auto max-h-full w-auto max-w-full border-2 border-line object-contain"
+                  className="border-line h-auto max-h-full w-auto max-w-full border-2 object-contain"
                 />
               </picture>
               <figcaption className="mt-4 text-center">
-                <span id="titulo-lightbox" className="block font-display text-3 font-extrabold uppercase [font-stretch:80%]">
+                <span
+                  id="titulo-lightbox"
+                  className="font-display text-3 block font-extrabold uppercase [font-stretch:80%]"
+                >
                   {actual.titulo}
                 </span>
-                <span className="mt-1 block max-w-[60ch] text-0 text-concrete-light">{actual.alt}</span>
+                <span className="text-0 text-concrete-light mt-1 block max-w-[60ch]">
+                  {actual.alt}
+                </span>
               </figcaption>
             </figure>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <button type="button" onClick={() => mover(-1)} className="boton boton-secundario" aria-label="Foto anterior">
+              <button
+                type="button"
+                onClick={() => mover(-1)}
+                className="boton boton-secundario"
+                aria-label="Foto anterior"
+              >
                 ← <span className="hidden sm:inline">Anterior</span>
               </button>
               <a
@@ -270,7 +325,12 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
               >
                 Cotizar este equipo
               </a>
-              <button type="button" onClick={() => mover(1)} className="boton boton-secundario" aria-label="Foto siguiente">
+              <button
+                type="button"
+                onClick={() => mover(1)}
+                className="boton boton-secundario"
+                aria-label="Foto siguiente"
+              >
                 <span className="hidden sm:inline">Siguiente</span> →
               </button>
             </div>

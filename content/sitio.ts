@@ -34,5 +34,8 @@ export const sitio = {
 
 export function urlDelSitio(): string {
   const desdeEntorno = process.env.NEXT_PUBLIC_SITE_URL;
-  return (desdeEntorno && desdeEntorno.length > 0 ? desdeEntorno : sitio.urlPorDefecto).replace(/\/$/, "");
+  return (desdeEntorno && desdeEntorno.length > 0 ? desdeEntorno : sitio.urlPorDefecto).replace(
+    /\/$/,
+    "",
+  );
 }

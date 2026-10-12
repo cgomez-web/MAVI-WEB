@@ -15,7 +15,14 @@ interface PropsFoto {
  * Foto real de bodega con AVIF/WebP pre-generados, LQIP de fondo y dimensiones fijas (CLS 0).
  * Ver PLAN.md §4 sobre por qué <picture> en lugar de next/image.
  */
-export function FotoBodega({ foto, sizes, className = "", duotono, prioridad, proporcion }: PropsFoto) {
+export function FotoBodega({
+  foto,
+  sizes,
+  className = "",
+  duotono,
+  prioridad,
+  proporcion,
+}: PropsFoto) {
   return (
     <div
       className={`foto-bodega ${duotono ? "foto-duotono" : ""} ${className}`}

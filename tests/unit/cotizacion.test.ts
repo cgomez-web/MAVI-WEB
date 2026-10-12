@@ -49,7 +49,10 @@ describe("procesarCotizacion", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async (url: string, init?: RequestInit) => {
-        envios.push({ url, cuerpo: JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown> });
+        envios.push({
+          url,
+          cuerpo: JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>,
+        });
         return new Response(JSON.stringify({ id: "1" }), { status: 200 });
       }),
     );
@@ -71,7 +74,10 @@ describe("procesarCotizacion", () => {
   });
 
   it("rechaza peticiones sin Origin o de otro origen (CSRF)", async () => {
-    expect((await procesarCotizacion(peticion(datosValidos, { origin: "https://malo.example" }), AHORA)).estado).toBe(403);
+    expect(
+      (await procesarCotizacion(peticion(datosValidos, { origin: "https://malo.example" }), AHORA))
+        .estado,
+    ).toBe(403);
     const sinOrigen = peticion(datosValidos);
     sinOrigen.headers.delete("origin");
     expect((await procesarCotizacion(sinOrigen, AHORA)).estado).toBe(403);
@@ -79,16 +85,24 @@ describe("procesarCotizacion", () => {
   });
 
   it("exige JSON y limita el tamaño", async () => {
-    expect((await procesarCotizacion(peticion(datosValidos, { "content-type": "text/plain" }), AHORA)).estado).toBe(415);
+    expect(
+      (await procesarCotizacion(peticion(datosValidos, { "content-type": "text/plain" }), AHORA))
+        .estado,
+    ).toBe(415);
     const grande = { ...datosValidos, mensaje: "x".repeat(20_000) };
     expect((await procesarCotizacion(peticion(grande), AHORA)).estado).toBe(413);
   });
 
   it("devuelve errores por campo sin detalles internos", async () => {
-    const r = await procesarCotizacion(peticion({ ...datosValidos, telefono: "123", ciudad: "Narnia" }), AHORA);
+    const r = await procesarCotizacion(
+      peticion({ ...datosValidos, telefono: "123", ciudad: "Narnia" }),
+      AHORA,
+    );
     expect(r.estado).toBe(400);
     expect(r.cuerpo.codigo).toBe("validacion");
-    expect(Object.keys(r.cuerpo.campos ?? {})).toEqual(expect.arrayContaining(["telefono", "ciudad"]));
+    expect(Object.keys(r.cuerpo.campos ?? {})).toEqual(
+      expect.arrayContaining(["telefono", "ciudad"]),
+    );
     expect(JSON.stringify(r.cuerpo)).not.toMatch(/stack|Error:|at /);
   });
 
@@ -100,18 +114,26 @@ describe("procesarCotizacion", () => {
     const bot1 = await procesarCotizacion(peticion({ ...datosValidos, sitioWeb: "x" }), AHORA);
     expect(bot1.estado).toBe(400); // el esquema exige vacío: no se revela cuál campo falló
     expect(bot1.cuerpo.campos).toBeUndefined();
-    const bot2 = await procesarCotizacion(peticion({ ...datosValidos, iniciado: AHORA - 300 }), AHORA);
+    const bot2 = await procesarCotizacion(
+      peticion({ ...datosValidos, iniciado: AHORA - 300 }),
+      AHORA,
+    );
     expect(bot2.cuerpo).toEqual({ ok: true, codigo: "ok" });
     expect(envios).toHaveLength(0);
   });
 
   it("limita a 5 solicitudes por IP cada 10 minutos", async () => {
-    for (let i = 0; i < 5; i++) expect((await procesarCotizacion(peticion(datosValidos, {}, "198.51.100.1"), AHORA)).estado).toBe(200);
+    for (let i = 0; i < 5; i++)
+      expect(
+        (await procesarCotizacion(peticion(datosValidos, {}, "198.51.100.1"), AHORA)).estado,
+      ).toBe(200);
     const sexta = await procesarCotizacion(peticion(datosValidos, {}, "198.51.100.1"), AHORA);
     expect(sexta.estado).toBe(429);
     expect(Number(sexta.cabeceras?.["Retry-After"])).toBeGreaterThan(0);
     // Otra IP no se ve afectada.
-    expect((await procesarCotizacion(peticion(datosValidos, {}, "198.51.100.2"), AHORA)).estado).toBe(200);
+    expect(
+      (await procesarCotizacion(peticion(datosValidos, {}, "198.51.100.2"), AHORA)).estado,
+    ).toBe(200);
   });
 
   it("sin proveedor de correo configurado responde 503 genérico", async () => {
@@ -122,7 +144,10 @@ describe("procesarCotizacion", () => {
   });
 
   it("si el proveedor falla responde 502 sin filtrar el error", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("boom", { status: 500 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("boom", { status: 500 })),
+    );
     const r = await procesarCotizacion(peticion(datosValidos), AHORA);
     expect(r.estado).toBe(502);
     expect(r.cuerpo).toEqual({ ok: false, codigo: "envio" });

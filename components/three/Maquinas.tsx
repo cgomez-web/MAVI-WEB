@@ -14,7 +14,15 @@ import type { EstadoEscena } from "./estado";
 const Y = PALETA.amarillo;
 const OSC = PALETA.grafito;
 
-function Rueda({ posicion, radio = 0.32, ancho = 0.25 }: { posicion: [number, number, number]; radio?: number; ancho?: number }) {
+function Rueda({
+  posicion,
+  radio = 0.32,
+  ancho = 0.25,
+}: {
+  posicion: [number, number, number];
+  radio?: number;
+  ancho?: number;
+}) {
   return (
     <mesh position={posicion} rotation={[Math.PI / 2, 0, 0]} castShadow>
       <cylinderGeometry args={[radio, radio, ancho, 10]} />
@@ -24,7 +32,13 @@ function Rueda({ posicion, radio = 0.32, ancho = 0.25 }: { posicion: [number, nu
 }
 
 /* ───────────────────────── Excavadora ───────────────────────── */
-export function Excavadora({ estado, progreso }: { estado: EstadoEscena; progreso: { p: number } }) {
+export function Excavadora({
+  estado,
+  progreso,
+}: {
+  estado: EstadoEscena;
+  progreso: { p: number };
+}) {
   const raiz = useRef<Group>(null);
   const tornamesa = useRef<Group>(null);
   const pluma = useRef<Group>(null);
@@ -38,7 +52,8 @@ export function Excavadora({ estado, progreso }: { estado: EstadoEscena; progres
     const entrada = enFase(p, "inicio", 0, 0.9);
     if (raiz.current) raiz.current.position.x = 10 - 4 * entrada;
     // Ciclo de excavación durante "maquinaria pesada" (y suavemente en reposo el resto del tiempo).
-    const cavando = enFase(p, "maquinaria-pesada", 0.05, 0.6) * (1 - enFase(p, "maquinaria-pesada", 0.9, 1));
+    const cavando =
+      enFase(p, "maquinaria-pesada", 0.05, 0.6) * (1 - enFase(p, "maquinaria-pesada", 0.9, 1));
     const ciclo = (Math.sin(t * 1.6) + 1) / 2;
     if (pluma.current) pluma.current.rotation.z = 0.55 - cavando * (0.25 + ciclo * 0.35);
     if (brazo.current) brazo.current.rotation.z = -1.25 + cavando * ciclo * 0.7;
@@ -115,7 +130,8 @@ export function Minicargador({ progreso }: { progreso: { p: number } }) {
       raiz.current.position.x = 10 - 3 * activo + vaiven;
       raiz.current.scale.setScalar(Math.max(0.001, activo));
     }
-    if (brazos.current) brazos.current.rotation.z = -0.15 + Math.max(0, Math.sin(clock.elapsedTime * 0.9)) * 0.35;
+    if (brazos.current)
+      brazos.current.rotation.z = -0.15 + Math.max(0, Math.sin(clock.elapsedTime * 0.9)) * 0.35;
   });
   return (
     <group ref={raiz} position={[10, 0, 7.4]} visible={false}>
@@ -133,7 +149,12 @@ export function Minicargador({ progreso }: { progreso: { p: number } }) {
         [0.42, 0.3, -0.55],
         [-0.42, 0.3, -0.55],
       ].map((pos) => (
-        <Rueda key={pos.join()} posicion={pos as [number, number, number]} radio={0.3} ancho={0.22} />
+        <Rueda
+          key={pos.join()}
+          posicion={pos as [number, number, number]}
+          radio={0.3}
+          ancho={0.22}
+        />
       ))}
       <group ref={brazos} position={[-0.5, 0.9, 0]}>
         <mesh position={[-0.6, -0.25, 0]} castShadow>
@@ -152,7 +173,9 @@ export function Volqueta({ progreso }: { progreso: { p: number } }) {
   useFrame(() => {
     const p = progreso.p;
     const llega = enFase(p, "transporte-y-elevacion", 0, 0.45);
-    const bascula = enFase(p, "transporte-y-elevacion", 0.5, 0.8) * (1 - enFase(p, "equipos-para-losas", 0.2, 0.5));
+    const bascula =
+      enFase(p, "transporte-y-elevacion", 0.5, 0.8) *
+      (1 - enFase(p, "equipos-para-losas", 0.2, 0.5));
     if (raiz.current) {
       raiz.current.visible = llega > 0.001;
       raiz.current.position.x = 26 - 18 * llega;
@@ -181,7 +204,9 @@ export function Volqueta({ progreso }: { progreso: { p: number } }) {
         </mesh>
       </group>
       {[-1.7, 0.9, 1.7].flatMap((x) =>
-        [0.62, -0.62].map((z) => <Rueda key={`${x}${z}`} posicion={[x, 0.36, z]} radio={0.38} ancho={0.28} />),
+        [0.62, -0.62].map((z) => (
+          <Rueda key={`${x}${z}`} posicion={[x, 0.36, z]} radio={0.38} ancho={0.28} />
+        )),
       )}
     </group>
   );
@@ -212,7 +237,11 @@ export function Grua({ progreso }: { progreso: { p: number } }) {
     }
     if (carga.current) {
       carga.current.rotation.z = -(0.15 + eleva * 0.75);
-      carga.current.position.set(Math.sin(0.15 + eleva * 0.75) * -largo, -Math.cos(0.15 + eleva * 0.75) * largo, 0);
+      carga.current.position.set(
+        Math.sin(0.15 + eleva * 0.75) * -largo,
+        -Math.cos(0.15 + eleva * 0.75) * largo,
+        0,
+      );
       carga.current.visible = gira < 0.95;
     }
   });
@@ -228,7 +257,9 @@ export function Grua({ progreso }: { progreso: { p: number } }) {
         <meshStandardMaterial color={Y} roughness={0.5} flatShading />
       </mesh>
       {[-1.6, -0.6, 0.6, 1.7].flatMap((x) =>
-        [0.7, -0.7].map((z) => <Rueda key={`${x}${z}`} posicion={[x, 0.38, z]} radio={0.38} ancho={0.3} />),
+        [0.7, -0.7].map((z) => (
+          <Rueda key={`${x}${z}`} posicion={[x, 0.38, z]} radio={0.38} ancho={0.3} />
+        )),
       )}
       <group ref={torre} position={[-0.8, 1.05, 0]}>
         <mesh position={[0, 0.35, 0]} castShadow>
@@ -275,7 +306,10 @@ export function Grua({ progreso }: { progreso: { p: number } }) {
 export function Monticulo({ progreso }: { progreso: { p: number } }) {
   const ref = useRef<Group>(null);
   useFrame(() => {
-    const crece = 0.15 + 0.85 * enFase(progreso.p, "maquinaria-pesada", 0.1, 0.9) + 0.35 * enFase(progreso.p, "transporte-y-elevacion", 0.5, 0.8);
+    const crece =
+      0.15 +
+      0.85 * enFase(progreso.p, "maquinaria-pesada", 0.1, 0.9) +
+      0.35 * enFase(progreso.p, "transporte-y-elevacion", 0.5, 0.8);
     if (ref.current) ref.current.scale.set(1, limitar(crece, 0.15, 1.35), 1);
   });
   return (

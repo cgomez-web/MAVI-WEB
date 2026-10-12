@@ -32,7 +32,9 @@ async function main() {
     const pagina = await contexto.newPage();
     for (const ruta of rutas) {
       await pagina.goto(`${base}${ruta}`, { waitUntil: "networkidle" });
-      await pagina.addStyleTag({ content: `:root { --alto-galeria: ${Math.round(vista.height * 0.46)}px !important; }` });
+      await pagina.addStyleTag({
+        content: `:root { --alto-galeria: ${Math.round(vista.height * 0.46)}px !important; }`,
+      });
       await pagina.waitForTimeout(600);
       // Recorre la página para disparar la carga diferida y espera a que cada imagen se decodifique.
       // Se pasa como cadena: el transpilador de tsx inyecta helpers (__name) que no existen en la página.
@@ -47,9 +49,19 @@ async function main() {
         await Promise.race([todas, new Promise((r) => setTimeout(r, 8000))]);
       })()`);
       await pagina.waitForLoadState("networkidle");
-      const archivo = path.join(salida, `${vista.nombre}${ruta === "/" ? "-inicio" : ruta.replace(/\//g, "-")}.png`);
-      await pagina.screenshot({ path: archivo, fullPage: true });
-      process.stdout.write(`✓ ${path.relative(process.cwd(), archivo)}\n`);
+      // Chromium no captura superficies de más de 16 384 px: las páginas largas se guardan por tramos.
+      const nombre = `${vista.nombre}${ruta === "/" ? "-inicio" : ruta.replace(/\//g, "-")}`;
+      const alto = await pagina.evaluate(() => document.documentElement.scrollHeight);
+      const TRAMO = 8000;
+      for (let y = 0, n = 1; y < alto; y += TRAMO, n++) {
+        const archivo = path.join(salida, alto > TRAMO ? `${nombre}-${n}.png` : `${nombre}.png`);
+        await pagina.screenshot({
+          path: archivo,
+          fullPage: true,
+          clip: { x: 0, y, width: vista.width, height: Math.min(TRAMO, alto - y) },
+        });
+        process.stdout.write(`✓ ${path.relative(process.cwd(), archivo)}\n`);
+      }
     }
     await contexto.close();
   }

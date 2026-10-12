@@ -1,5 +1,9 @@
 import * as z from "zod/mini";
-import { ciudadesFormulario, duracionesFormulario, serviciosFormulario } from "@/content/formulario";
+import {
+  ciudadesFormulario,
+  duracionesFormulario,
+  serviciosFormulario,
+} from "@/content/formulario";
 
 /**
  * Esquema único del formulario de cotización (cliente + servidor).
@@ -48,7 +52,12 @@ export const esquemaCotizacion = z.object({
     z.string().check(z.trim(), z.maxLength(20, "Número demasiado largo.")),
     z
       .transform(normalizarTelefono)
-      .check(z.refine((v: string) => TELEFONO_CO.test(v), "Escriba un celular colombiano de 10 dígitos (ej. 322 559 9325).")),
+      .check(
+        z.refine(
+          (v: string) => TELEFONO_CO.test(v),
+          "Escriba un celular colombiano de 10 dígitos (ej. 322 559 9325).",
+        ),
+      ),
   ),
   correo: z.optional(
     z.union([
@@ -73,7 +82,10 @@ export const esquemaCotizacion = z.object({
       z.maxLength(1500, "Máximo 1.500 caracteres."),
       z.regex(SIN_CONTROL_SALVO_SALTOS, "Contiene caracteres no permitidos."),
     ),
-  consentimiento: z.literal(true, "Debe autorizar el tratamiento de sus datos para enviar la solicitud."),
+  consentimiento: z.literal(
+    true,
+    "Debe autorizar el tratamiento de sus datos para enviar la solicitud.",
+  ),
   // Campos anti-spam:
   /** Honeypot: invisible para personas; los bots lo llenan. */
   sitioWeb: z.optional(z.string().check(z.maxLength(0))),

@@ -37,7 +37,11 @@ export const contacto = {
     aConfirmar: true,
     /** Para JSON-LD (openingHoursSpecification). */
     especificacion: [
-      { dias: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], abre: "07:00", cierra: "17:00" },
+      {
+        dias: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        abre: "07:00",
+        cierra: "17:00",
+      },
       { dias: ["Saturday"], abre: "07:00", cierra: "12:00" },
     ],
   },

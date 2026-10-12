@@ -25,7 +25,9 @@ const resultados = {};
 for (const ruta of rutas) {
   const r = await lighthouse(`${base}${ruta}`, { port: puerto, output: "json", logLevel: "error" });
   const lhr = r.lhr;
-  const cat = Object.fromEntries(Object.entries(lhr.categories).map(([k, v]) => [k, Math.round((v.score ?? 0) * 100)]));
+  const cat = Object.fromEntries(
+    Object.entries(lhr.categories).map(([k, v]) => [k, Math.round((v.score ?? 0) * 100)]),
+  );
   const a = lhr.audits;
   resultados[ruta] = {
     ...cat,
@@ -36,7 +38,14 @@ for (const ruta of rutas) {
     SI_ms: Math.round(a["speed-index"].numericValue),
     pesoTotal_kB: Math.round(a["total-byte-weight"].numericValue / 1024),
     fallidas: Object.values(a)
-      .filter((x) => x.score !== null && x.score < 0.9 && x.scoreDisplayMode !== "informative" && x.scoreDisplayMode !== "notApplicable" && x.scoreDisplayMode !== "manual")
+      .filter(
+        (x) =>
+          x.score !== null &&
+          x.score < 0.9 &&
+          x.scoreDisplayMode !== "informative" &&
+          x.scoreDisplayMode !== "notApplicable" &&
+          x.scoreDisplayMode !== "manual",
+      )
       .map((x) => `${x.id} (${x.score})`)
       .slice(0, 12),
   };

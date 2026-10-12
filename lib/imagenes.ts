@@ -9,11 +9,16 @@ export interface FotoPublica extends FotoGaleria {
 }
 
 /** Lo mínimo que necesita un componente cliente (sin nombres de archivo originales ni parches). */
-export type FotoCliente = Pick<FotoPublica, "id" | "categoria" | "titulo" | "alt" | "ancho" | "alto" | "anchos"> & { lqip?: string };
+export type FotoCliente = Pick<
+  FotoPublica,
+  "id" | "categoria" | "titulo" | "alt" | "ancho" | "alto" | "anchos"
+> & { lqip?: string };
 
 export function aFotoCliente(f: FotoPublica, conLqip = false): FotoCliente {
   const { id, categoria, titulo, alt, ancho, alto, anchos, lqip } = f;
-  return conLqip ? { id, categoria, titulo, alt, ancho, alto, anchos, lqip } : { id, categoria, titulo, alt, ancho, alto, anchos };
+  return conLqip
+    ? { id, categoria, titulo, alt, ancho, alto, anchos, lqip }
+    : { id, categoria, titulo, alt, ancho, alto, anchos };
 }
 
 export function srcSet(foto: Pick<FotoPublica, "id" | "anchos">, formato: "avif" | "webp"): string {

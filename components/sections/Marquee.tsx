@@ -74,9 +74,9 @@ export function Marquee() {
   const elementos = home.marquee;
 
   return (
-    <section aria-label="Equipos disponibles" className="relative bg-ink">
+    <section aria-label="Equipos disponibles" className="bg-ink relative">
       <div
-        className="overflow-hidden border-y-[3px] border-ink bg-brand-yellow py-5 text-ink"
+        className="border-ink bg-brand-yellow text-ink overflow-hidden border-y-[3px] py-5"
         onPointerEnter={() => (pausado.current = true)}
         onPointerLeave={() => (pausado.current = false)}
         onFocus={() => (pausado.current = true)}
@@ -88,8 +88,10 @@ export function Marquee() {
               <ul key={copia} className="flex shrink-0 items-center">
                 {elementos.map((e) => (
                   <li key={`${copia}-${e}`} className="flex items-center">
-                    <span className="px-6 font-display text-4 font-black uppercase leading-none [font-stretch:70%]">{e}</span>
-                    <span className="h-3 w-3 rotate-45 bg-ink" />
+                    <span className="font-display text-4 px-6 leading-none font-black uppercase [font-stretch:70%]">
+                      {e}
+                    </span>
+                    <span className="bg-ink h-3 w-3 rotate-45" />
                   </li>
                 ))}
               </ul>
@@ -98,7 +100,12 @@ export function Marquee() {
         ) : null}
         <ul className={animado ? "solo-lectores" : "contenedor flex flex-wrap gap-x-6 gap-y-2"}>
           {elementos.map((e) => (
-            <li key={e} className={animado ? undefined : "font-display text-3 font-black uppercase [font-stretch:70%]"}>
+            <li
+              key={e}
+              className={
+                animado ? undefined : "font-display text-3 font-black uppercase [font-stretch:70%]"
+              }
+            >
               {e}
             </li>
           ))}
@@ -110,7 +117,7 @@ export function Marquee() {
             type="button"
             onClick={() => setDetenido((d) => !d)}
             aria-pressed={detenido}
-            className="mono-etiqueta absolute right-[var(--margin)] top-1/2 -translate-y-1/2 border-2 border-ink bg-bone px-2 py-0.5 text-ink"
+            className="mono-etiqueta border-ink bg-bone text-ink absolute top-1/2 right-[var(--margin)] -translate-y-1/2 border-2 px-2 py-0.5"
           >
             {detenido ? "Reanudar cinta" : "Pausar cinta"}
           </button>

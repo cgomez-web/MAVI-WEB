@@ -23,16 +23,27 @@ export function Cursor() {
     const pintar = () => {
       actual.x += (objetivo.x - actual.x) * 0.2;
       actual.y += (objetivo.y - actual.y) * 0.2;
-      anillo.current?.style.setProperty("transform", `translate3d(${actual.x}px, ${actual.y}px, 0)`);
-      raf = Math.abs(objetivo.x - actual.x) + Math.abs(objetivo.y - actual.y) > 0.3 ? requestAnimationFrame(pintar) : 0;
+      anillo.current?.style.setProperty(
+        "transform",
+        `translate3d(${actual.x}px, ${actual.y}px, 0)`,
+      );
+      raf =
+        Math.abs(objetivo.x - actual.x) + Math.abs(objetivo.y - actual.y) > 0.3
+          ? requestAnimationFrame(pintar)
+          : 0;
     };
 
     const alMover = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       objetivo.x = e.clientX;
       objetivo.y = e.clientY;
-      punto.current?.style.setProperty("transform", `translate3d(${e.clientX}px, ${e.clientY}px, 0)`);
-      const sobre = (e.target as Element | null)?.closest?.("a, button, [role='button'], input, select, textarea, label, [data-cursor]");
+      punto.current?.style.setProperty(
+        "transform",
+        `translate3d(${e.clientX}px, ${e.clientY}px, 0)`,
+      );
+      const sobre = (e.target as Element | null)?.closest?.(
+        "a, button, [role='button'], input, select, textarea, label, [data-cursor]",
+      );
       const modo = sobre?.getAttribute("data-cursor") ?? (sobre ? "activo" : "");
       anillo.current?.setAttribute("data-modo", modo);
       if (icono.current) icono.current.textContent = modo === "mas" ? "+" : "";
@@ -64,14 +75,20 @@ export function Cursor() {
     <div className="cursor" aria-hidden="true">
       <div
         ref={anillo}
-        className="cursor-anillo absolute left-0 top-0 -ml-[14px] -mt-[14px] flex h-7 w-7 items-center justify-center border-2 border-bone mix-blend-difference"
+        className="cursor-anillo border-bone absolute top-0 left-0 -mt-[14px] -ml-[14px] flex h-7 w-7 items-center justify-center border-2 mix-blend-difference"
       >
-        <span ref={icono} className="font-mono text-lg leading-none text-bone" />
-        <svg className="cursor-gancho h-5 w-5 text-bone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+        <span ref={icono} className="text-bone font-mono text-lg leading-none" />
+        <svg
+          className="cursor-gancho text-bone h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+        >
           <path d="M12 2v8 M12 10a5 5 0 1 0 5 5h-3" strokeLinecap="square" />
         </svg>
       </div>
-      <div ref={punto} className="absolute left-0 top-0 -ml-1 -mt-1 h-2 w-2 bg-strut-red" />
+      <div ref={punto} className="bg-strut-red absolute top-0 left-0 -mt-1 -ml-1 h-2 w-2" />
     </div>
   );
 }

@@ -30,7 +30,12 @@ export function PosterObra({ className = "" }: { className?: string }) {
       <circle cx="1180" cy="700" r="260" fill="url(#poster-sol)" />
       {/* Engranaje lejano */}
       <g opacity="0.16">
-        <path d={rutaEngranaje(1180, 520, 300, 262, 16)} fill="none" stroke="#FCBF06" strokeWidth="6" />
+        <path
+          d={rutaEngranaje(1180, 520, 300, 262, 16)}
+          fill="none"
+          stroke="#FCBF06"
+          strokeWidth="6"
+        />
         <circle cx="1180" cy="520" r="200" fill="none" stroke="#FCBF06" strokeWidth="3" />
       </g>
       {/* Andamio y estructura en contraluz */}

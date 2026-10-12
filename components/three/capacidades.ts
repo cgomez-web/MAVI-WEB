@@ -36,7 +36,8 @@ export async function evaluarCapacidades(): Promise<MotivoSin3D | null> {
     }
   }
   if (nav.connection?.saveData) return "ahorro-de-datos";
-  if (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency < 4) return "pocos-nucleos";
+  if (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency < 4)
+    return "pocos-nucleos";
   if (typeof nav.deviceMemory === "number" && nav.deviceMemory < 4) return "poca-memoria";
   try {
     const lienzo = document.createElement("canvas");

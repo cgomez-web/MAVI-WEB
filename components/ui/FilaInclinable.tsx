@@ -7,7 +7,13 @@ import { movimientoPermitido } from "@/lib/preferencias";
  * Inclinación 3D leve (máx. 6°) siguiendo el puntero, y estado "activo" que revela la ficha
  * (hover, foco del enlace interno o toque).
  */
-export function FilaInclinable({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+export function FilaInclinable({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const caja = useRef<HTMLDivElement>(null);
   const raf = useRef(0);
 

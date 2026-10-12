@@ -40,7 +40,8 @@ function origenesPermitidos(request: Request): Set<string> {
   }
   // El propio host que sirve la petición (previews de Vercel, localhost).
   const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  const proto = request.headers.get("x-forwarded-proto") ?? new URL(request.url).protocol.replace(":", "");
+  const proto =
+    request.headers.get("x-forwarded-proto") ?? new URL(request.url).protocol.replace(":", "");
   if (host) permitidos.add(`${proto}://${host}`);
   return permitidos;
 }
@@ -51,13 +52,20 @@ export function ipDeLaPeticion(request: Request): string {
   return primera || request.headers.get("x-real-ip") || "desconocida";
 }
 
-const respuesta = (estado: number, codigo: CodigoRespuesta, extra: Partial<RespuestaCotizacion> = {}): RespuestaCotizacion => ({
+const respuesta = (
+  estado: number,
+  codigo: CodigoRespuesta,
+  extra: Partial<RespuestaCotizacion> = {},
+): RespuestaCotizacion => ({
   estado,
   cuerpo: { ok: codigo === "ok", codigo, ...(extra.cuerpo ?? {}) },
   cabeceras: extra.cabeceras,
 });
 
-export async function procesarCotizacion(request: Request, ahora = Date.now()): Promise<RespuestaCotizacion> {
+export async function procesarCotizacion(
+  request: Request,
+  ahora = Date.now(),
+): Promise<RespuestaCotizacion> {
   // 1. CSRF: solo se aceptan peticiones del propio sitio (el navegador siempre envía Origin en POST).
   const origen = request.headers.get("origin");
   if (!origen || !origenesPermitidos(request).has(origen)) {
@@ -76,7 +84,9 @@ export async function procesarCotizacion(request: Request, ahora = Date.now()): 
   const limite = await comprobarLimite(ip, undefined, ahora);
   if (!limite.permitido) {
     registrar("warn", "cotizacion_limite");
-    return respuesta(429, "limite", { cabeceras: { "Retry-After": String(limite.reintentarEnSeg) } });
+    return respuesta(429, "limite", {
+      cabeceras: { "Retry-After": String(limite.reintentarEnSeg) },
+    });
   }
 
   // 4. Lectura acotada + JSON + Zod.
@@ -126,7 +136,9 @@ export async function procesarCotizacion(request: Request, ahora = Date.now()): 
       return respuesta(502, "envio");
     }
   } catch (error) {
-    registrar("error", "cotizacion_envio_excepcion", { motivo: error instanceof Error ? error.name : "desconocido" });
+    registrar("error", "cotizacion_envio_excepcion", {
+      motivo: error instanceof Error ? error.name : "desconocido",
+    });
     return respuesta(502, "envio");
   }
   registrar("info", "cotizacion_enviada", { servicio: datos.servicio, ciudad: datos.ciudad });

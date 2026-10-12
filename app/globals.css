@@ -752,7 +752,9 @@ html[data-js="on"][data-movimiento="on"] .ficha:not([data-visible="true"]) tbody
   transform: translateX(-220%) skewX(-12deg);
 }
 
-html[data-js="on"][data-movimiento="on"] [data-revelar="cinta"]:not([data-visible="true"]) > .revelar-contenido {
+html[data-js="on"][data-movimiento="on"]
+  [data-revelar="cinta"]:not([data-visible="true"])
+  > .revelar-contenido {
   clip-path: polygon(0 0, 0 0, -12% 100%, -12% 100%);
 }
 
@@ -760,7 +762,9 @@ html[data-js="on"][data-movimiento="on"] [data-revelar="cinta"][data-visible="tr
   animation: cinta-barre 900ms var(--ease-weight) both;
 }
 
-html[data-js="on"][data-movimiento="on"] [data-revelar="cinta"][data-visible="true"] > .revelar-contenido {
+html[data-js="on"][data-movimiento="on"]
+  [data-revelar="cinta"][data-visible="true"]
+  > .revelar-contenido {
   animation: contenido-revela 900ms var(--ease-weight) both;
 }
 

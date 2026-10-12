@@ -39,27 +39,42 @@ describe("contenido", () => {
   });
 
   it("no contiene datos de relleno del mockup ni la errata del brochure", () => {
-    const prohibidos = [/300 123 4567/, /info@mavi\.com\.co/i, /topogr[aá]fic/i, /formaltr[ií]a/i, /lorem ipsum/i];
+    const prohibidos = [
+      /300 123 4567/,
+      /info@mavi\.com\.co/i,
+      /topogr[aá]fic/i,
+      /formaltr[ií]a/i,
+      /lorem ipsum/i,
+    ];
     for (const { p, texto } of fuentesDelSitio) {
-      for (const re of prohibidos) expect(re.test(texto), `${path.relative(RAIZ, p)} contiene ${re}`).toBe(false);
+      for (const re of prohibidos)
+        expect(re.test(texto), `${path.relative(RAIZ, p)} contiene ${re}`).toBe(false);
     }
   });
 
   it("no menciona en ninguna parte el nombre de la otra empresa que aparece en algunas fotos", () => {
     // Codificado para no escribir ese nombre en el repositorio (decisión del dueño, 2026-10-12).
-    const palabras = ["QW5kYW1pb3M=", "QW3DqXJpY2E=", "QW1lcmljYQ=="].map((b) => Buffer.from(b, "base64").toString("utf8"));
+    const palabras = ["QW5kYW1pb3M=", "QW3DqXJpY2E=", "QW1lcmljYQ=="].map((b) =>
+      Buffer.from(b, "base64").toString("utf8"),
+    );
     const patron = new RegExp(`${palabras[0]}\\s+(${palabras[1]}|${palabras[2]})`, "i");
-    for (const { p, texto } of fuentesDelSitio) expect(patron.test(texto), path.relative(RAIZ, p)).toBe(false);
+    for (const { p, texto } of fuentesDelSitio)
+      expect(patron.test(texto), path.relative(RAIZ, p)).toBe(false);
   });
 
   it("toda foto publicable tiene texto alternativo descriptivo y fue procesada", () => {
     for (const f of fotosGaleria.filter((x) => x.publicar)) {
       expect(f.alt.length, f.id).toBeGreaterThan(30);
-      expect(generadas.some((g) => g.id === f.id), `${f.id} sin procesar: ejecute pnpm images`).toBe(true);
+      expect(
+        generadas.some((g) => g.id === f.id),
+        `${f.id} sin procesar: ejecute pnpm images`,
+      ).toBe(true);
     }
   });
 
   it("la Formaletería está bien escrita en la línea 04", () => {
-    expect(lineasDeServicio.find((l) => l.codigo === "04")?.nombre).toBe("Encofrados y formaletería");
+    expect(lineasDeServicio.find((l) => l.codigo === "04")?.nombre).toBe(
+      "Encofrados y formaletería",
+    );
   });
 });

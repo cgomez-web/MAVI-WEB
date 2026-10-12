@@ -55,7 +55,9 @@ export function Cabecera() {
   useEffect(() => {
     if (!abierto) return;
     const enfocables = () =>
-      Array.from(panel.current?.querySelectorAll<HTMLElement>("a, button") ?? []).filter((el) => !el.hasAttribute("disabled"));
+      Array.from(panel.current?.querySelectorAll<HTMLElement>("a, button") ?? []).filter(
+        (el) => !el.hasAttribute("disabled"),
+      );
     enfocables()[0]?.focus();
     const alTeclear = (e: KeyboardEvent) => {
       if (e.key === "Escape") cerrar();
@@ -86,7 +88,9 @@ export function Cabecera() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-[var(--dur-ui)] ease-[var(--ease-weight)] ${
-        transparente ? "border-b-2 border-transparent bg-transparent" : "border-b-2 border-line bg-ink"
+        transparente
+          ? "border-b-2 border-transparent bg-transparent"
+          : "border-line bg-ink border-b-2"
       }`}
     >
       <div className="flex h-[var(--header-h)] items-center justify-between gap-4 px-[var(--margin)]">
@@ -112,8 +116,12 @@ export function Cabecera() {
             type="button"
             onClick={alternarMovimiento}
             aria-pressed={movimiento === "on"}
-            aria-label={movimiento === "on" ? textosCabecera.movimientoActivo : textosCabecera.movimientoInactivo}
-            className="mono-etiqueta hidden items-center gap-2 border-2 border-line px-3 py-2 text-concrete-light transition-colors duration-[var(--dur-micro)] hover:border-bone hover:text-bone md:inline-flex"
+            aria-label={
+              movimiento === "on"
+                ? textosCabecera.movimientoActivo
+                : textosCabecera.movimientoInactivo
+            }
+            className="mono-etiqueta border-line text-concrete-light hover:border-bone hover:text-bone hidden items-center gap-2 border-2 px-3 py-2 transition-colors duration-[var(--dur-micro)] md:inline-flex"
           >
             <span
               aria-hidden="true"
@@ -132,7 +140,7 @@ export function Cabecera() {
           <button
             ref={botonMenu}
             type="button"
-            className="relative h-11 w-11 border-2 border-bone lg:hidden"
+            className="border-bone relative h-11 w-11 border-2 lg:hidden"
             aria-expanded={abierto}
             aria-controls={idMenu}
             aria-label={abierto ? textosCabecera.cerrarMenu : textosCabecera.abrirMenu}
@@ -140,13 +148,13 @@ export function Cabecera() {
           >
             <span
               aria-hidden="true"
-              className={`absolute left-2 right-2 h-[3px] bg-bone transition-transform duration-[var(--dur-ui)] ease-[var(--ease-weight)] ${
+              className={`bg-bone absolute right-2 left-2 h-[3px] transition-transform duration-[var(--dur-ui)] ease-[var(--ease-weight)] ${
                 abierto ? "top-1/2 -translate-y-1/2 rotate-45" : "top-[13px]"
               }`}
             />
             <span
               aria-hidden="true"
-              className={`absolute left-2 right-2 h-[3px] bg-bone transition-transform duration-[var(--dur-ui)] ease-[var(--ease-weight)] ${
+              className={`bg-bone absolute right-2 left-2 h-[3px] transition-transform duration-[var(--dur-ui)] ease-[var(--ease-weight)] ${
                 abierto ? "top-1/2 -translate-y-1/2 -rotate-45" : "bottom-[13px]"
               }`}
             />
@@ -158,26 +166,33 @@ export function Cabecera() {
         id={idMenu}
         ref={panel}
         hidden={!abierto}
-        className="con-grano fixed inset-x-0 bottom-0 top-[var(--header-h)] overflow-y-auto bg-ink px-[var(--margin)] pb-10 pt-8 lg:hidden"
+        className="con-grano bg-ink fixed inset-x-0 top-[var(--header-h)] bottom-0 overflow-y-auto px-[var(--margin)] pt-8 pb-10 lg:hidden"
       >
         <nav aria-label="Menú móvil">
           <ul className="flex flex-col">
             {navegacion.map((item, i) => (
-              <li key={item.href} className="border-b-2 border-line">
+              <li key={item.href} className="border-line border-b-2">
                 <Link
                   href={item.href}
                   onClick={() => cerrar(false)}
-                  className="flex items-baseline justify-between py-4 font-display text-4 font-extrabold [font-stretch:80%]"
+                  className="font-display text-4 flex items-baseline justify-between py-4 font-extrabold [font-stretch:80%]"
                 >
                   {item.etiqueta}
-                  <span className="mono-etiqueta text-concrete">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="mono-etiqueta text-concrete">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
         <div className="mt-8 flex flex-wrap gap-4">
-          <a href={urlWhatsApp()} target="_blank" rel="noopener noreferrer" className="boton boton-primario">
+          <a
+            href={urlWhatsApp()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="boton boton-primario"
+          >
             Cotizar por WhatsApp
           </a>
           <button
