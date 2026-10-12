@@ -1,0 +1,6 @@
+# Política de divulgación responsable — MAVI Proyectos e Inversiones
+# TODO(owner): reemplazar el dominio cuando sea definitivo y renovar "Expires" cada año.
+Contact: mailto:maviproyectoseinversiones@gmail.com
+Expires: 2027-10-12T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://www.maviproyectos.com/.well-known/security.txt
