@@ -1,0 +1,240 @@
+[
+  {
+    "id": "plumas-de-cargue-01",
+    "ancho": 1280,
+    "alto": 719,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAQBACdASoYAA0APu1iqk4ppaQiMAgBMB2JYgCdIHACuFk/mRp+DMgtAAD+xGHHVTCzW8zdRPnPE93fJUrf8lQ+RXCdtKgUbUM3UKAmvI8FjSm/0KTwEBCC4zwNweS3RpTQSzvcHzc326/aBUlXrLiJAwaOuG2J5cBhV7gAAAA="
+  },
+  {
+    "id": "andamio-tubular-en-obra-01",
+    "ancho": 1280,
+    "alto": 963,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACwBACdASoYABIAPu1qr1AppaSiqAqpMB2JZQDE2A9mblGzVI7JRFEkQNTu2cXgAP7tYO67BIxiserp5OUkPYV+N3UqxxPbvMLUTY2+gsuZRY9BgphvupsAwtKSt11Uki4wmH9ReejsHjjoFJGkuqubG8a15fLQ4VMG49WfvcblxixYthW1+6O1OELjujDBsgqAAA=="
+  },
+  {
+    "id": "herramienta-rotomartillo-01",
+    "ancho": 576,
+    "alto": 632,
+    "anchos": [
+      480,
+      576
+    ],
+    "lqip": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAADQBACdASoYABoAPu1mq08ppaOiKA1RMB2JQBb3AaTPCLNQtuoEA+P/66DLVzsAAAD92PM6+oR5b6uJCbLTmn9TC7Lk5XVzKOPk+tVN++toihN8SIm2t8d3hrzknPhzFS4JLXwP3YSVQptgkg36st8UMB32jqTDevGVhpDjHL/mGaNEqjTTRvJohdS9JJnq0XwxKMwMgZfxluSLRV2MOull6BKugAAA"
+  },
+  {
+    "id": "andamio-de-fachada-01",
+    "ancho": 1280,
+    "alto": 720,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAQBACdASoYAA4APu1iqU2ppaOiMAgBMB2JZwC7ACP/0c9aEZRety0yAAD+xeV4eI5X0aX+5l7fUQa5BFaHjOTR0exIuSI/WBcwgHlSINdb2kb9nFBOh7wQYBjTUcw0rV4/UhqwR1iSxwv4nlTzyAAA"
+  },
+  {
+    "id": "compactador-de-placa-01",
+    "ancho": 720,
+    "alto": 1280,
+    "anchos": [
+      480,
+      720
+    ],
+    "lqip": "data:image/webp;base64,UklGRlIBAABXRUJQVlA4IEYBAACwBgCdASoYACsAPu1wrFIppqQiqrgIATAdiWUAuOWMbNnJR9wN3DugM+yNm6XAtT48ISd7wgrr9/R00rrg4AD+n9Agh+5CglLMZKUHJ7pR/kdMV3Pp+KgJgyrSKG4Whpoh0LPUdNRpVCqaneQIAsyWxsejpNTJ9pso41ab3sjcO6w9tjmvW+ACmSyUFSX3+SWmz9/jcZX8QRRqXOXCJ/1z3a5+773yYNoEdxckraQIgEWNKTICQx+9B5d3N+iuNJeul5mmGZDsrFFv3WWeA0Npfl9vTjC4PJEQJIT5rOxqXx5LcNeZIm06PzB3X1a8SXg/PGN9FekHnuEpk6Xqa+ADfGjrfiLDIolDFdmFyMUsR6ePSyWAtDNqOEDNp8d6Im2APhywCQmJgGS7vz6A15895sk9yQvHtx8rLv0zbqsxOmf1WURAAA=="
+  },
+  {
+    "id": "apisonador-canguro-01",
+    "ancho": 720,
+    "alto": 1280,
+    "anchos": [
+      480,
+      720
+    ],
+    "lqip": "data:image/webp;base64,UklGRioBAABXRUJQVlA4IB4BAADwBgCdASoYACsAPu1op08ppiMiKqwBMB2JYgC45YyAb3Vw+3ncrNVuOIMQlAApHIBpwrrSZO8HGzpweB8OfqQAAP5xBVP9TOsUG5m9g4eKeUpwtnbzo31Jfz1q/ecaeV0CHeC8k8tC/CBhkx9VNahG72qndwVVlvaOOoTcbWMJaeWuG3oXYhSBgddc0oYc+bkjzxDRc7qPoXvrjSZF6RCr1h0Ay/UdnZEatiwhCos+f/1Rudn2KaQgLcdYu71GxIyKa740FXfG/3c4F95zy4qo9ra/Y/1GhwnuLBoZq8g7Z4xtpeAh5ByFwz/mpo6PzbHNqRhQGFDTvg8UXkXgCRXX2WGJE45Wc6cGFbiQdykYEwKeDypFDaSQspQAlmQA"
+  },
+  {
+    "id": "compresor-remolcable-01",
+    "ancho": 960,
+    "alto": 540,
+    "anchos": [
+      480,
+      800,
+      960
+    ],
+    "lqip": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAAAwBACdASoYAA4APu1orU6ppiSiMAgBMB2JaACdMoACxS7C6/dhB2kzyqAA/nTAeLm09eGTNaURCIuheAlz5s13x6Njq7q4RYJOkyRkgEBwusUnr9LqOYd3qU+rgdVP4rhlKtsgT4mEd0SSUXz2C8sGCMqobGzRy/O2rEQVo4XlN9b/u1WOfoo9+BMhe9cE4AA="
+  },
+  {
+    "id": "puntales-metalicos-01",
+    "ancho": 960,
+    "alto": 1280,
+    "anchos": [
+      480,
+      800,
+      960
+    ],
+    "lqip": "data:image/webp;base64,UklGRuIAAABXRUJQVlA4INYAAACQBQCdASoYACAAPu1kqU2ppaOiMAgBMB2JZQDGfYyyq9++SI+DmKJVtMHR9MZ00abJ9VJnAAD+ijDLsPHD0AwQpZ8hnFFLAQ7hwwNNOigumrfrc8fjrNfwTLqQ1ycwf+yeKh0e0LtNd65SfleItiIUHPSnO9r3Yl508inw46DQwkxpN1w34EIu29jFRumj4/YoqrPCK5lRU+AXdM5zFCX2iAN4ZMceXVtAuZnzMEoYM8rIOYKTe1YPcdJVbANcmYywdUbNvPF31y9oqvnpoBdfn2xYAAAA"
+  },
+  {
+    "id": "andamios-de-marco-01",
+    "ancho": 794,
+    "alto": 1280,
+    "anchos": [
+      480,
+      794
+    ],
+    "lqip": "data:image/webp;base64,UklGRiYBAABXRUJQVlA4IBoBAABQBgCdASoYACcAPu1eqk2ppKQiMBqqqTAdiUAXYALIU7UiLR79C0qBwOKq03Ug9kcweZ38nbdkurNBAADhV4hbrQa+XuzWrFNlmAMYzA22FGuL27tvk/RSrSSTwx31kqsdrnKxC7RCb90L5aH6lvvLgOkbwIvBKd0VdtWEVjTBJGCG2xc9cOVW+WPJmvYe9/TUNTgbLgKHy17kOMw9madP6to5AO62eDkLBSI7CM7eHUbtegWKEo/sBbh8p+tdS4k92w5dtAV7H11BRyCMavo5ENXt4fEWuaqlsSLf98TYc5ttKppAy00N3R7wVG6V0kc9W8jtN4LGfOzcokGCelCl9kusjTiKBRpag8tQFq5+aj59/5pKSVgKgAA="
+  },
+  {
+    "id": "mezcladora-de-concreto-01",
+    "ancho": 960,
+    "alto": 1280,
+    "anchos": [
+      480,
+      800,
+      960
+    ],
+    "lqip": "data:image/webp;base64,UklGRiABAABXRUJQVlA4IBQBAABQBgCdASoYACAAPu1irFAppSQisBgIATAdiWwAnTMjL/4toGahebEmUJPipTz7X3ZZ0LJ6+NCGbScXAAD+5GjlvFHDp4/lXTsf6mUJ5+woUpNqeWaU8LTPtAJLP1EQXM223ePID4K9Wc+vnXUCil8ii4cfG34r38hOtb0QzE+GiYTBfm4DpeKjeyakCmA0LIHy+iTdwjeRhRhjLE980JK6xARflFdwj3EzeHT+Bt2c2gVdW7VcUgXbDQ7zrM644NNf11pnnva/pqWDJGSkRQy0H+7CtvvefRvB2HeMImxzNo205l9AC3Onk52WAMTbSXZI3j6l+hq1kntpobQIEK4C+bRF1Y9AqoUoIXjZydB8AP8AAAA="
+  },
+  {
+    "id": "plumas-de-cargue-02",
+    "ancho": 960,
+    "alto": 1280,
+    "anchos": [
+      480,
+      800,
+      960
+    ],
+    "lqip": "data:image/webp;base64,UklGRhYBAABXRUJQVlA4IAoBAABQBgCdASoYACAAPu1grFAppSQisBgIATAdiWcAthgIHaRun65nb6EEUr6W7CUQb1zuEgyi6f55X27aAAD70AIWLqcy+u92vIWMCaeO2U1Yei8oB7RVpWPV8BztvriyWcfAZ8uZw/dI4O2OB+N8KgEWTrX1Lyj7UuDaPh6q45aUwRf/SECdss7KNBg1A/rAxwjq+SagWwvkns0YhgXVQX9mhC8bu+BK3xx+vnoXTFlVR96TpRy5M6rOgnY3aHl4dapUC9i/OsIrvp4SlBBSf2IATTBBbkstFvt6QC9RZM3ZvCBbhfdzdgx+JpfBpet0dzVYBR10yBL6DSOFwP9ggOX0TRX1bzBvSJMAAA=="
+  },
+  {
+    "id": "equipos-de-izaje-01",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAACQBQCdASoYABIAPu1qrlCppaQiqAqpMB2JZQC+SywTnIW4hL3iqO5D6hM11W5ghTCY5AQ3AAD+q2bruB7op59h/jpjzgOo1HBxF1VuytsK6vwASfoyh5bpAkb2M9iMfw7WvcFc3sKuiNME4r1LR4sflOyPt7sTW0B/uy4qaVhD6aK9o5GhE3kjLzY5eopNxtMgJB7ApqBCyVMgS1pH3XAlAPki3tUwdNnoORFpjaC7ZpWmAYtwAA=="
+  },
+  {
+    "id": "moldes-cilindricos-01",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRsAAAABXRUJQVlA4ILQAAABwBQCdASoYABIAPu1qrVEppaQiqAqpMB2JYwCdM4CBl/+09m76HONwAfLwK2zct4wnC1gAAP6PEWIUroRDYLzd9LYWJ95emQtKpHtosdDxJtP64+vSu0Admdo9+YZXogW8/jv2Kidg60Pc73T20+eMOzfdVPyQYLbun7FdmNvRD30fvhKB8nMs1miFp7AK8NNC7Mt5DivRzx+yOpR9CYRgiAPbzk68ifVHxIWY9N3KVQUQAAA="
+  },
+  {
+    "id": "andamios-en-bodega-01",
+    "ancho": 960,
+    "alto": 1280,
+    "anchos": [
+      480,
+      800,
+      960
+    ],
+    "lqip": "data:image/webp;base64,UklGRtQAAABXRUJQVlA4IMgAAABQBQCdASoYACAAPu1orE+ppaQiMBgIATAdiWcAyrmvgn4Ys5DOMaQjMnTg8g2DyQK07uwA/qJVYlEYwcFL2H5IOBOpD00oiH0GvgZqwOjdaQjeb1oTqoQ55knUnyNGeAZG6FB8WEcCezDV7dJDqbPbTOuglj0kypb9/ZVlEcE1XkfsPbn/YpjfavoeL0D/7l/Kc2QGKuAvAcQvFtn3cuG46c43DkrUiifL0OePEQvGQa/s9/aVn4fceE902hiiu5uTFSLuDAgAAA=="
+  },
+  {
+    "id": "plumas-de-cargue-03",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4INgAAACwBQCdASoYABIAPu1ur1IppiQiqAgBMB2JZQC7MxiGeAx8F0nvXoMasf7/6gSW/9OqJVRni/gA/slwDs+KcyyFSH/SpLGAjV0SzWPb4kP+u7/Wr2DDX7MSQ7UfH76KSg7dJ0f3ByRlTpRWhVlx3Wg/IpOGXFx28Hsq9aqu2SzpvbWSpM90hKS1/Q/uuyqlDINCx50WxMLBpgJZr60epew+yliYkOD4HaRv1DNreapnBajAhNLd5FvZE2tnezFfgLg8eySSzj8s6NBrA4OnW9oxKSXCipoX+AA="
+  },
+  {
+    "id": "esquineros-de-formaleta-01",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAAAwBQCdASoYABIAPu1srFEppaQiqAqpMB2JZQCdAA7wPmaiHwU9tgj4xzGEIkeLJN50AAD97T0s46Bx3p96X1gnM2Wkbqlt7MgQcDjpsGXNCscSXcccPeUaoSEt5d75Tgsdlp4Xqb57NBNIkgmUwpnpA4v8O9zjJTE1Ur+GT3Y5QZWcH8j9ZQin6tT1oGbD3TQJEBD5N4llqqkvRFZtfyGBNx1BTuKfZGGE1XdKtmiQu4hLBLu/gwcyoAA="
+  },
+  {
+    "id": "formaletas-metalicas-01",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAABQBQCdASoYABIAPu1sqlEppaOiqAqpMB2JYwDCsoM6ACFgoAIcbo6OOdhoxPFYi1R6QwAA/swC6Sj0ksHVbd2mVqXi2PhIeDNFXo172niuilAQHTYGSR0aJGgsPsFmrRh4kgRAJyvWkMc/YeX4700S6DcBI6jqih06ojRqxK/GG08STuhJuiGxyx1yaiKwidaJY7g6PPNAkKqj6i8l/g+rb8ki/VdA9ZUSOSpqcAA="
+  },
+  {
+    "id": "formaletas-metalicas-02",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4IMQAAABwBQCdASoYABIAPu1urlIppiQiqAgBMB2JZwC2zazlK8fxfFjs0cAJkWduLECOm1PEm+AAAP5hPr6c3Kr/2JMNMmLr+sMEDO9qZFfZtFVMAP/vQrMEhUyKfDSHGV04W+wjt1E2ap526Mfsd7o2twvZ4Ys/T36kGie4dzuutv1cqnn8L+5uJA/V4Rb2p3a/7YZ0ENRYjHbAImRztcg4ofA3Tr10jFZjapRPFSYuzEjeJOWojchdh/flPL5BLbIBLBRXgAAA"
+  },
+  {
+    "id": "formaletas-metalicas-03",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAADQBACdASoYABIAPu1srVCppiQiqAqpMB2JZQDG9AycjgKuO/SbDnZU3x8RZ3P8AAD+tVI8mUd9PdS7fbo79b6ARKTKkW6NBuJA1208MKuIYJhpt66+orsV1TOCbQ5nixN2QU8MtzlJtTQ7On4g8KpmHO+0i/Iw2hMbRmxJP9aKwGWCe2dnfeiCWCakFb9O3TuevvHTK1Z6lzROrAyzVuO+MlpXrsnTojqYcYAAAAA="
+  },
+  {
+    "id": "tableros-01",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAAAwBQCdASoYABIAPu1ur1IppiQiqAgBMB2JbACsAA9nwwEARMiHRLE6GrZI8UsW18sQAAD+uj+dMszVeyozzulpq2fNcAs7qHOpvG/Oz1S4Ow1Pb4JRUu12RZ2ODZW1/KkAgoQ0Hs7rSmv4Xv1mZUkEGI4RqG9Q4mZP4aUmv5YXjxDf3cvx/mOlV1X6zmCOhTY+iW40DiYksDg72YajsAv4OYdwTK3YIqO4NX6kpJR6e9VWgPMaEBALAAA="
+  },
+  {
+    "id": "puntales-metalicos-02",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4IKIAAAAQBQCdASoYABIAPu1qrFEppaQiqAqpMB2JZwDDcA/CXF5/hVhoIAve9HstX3nwHHwAAP7ysw/aoQWPwoFQcpmvOr1wi4eAAsSuorGP5B3Js0aMv0Is3RyeT9xD9YRZUxcbc/x48ba5hONE/Mb9zXG0LoGFUdqYUi7ci2bzAeMRM6TaAc95irFfo3fHKrLnyaijmD7cv39Lh+TmbxK7Y0q5wAA="
+  },
+  {
+    "id": "allanadora-de-concreto-01",
+    "ancho": 1280,
+    "alto": 960,
+    "anchos": [
+      480,
+      800,
+      1280
+    ],
+    "lqip": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAABwBQCdASoYABIAPu1oqU+ppiOiKA1RMB2JaQDKtBF3p7DiGwY4ozkQEZc/Rb5n0HAf1xBAAP571ijQDVFMiqkes20yLg+XcHeSPuy74awlwXpe0HptZtEk5myTU9Nrc4fnZH4kuU0BJi9lQhXfbkTr8SQWqJgLbBD9BH8WtZUq8RpVl21j6ehLMmvYlZVa9Y/GJ6DX7oyxfQAAAAA="
+  }
+]
