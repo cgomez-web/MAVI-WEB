@@ -60,7 +60,7 @@ export function Movimiento() {
         gsap.utils.toArray<HTMLElement>("[data-tipografia-viva]").forEach((el) => {
           gsap.fromTo(
             el,
-            { fontStretch: "125%", fontWeight: 900 },
+            { fontStretch: "112%", fontWeight: 900 },
             {
               fontStretch: "62%",
               fontWeight: 780,

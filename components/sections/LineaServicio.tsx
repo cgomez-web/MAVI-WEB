@@ -95,7 +95,7 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
     >
       {variante === "home" ? (
         // Ventana a la escena 3D: la cifra protagonista flota sobre la obra.
-        <div className="reticula min-h-[46svh] items-end pb-10 pt-24 md:min-h-[62svh] md:pt-28">
+        <div className="reticula min-h-[46svh] items-end pb-10 pt-24 md:min-h-[62svh] md:pt-28" data-ventana-3d="">
           <p className="codigo-vertical col-span-1 hidden self-end text-concrete-light md:block" aria-hidden="true">
             {linea.codigo} — {linea.nombre}
           </p>
@@ -127,7 +127,7 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
               <Titulo
                 id={idTitulo}
                 data-tipografia-viva={variante === "home" ? "" : undefined}
-                className="text-[clamp(2rem,1rem+2.6vw,3.25rem)] uppercase leading-[0.92] [font-stretch:100%] [hyphens:auto]"
+                className="text-[clamp(2rem,1rem+2.6vw,3.25rem)] uppercase leading-[0.92] [font-stretch:100%] [overflow-wrap:anywhere]"
               >
                 {linea.nombre}
               </Titulo>

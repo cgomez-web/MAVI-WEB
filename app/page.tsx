@@ -13,6 +13,7 @@ import { Inventario } from "@/components/sections/Inventario";
 import { Proceso } from "@/components/sections/Proceso";
 import { PreguntasFrecuentes } from "@/components/sections/PreguntasFrecuentes";
 import { Cotizacion } from "@/components/sections/Cotizacion";
+import { Cierre } from "@/components/sections/Cierre";
 
 export default function Inicio() {
   return (
@@ -30,6 +31,7 @@ export default function Inicio() {
       <Inventario fotos={fotosPublicas} />
       <Proceso />
       <PreguntasFrecuentes />
+      <Cierre />
       <Cotizacion />
       <JsonLd datos={jsonLdPreguntas()} />
     </>

@@ -14,6 +14,8 @@ export function Hero() {
     <section
       id="inicio"
       aria-labelledby="titulo-hero"
+      data-fase="inicio"
+      data-ventana-3d=""
       className="relative flex min-h-[100svh] flex-col justify-end pb-[max(2.5rem,6vh)] pt-[calc(var(--header-h)+3rem)]"
     >
       <p className="solo-lectores">{hero.descripcionEscena}</p>
