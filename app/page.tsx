@@ -15,6 +15,7 @@ import { Proceso } from "@/components/sections/Proceso";
 import { PreguntasFrecuentes } from "@/components/sections/PreguntasFrecuentes";
 import { Cotizacion } from "@/components/sections/Cotizacion";
 import { Cierre } from "@/components/sections/Cierre";
+import { AnclasPrecisas } from "@/components/ui/AnclasPrecisas";
 
 /**
  * Bloque bajo el pliegue que el navegador maqueta y pinta solo cuando se acerca a la ventana
@@ -74,6 +75,7 @@ export default function Inicio() {
         <Cotizacion />
       </Aplazada>
       <JsonLd datos={jsonLdPreguntas()} />
+      <AnclasPrecisas />
     </>
   );
 }

@@ -193,8 +193,6 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                   key={c}
                   type="button"
                   aria-pressed={activo}
-                  // Nombre explícito: con el conteo en su propio nodo se oía «Todo22» o «Todo , 22».
-                  aria-label={`${etiqueta}, ${tg.conteo(n)}`}
                   onClick={() => setFiltro(c)}
                   className={`mono-etiqueta border-2 px-3 py-2 transition-colors duration-[var(--dur-micro)] ${
                     activo
@@ -202,8 +200,9 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                       : "border-line text-bone hover:border-bone"
                   }`}
                 >
-                  {etiqueta}
-                  <span className="cifras ml-2 opacity-70">{String(n).padStart(2, "0")}</span>
+                  {/* El nombre accesible contiene el texto visible (2.5.3): «Andamiaje 3 fotos». */}
+                  {etiqueta} <span className="cifras ml-1 opacity-70">{n}</span>
+                  <span className="solo-lectores"> {tg.conteo(n).replace(/^\d+\s*/, "")}</span>
                 </button>
               );
             })}

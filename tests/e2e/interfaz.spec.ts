@@ -151,15 +151,17 @@ test.describe("galería de la bodega", () => {
     }
   });
 
-  test("los filtros se anuncian con su conteo (#37)", async ({ page }) => {
+  test("los filtros se anuncian con su conteo y su nombre contiene el texto visible (#37, 2.5.3)", async ({
+    page,
+  }) => {
     await page.goto("/?escena=2d");
     await hidratada(page);
     const grupo = page.getByRole("group", { name: "Filtrar por línea" });
-    await expect(grupo.getByRole("button", { name: /^Todo, \d+ fotos$/ })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-    await grupo.getByRole("button", { name: /^Andamiaje, \d+ fotos?$/ }).click();
+    const todo = grupo.getByRole("button", { name: /^Todo \d+ fotos$/ });
+    await expect(todo).toHaveAttribute("aria-pressed", "true");
+    // Sin aria-label: el nombre sale del texto visible más el complemento solo para lectores.
+    await expect(todo).not.toHaveAttribute("aria-label", /.*/);
+    await grupo.getByRole("button", { name: /^Andamiaje \d+ fotos?$/ }).click();
     await expect(page.locator('#inventario button[aria-label^="Ampliar:"]')).toHaveCount(3);
   });
 

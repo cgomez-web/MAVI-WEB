@@ -1,6 +1,19 @@
-# Reporte final — iteración 1 (2026-10-12)
+# Reporte final — iteración 2 (2026-10-13)
 
-Estado: **sitio completo y funcional** (HTML + 3D + formulario + seguridad + pruebas + documentación). Lo que depende de cuentas o del dominio del dueño queda en `docs/PENDIENTES.md`.
+Estado: **sitio completo y funcional** (HTML + 3D + formulario + seguridad + pruebas + documentación), con la **auditoría de 85 hallazgos aplicada** (ver §0). Lo que depende de cuentas o del dominio del dueño queda en `docs/PENDIENTES.md`.
+
+## 0. Auditoría y correcciones (iteración 2)
+
+Una auditoría en 8 dimensiones (accesibilidad, seguridad, rendimiento, errores de código, contenido, SEO, diseño responsive y cumplimiento del prompt), con un verificador escéptico por hallazgo, confirmó **85 hallazgos** (2 altos, 33 medios, 50 bajos) y descartó 4. Detalle en `auditoria/resultado-2026-10-12.json`.
+
+| Estado                                                            | Hallazgos                                                              |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Corregidos y verificados (revisor independiente por equipo + E2E) | 84                                                                     |
+| Pendiente del dueño                                               | #74 — coordenadas exactas del negocio para el JSON-LD (no se inventan) |
+
+Correcciones destacadas: el filtro anti-spam ya no descarta cotizaciones reales por diferencias de reloj; sin JavaScript el formulario nunca envía datos personales por la URL; formulario diferido (fuera del JS inicial); imagen para compartir corregida y propia de cada servicio; página `/servicios`; contraste del texto sobre la escena 3D; fases del 3D sincronizadas con su sección y narrativa también en el póster 2D; Lenis ya no secuestra la rueda; transición de página; precarga de fuentes (en Windows Next no la emitía); nombres de archivo de fotos con hash para la caché de 1 año; cifras que no venían del brochure retiradas.
+
+Al integrar aparecieron y se corrigieron dos problemas más: los saltos a anclas (`#inventario`, `#proceso`) aterrizaban hasta 408 px fuera de lugar por el `content-visibility` de las secciones diferidas (`components/ui/AnclasPrecisas.tsx` maqueta antes del salto y reajusta si llegan fuentes tarde), y el nombre accesible de los filtros de la galería no contenía su texto visible (2.5.3).
 
 ## 1. Capturas
 
@@ -18,13 +31,15 @@ Escena 3D, 8 fases del storyboard: `img/escena-3d-fases.jpg`. Comparativa tipogr
 
 Medido en local contra `next start` (servidor y Lighthouse en la misma máquina). Detalle en `metricas/lighthouse-movil.json`.
 
-| Página                 | Rendimiento | Accesibilidad | Buenas prácticas | SEO     | LCP   | CLS | TBT    |
-| ---------------------- | ----------- | ------------- | ---------------- | ------- | ----- | --- | ------ |
-| `/`                    | **93**      | **100**       | **100**          | **100** | 2,6 s | 0   | 190 ms |
-| `/servicios/andamiaje` | **99**      | **100**       | **100**          | **100** | 2,0 s | 0   | 55 ms  |
-| `/contacto`            | **94**      | **100**       | **100**          | **100** | 2,8 s | 0   | 55 ms  |
+| Página                 | Rendimiento | Accesibilidad | Buenas prácticas | SEO     | LCP     | CLS | TBT    |
+| ---------------------- | ----------- | ------------- | ---------------- | ------- | ------- | --- | ------ |
+| `/`                    | **93**      | **100**       | **100**          | **100** | 3,0 s\* | 0   | 134 ms |
+| `/servicios/andamiaje` | **93**      | **100**       | **100**          | **100** | 3,2 s\* | 0   | 45 ms  |
+| `/contacto`            | **94**      | **100**       | **100**          | **100** | 3,0 s\* | 0   | 65 ms  |
+| `/servicios`           | **94**      | **100**       | **100**          | **100** | 3,0 s\* | 0   | 53 ms  |
+| `/nosotros`            | **94**      | **100**       | **100**          | **100** | 3,0 s\* | 0   | 76 ms  |
 
-Tres corridas sucesivas del inicio: 91 / 90 / 96 (variación por carga de la máquina). El LCP de 2,6–2,8 s incluye un TTFB local de ~450 ms (render dinámico por la CSP con nonce); en Vercel/CDN se espera menor. Se volverá a medir con PageSpeed Insights sobre el dominio público.
+\* LCP **simulado** por Lighthouse (modelo Lantern: suma la descarga de todo el JS pedido antes del LCP). Medido de verdad en Chromium con CPU ×4 y red de 1,6 Mbps / 150 ms: **LCP = FCP = 1,25 s** en el inicio, sobre el mismo nodo (el párrafo del hero) y sin repintados. Incluye un TTFB local de ~450 ms (render dinámico por la CSP con nonce); en Vercel/CDN se espera menor. Se volverá a medir con PageSpeed Insights sobre el dominio público.
 
 ### Qué se corrigió para llegar ahí
 
@@ -39,29 +54,30 @@ Tres corridas sucesivas del inicio: 91 / 90 / 96 (variación por carga de la má
 
 ## 3. Presupuestos
 
-| Presupuesto            | Objetivo                           | Medido                                                                     |
-| ---------------------- | ---------------------------------- | -------------------------------------------------------------------------- |
-| JS inicial (sin Three) | < 150 kB gz                        | **140 kB** (`/`), 132–133 kB (resto)                                       |
-| CSS                    | —                                  | 11 kB gz (1 archivo)                                                       |
-| HTML inicio            | —                                  | 44 kB gz                                                                   |
-| Activos 3D             | ≤ 1,5 MB                           | **0 kB** de modelos/texturas (todo procedural); JS 3D diferido ≈ 250 kB gz |
-| Triángulos en escena   | ≤ 150 k                            | **14 264** (fase final) · 123 llamadas de dibujo · 3 texturas (sombras)    |
-| Fuentes                | —                                  | 170 kB woff2 en total (2 precargadas: Archivo 83 kB + Hanken 32 kB)        |
-| Fotos                  | AVIF/WebP, varios anchos, sin EXIF | 22 fotos × 2–3 anchos × 2 formatos                                         |
+| Presupuesto            | Objetivo                           | Medido                                                                                                 |
+| ---------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| JS inicial (sin Three) | < 150 kB gz                        | **138 kB** (`/`), 124–125 kB (servicios, contacto, nosotros) — `pnpm presupuesto:js`, también en la CI |
+| CSS                    | —                                  | 11 kB gz (1 archivo)                                                                                   |
+| HTML inicio            | —                                  | 44 kB gz                                                                                               |
+| Activos 3D             | ≤ 1,5 MB                           | **0 kB** de modelos/texturas (todo procedural); JS 3D diferido ≈ 250 kB gz                             |
+| Triángulos en escena   | ≤ 150 k                            | **14 264** (fase final) · 123 llamadas de dibujo · 3 texturas (sombras)                                |
+| Fuentes                | —                                  | 170 kB woff2 en total (2 precargadas: Archivo 83 kB + Hanken 32 kB)                                    |
+| Fotos                  | AVIF/WebP, varios anchos, sin EXIF | 22 fotos × 2–3 anchos × 2 formatos                                                                     |
 
 60 fps en portátil medio / ≥ 30 fps en Android medio: **pendiente de medir en dispositivo real** (las pruebas automáticas corren con WebGL por software). Hay calidad adaptativa (`PerformanceMonitor`: primero sin sombras y DPR 1; si sigue lento, vuelve al póster 2D). Para medir: abrir `/?escena=3d`, DevTools → Rendering → _Frame Rendering Stats_, y `window.__maviInfo()` para el presupuesto.
 
 ## 4. Pruebas
 
-| Suite                                                                                                                                                      | Resultado                                                                       |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| ESLint (0 advertencias)                                                                                                                                    | ✅                                                                              |
-| TypeScript estricto (`noUncheckedIndexedAccess`)                                                                                                           | ✅                                                                              |
-| Vitest — 40 unitarias (esquema, CSP, escape, endpoint con correo simulado, rate limit, contenido)                                                          | ✅ 40/40                                                                        |
-| Playwright — 40 E2E en escritorio + móvil (humo, navegación, formulario, sin WebGL, movimiento reducido, cabeceras, axe WCAG 2.2 AA en 5 páginas, teclado) | ✅ 40/40 (2 omitidas por diseño)                                                |
-| `pnpm build`                                                                                                                                               | ✅                                                                              |
-| `pnpm audit --prod`                                                                                                                                        | ✅ 0 vulnerabilidades                                                           |
-| CI de GitHub Actions                                                                                                                                       | ⏳ configurada (`.github/workflows/ci.yml`); se ejecuta al subir el repositorio |
+| Suite                                                                                                                                                                                                      | Resultado                                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| ESLint (0 advertencias)                                                                                                                                                                                    | ✅                                                                              |
+| TypeScript estricto (`noUncheckedIndexedAccess`)                                                                                                                                                           | ✅                                                                              |
+| Vitest — 85 unitarias (esquema, CSP, escape, endpoint con correo simulado, rate limit, contenido, metadatos)                                                                                               | ✅ 85/85                                                                        |
+| Playwright — 164 casos E2E en escritorio + móvil (humo, navegación, anclas, formulario diferido, sin WebGL, movimiento, cabeceras, axe WCAG 2.2 AA, desbordes 320–1440 px, galería, OG, barra de WhatsApp) | ✅ 142 en verde · 22 omitidos por ser exclusivos de un dispositivo              |
+| Presupuesto de JS inicial (`pnpm presupuesto:js`)                                                                                                                                                          | ✅ 6 rutas bajo 150 kB                                                          |
+| `pnpm build`                                                                                                                                                                                               | ✅                                                                              |
+| `pnpm audit --prod`                                                                                                                                                                                        | ✅ 0 vulnerabilidades                                                           |
+| CI de GitHub Actions                                                                                                                                                                                       | ⏳ configurada (`.github/workflows/ci.yml`); se ejecuta al subir el repositorio |
 
 ## 5. Checklist de seguridad (resumen; detalle en `SECURITY.md`)
 
@@ -96,6 +112,6 @@ Tres corridas sucesivas del inicio: 91 / 90 / 96 (variación por carga de la má
 
 ## 7. Próximas iteraciones (técnicas)
 
-- Pulir la escena 3D: volqueta más visible en "transporte", andamios más densos, reducir llamadas de dibujo fusionando geometrías estáticas, sustituir `PerformanceMonitor` de drei por un monitor propio (−50 kB del chunk 3D).
+- Reducir llamadas de dibujo de la escena 3D fusionando geometrías estáticas y sustituir `PerformanceMonitor` de drei por un monitor propio (−50 kB del chunk 3D).
 - Medir fps en dispositivos reales y ajustar umbrales de calidad.
 - Revisar con el dueño los `TODO(owner)` y publicar.

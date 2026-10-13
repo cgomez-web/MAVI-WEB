@@ -560,6 +560,10 @@ test.describe("acceso fijo a WhatsApp", () => {
     expect(Math.round(caja.width)).toBe(ancho);
     // El texto de ayuda llevado al borde inferior visible queda por encima de la barra.
     const ayuda = page.getByText(/Arrastre o use las flechas/);
+    // Dos pasadas: las secciones con content-visibility se maquetan al acercarse y la primera
+    // pasada se calcula con alturas estimadas (como cuando una persona baja con el dedo).
+    await ayuda.evaluate((el) => el.scrollIntoView({ block: "end" }));
+    await page.waitForTimeout(300);
     await ayuda.evaluate((el) => el.scrollIntoView({ block: "end" }));
     // Lejos del hero la barra está a la vista (en el hero se retira, #26).
     await expect(barra).toHaveAttribute("data-oculto", "false");
@@ -621,5 +625,53 @@ test.describe("acceso fijo a WhatsApp", () => {
     });
     const boton = (await page.locator(".cta-whatsapp").boundingBox())!;
     expect(boton.x).toBeGreaterThanOrEqual(borde);
+  });
+});
+
+test.describe("anclas del inicio", () => {
+  test("los enlaces del menú aterrizan exactos aunque las secciones estén aplazadas", async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto("/");
+    const relleno = await page.evaluate(
+      () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0,
+    );
+    for (const [etiqueta, id] of [
+      ["Inventario", "inventario"],
+      ["Cómo trabajamos", "proceso"],
+    ] as const) {
+      await page.evaluate(() => window.scrollTo(0, 0));
+      if (isMobile) {
+        await page.getByRole("button", { name: "Abrir menú" }).click();
+        await page
+          .getByRole("navigation", { name: "Menú móvil" })
+          .getByRole("link", { name: etiqueta })
+          .click();
+      } else {
+        await page
+          .getByRole("navigation", { name: "Principal" })
+          .getByRole("link", { name: etiqueta })
+          .click();
+      }
+      await page.waitForTimeout(1600);
+      const arriba = await page.evaluate(
+        (i) => document.getElementById(i)!.getBoundingClientRect().top,
+        id,
+      );
+      expect(Math.abs(arriba - relleno), `#${id}: ${arriba}`).toBeLessThanOrEqual(6);
+    }
+  });
+
+  test("una URL con # aterriza en su sección", async ({ page }) => {
+    await page.goto("/#proceso");
+    await page.waitForTimeout(1200);
+    const relleno = await page.evaluate(
+      () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0,
+    );
+    const arriba = await page.evaluate(
+      () => document.getElementById("proceso")!.getBoundingClientRect().top,
+    );
+    expect(Math.abs(arriba - relleno)).toBeLessThanOrEqual(6);
   });
 });
