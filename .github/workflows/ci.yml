@@ -57,6 +57,24 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # PROMPT §6: JS inicial (sin Three) < 150 kB gz por ruta. Lee los manifiestos del build (sin servidor).
+      - name: Presupuesto de JS inicial (< 150 kB gz por ruta)
+        run: pnpm presupuesto:js
+
+      # next/font solo emite <link rel="preload"> si su manifiesto lista las fuentes con preload: true
+      # (Archivo y Hanken). En Linux se llena; un manifiesto vacío dejaría el sitio sin precarga.
+      - name: Precarga de fuentes (next/font)
+        run: |
+          node -e '
+            const m = require("./.next/server/next-font-manifest.json");
+            const fuentes = new Set(Object.values(m.app ?? {}).flat().filter((f) => f.endsWith(".p.woff2")));
+            if (fuentes.size < 2) {
+              console.error("next/font no anotó fuentes para precargar (" + fuentes.size + "): revise app/fonts.ts");
+              process.exit(1);
+            }
+            console.log("Fuentes precargadas por next/font: " + [...fuentes].join(", "));
+          '
+
       - name: Navegadores de Playwright
         run: pnpm exec playwright install --with-deps chromium
 

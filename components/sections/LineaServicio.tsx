@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { LineaDeServicio } from "@/content/servicios";
 import { mensajeWhatsApp, urlWhatsApp } from "@/content/contacto";
 import { home } from "@/content/home";
+import { textosFicha as tf } from "@/content/interfaz";
+import { avisoPestanaNueva } from "@/content/navegacion";
 import { fotosDeCategoria } from "@/lib/galeria";
 import { Icono } from "@/components/icons/Icono";
 import { FotoBodega } from "@/components/ui/FotoBodega";
@@ -14,52 +16,67 @@ interface Props {
   nivelTitulo?: "h2" | "h3";
 }
 
+/*
+ * `sizes` de las fotos según el ancho real de cada hueco (margen lateral = 6vw por lado):
+ *  - desde lg la columna derecha mide 7/12 y cada foto la mitad: ≈ 26vw − 1rem;
+ *  - por debajo de lg la columna ocupa todo el ancho (88vw): la primera foto va a ancho completo
+ *    en móvil y a media columna desde sm; las demás siempre a media columna (≈ 44vw).
+ */
+const SIZES_FOTO_PRINCIPAL =
+  "(min-width: 1024px) calc(26vw - 1rem), (min-width: 640px) calc(44vw - 0.75rem), 88vw";
+const SIZES_FOTO_SECUNDARIA = "(min-width: 1024px) calc(26vw - 1rem), calc(44vw - 0.5rem)";
+
 export function FichaTecnica({ linea }: { linea: LineaDeServicio }) {
   const conRango = linea.equipos.some((e) => e.rango);
   return (
-    // Roles explícitos: en móvil las filas cambian de display y algunos lectores perderían la semántica.
-    <table className="ficha" role="table">
-      <caption className="solo-lectores">Ficha técnica — {linea.nombre}</caption>
-      <thead role="rowgroup">
-        <tr role="row">
-          <th scope="col" role="columnheader">
-            Equipo
-          </th>
-          {conRango ? (
+    // Red de seguridad: si algún día un nombre no cupiera, la tabla se desplaza dentro de su caja
+    // y nunca ensancha la página (con el contenido actual cabe de 320 a 1440 px).
+    // .ficha-caja es el contenedor de consulta «ficha» (globals.css): se estira al ancho de la columna.
+    <div className="ficha-caja max-w-full overflow-x-auto">
+      {/* Roles explícitos: en móvil las filas cambian de display y algunos lectores perderían la semántica. */}
+      <table className="ficha" role="table">
+        <caption className="solo-lectores">{`${tf.leyenda} — ${linea.nombre}`}</caption>
+        <thead role="rowgroup">
+          <tr role="row">
             <th scope="col" role="columnheader">
-              Rango
-            </th>
-          ) : null}
-          <th scope="col" role="columnheader">
-            Uso
-          </th>
-        </tr>
-      </thead>
-      <tbody role="rowgroup">
-        {linea.equipos.map((e, i) => (
-          <tr key={e.nombre} role="row" style={{ ["--fila" as string]: i }}>
-            <th
-              scope="row"
-              role="rowheader"
-              className="font-display text-2 font-bold [font-stretch:85%]"
-            >
-              {e.nombre}
+              {tf.equipo}
             </th>
             {conRango ? (
-              <td
-                role="cell"
-                className="ficha-rango cifras text-1 text-brand-yellow whitespace-nowrap"
-              >
-                {e.rango ?? "—"}
-              </td>
+              <th scope="col" role="columnheader">
+                {tf.rango}
+              </th>
             ) : null}
-            <td role="cell" className="ficha-uso text-0 text-concrete-light">
-              {e.descripcion}
-            </td>
+            <th scope="col" role="columnheader">
+              {tf.uso}
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody role="rowgroup">
+          {linea.equipos.map((e, i) => (
+            <tr key={e.nombre} role="row" style={{ ["--fila" as string]: i }}>
+              <th
+                scope="row"
+                role="rowheader"
+                className="font-display text-2 font-bold [font-stretch:85%]"
+              >
+                {e.nombre}
+              </th>
+              {conRango ? (
+                <td
+                  role="cell"
+                  className="ficha-rango cifras text-1 text-brand-yellow whitespace-nowrap"
+                >
+                  {e.rango ?? "—"}
+                </td>
+              ) : null}
+              <td role="cell" className="ficha-uso text-0 text-concrete-light">
+                {e.descripcion}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -80,7 +97,7 @@ function LaminaTecnica({ linea }: { linea: LineaDeServicio }) {
       </div>
       <div className="regla text-concrete rotate-180" aria-hidden="true" />
       <figcaption className="mono-etiqueta text-concrete mt-4">
-        Ilustración técnica · {linea.nombre}
+        {`${tf.lamina} · ${linea.nombre}`}
       </figcaption>
     </figure>
   );
@@ -114,16 +131,25 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
           </p>
           <div className="col-span-12 md:col-span-8">
             <p className="mono-etiqueta text-brand-yellow mb-3">
-              Línea {linea.codigo} · {linea.cifra.etiqueta}
+              {`${tf.linea} ${linea.codigo} · ${linea.cifra.etiqueta}`}
             </p>
-            <p className="flex items-end gap-3">
-              <span className="font-display text-figure leading-[0.8] font-black [letter-spacing:-0.045em] uppercase [font-stretch:112%]">
-                <Odometro valor={linea.cifra.valor} prefijo={linea.cifra.prefijo} />
-              </span>
-              <span className="mono-etiqueta text-1 text-brand-yellow pb-2">
-                {linea.cifra.unidad}
-              </span>
-            </p>
+            {linea.cifra.tipo === "cifra" ? (
+              <p className="flex items-end gap-3">
+                <span className="font-display text-figure leading-[0.8] font-black [letter-spacing:-0.045em] uppercase [font-stretch:112%]">
+                  <Odometro valor={linea.cifra.valor} prefijo={linea.cifra.prefijo} />
+                </span>
+                <span className="mono-etiqueta text-1 text-brand-yellow pb-2">
+                  {linea.cifra.unidad}
+                </span>
+              </p>
+            ) : (
+              // El brochure no da una cifra para esta línea: el protagonista es un dato textual,
+              // nunca un contador que se lea como cantidad de inventario. Es un <p>, así que no hereda
+              // el aire entre palabras de h1–h4: sin él «Y TABLEROS» se leía casi pegado.
+              <p className="font-display text-4 max-w-[18ch] leading-[0.95] font-black [text-wrap:balance] uppercase [font-stretch:80%] [word-spacing:0.1em]">
+                {linea.cifra.texto}
+              </p>
+            )}
           </div>
           {linea.sello ? (
             <p
@@ -141,13 +167,18 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
       <div
         className={variante === "home" ? "border-line bg-ink border-t-2 py-16 md:py-24" : "py-4"}
       >
+        {/* Las dos columnas se apilan hasta lg: entre 768 y 1023 px la columna de 5/12 no da
+            cabida a "Formaletería" ni a la ficha técnica (se partía la palabra y la tabla desbordaba). */}
         <div className="reticula gap-y-12">
-          <div className="col-span-12 md:col-span-5">
-            <div className="md:sticky md:top-[calc(var(--header-h)+1.5rem)]">
+          <div className="col-span-12 lg:col-span-5">
+            <div className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
+              {/* Tamaño acotado para que la palabra más larga ("Formaletería") quepa entera en su
+                  columna incluso con la tipografía viva en su punto más ancho (112 %): 9vw en
+                  pantallas de 320 px y 3,7vw desde lg. Sin cortes a mitad de palabra. */}
               <Titulo
                 id={idTitulo}
                 data-tipografia-viva={variante === "home" ? "" : undefined}
-                className="text-[clamp(2rem,1rem+2.6vw,3.25rem)] leading-[0.92] [overflow-wrap:anywhere] uppercase [font-stretch:100%]"
+                className="text-[length:min(clamp(2rem,1rem+2.6vw,3.25rem),9vw)] leading-[0.92] [overflow-wrap:break-word] uppercase [font-stretch:100%] lg:text-[length:min(3.25rem,3.7vw)]"
               >
                 {linea.nombre}
               </Titulo>
@@ -160,7 +191,7 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
               {linea.atributos ? (
                 <ul
                   className="mono-etiqueta text-concrete-light mt-6 flex flex-wrap gap-2"
-                  aria-label="Atributos"
+                  aria-label={tf.atributos}
                 >
                   {linea.atributos.map((a) => (
                     <li key={a} className="border-line border-2 px-2.5 py-1">
@@ -177,6 +208,10 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
                   className="boton boton-primario"
                 >
                   {home.servicios.cotizar}
+                  <span className="solo-lectores">
+                    {`${tf.porWhatsApp}${linea.nombre}`}
+                    {avisoPestanaNueva}
+                  </span>
                 </a>
                 {variante === "home" ? (
                   <Link href={`/servicios/${linea.slug}`} className="boton boton-secundario">
@@ -188,7 +223,7 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
             </div>
           </div>
 
-          <div className="col-span-12 flex flex-col gap-10 md:col-span-7">
+          <div className="col-span-12 flex min-w-0 flex-col gap-10 lg:col-span-7">
             <FichaTecnica linea={linea} />
             {fotos.length > 0 ? (
               <div className="grid grid-cols-2 gap-[var(--gutter)]">
@@ -200,7 +235,7 @@ export function LineaServicio({ linea, variante = "home", nivelTitulo = "h3" }: 
                     <FotoBodega
                       foto={f}
                       proporcion={i === 0 ? "4 / 5" : "4 / 3"}
-                      sizes="(min-width: 768px) 28vw, (min-width: 640px) 45vw, 92vw"
+                      sizes={i === 0 ? SIZES_FOTO_PRINCIPAL : SIZES_FOTO_SECUNDARIA}
                       duotono={i > 0}
                     />
                     <figcaption className="mono-etiqueta text-concrete mt-2">{f.titulo}</figcaption>

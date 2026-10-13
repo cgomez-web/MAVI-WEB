@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { movimientoPermitido } from "@/lib/preferencias";
 
 const DIGITOS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -25,17 +26,32 @@ export function Odometro({ valor, prefijo, className }: PropsOdometro) {
     const r = caja.current.getBoundingClientRect();
     if (r.top < window.innerHeight && r.bottom > 0) return; // ya visible: no se anima hacia atrás
     setGirado(false);
+    // Al imprimir o guardar en PDF, la cifra real aunque no se haya llegado a ella (síncrono: la
+    // hoja se compone justo después del evento).
+    const impresion = window.matchMedia("print");
+    const limpiar = () => {
+      obs.disconnect();
+      window.removeEventListener("beforeprint", alImprimir);
+      impresion.removeEventListener("change", alImprimir);
+    };
+    const alImprimir = () => {
+      flushSync(() => setGirado(true));
+      limpiar();
+    };
+    // Arranca un poco antes de entrar en pantalla (15 % del alto por debajo): cuando la cifra se
+    // ve, el giro ya va avanzado y no se queda leyendo "00" ni rodillos a medio camino.
     const obs = new IntersectionObserver(
       ([e]) => {
-        if (e?.isIntersecting) {
-          setGirado(true);
-          obs.disconnect();
-        }
+        if (!e?.isIntersecting) return;
+        setGirado(true);
+        limpiar();
       },
-      { threshold: 0.6 },
+      { rootMargin: "0px 0px 15% 0px" },
     );
     obs.observe(caja.current);
-    return () => obs.disconnect();
+    window.addEventListener("beforeprint", alImprimir);
+    impresion.addEventListener("change", alImprimir);
+    return limpiar;
   }, []);
 
   return (

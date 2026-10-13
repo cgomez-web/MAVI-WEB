@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { home } from "@/content/home";
+import { textosMarquee } from "@/content/interfaz";
 import { EVENTO_MOVIMIENTO, movimientoPermitido } from "@/lib/preferencias";
 
 /**
@@ -74,7 +75,7 @@ export function Marquee() {
   const elementos = home.marquee;
 
   return (
-    <section aria-label="Equipos disponibles" className="bg-ink relative">
+    <section aria-label={home.marqueeEtiqueta} className="bg-ink relative">
       <div
         className="border-ink bg-brand-yellow text-ink overflow-hidden border-y-[3px] py-5"
         onPointerEnter={() => (pausado.current = true)}
@@ -116,10 +117,10 @@ export function Marquee() {
           <button
             type="button"
             onClick={() => setDetenido((d) => !d)}
-            aria-pressed={detenido}
             className="mono-etiqueta border-ink bg-bone text-ink absolute top-1/2 right-[var(--margin)] -translate-y-1/2 border-2 px-2 py-0.5"
           >
-            {detenido ? "Reanudar cinta" : "Pausar cinta"}
+            {/* El rótulo dice la acción y cambia con el estado; por eso no hay aria-pressed. */}
+            {detenido ? textosMarquee.reanudar : textosMarquee.pausar}
           </button>
         ) : null}
       </div>

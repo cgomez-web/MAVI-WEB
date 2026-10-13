@@ -5,6 +5,8 @@ import { home } from "@/content/home";
 import { categoriasGaleria } from "@/content/categorias";
 import type { CategoriaGaleria } from "@/content/servicios";
 import { mensajeWhatsApp, urlWhatsApp } from "@/content/contacto";
+import { textosGaleria as tg } from "@/content/interfaz";
+import { avisoPestanaNueva } from "@/content/navegacion";
 import { srcSet, srcPorDefecto, type FotoCliente } from "@/lib/imagenes";
 import { FotoBodega } from "@/components/ui/FotoBodega";
 import { movimientoPermitido } from "@/lib/preferencias";
@@ -34,7 +36,12 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
     pista.current?.scrollTo({ left: 0 });
   }, [filtro]);
 
-  /* ── Arrastre con inercia (solo ratón; en táctil se usa el desplazamiento nativo) ── */
+  /*
+   * ── Arrastre con inercia (solo ratón; en táctil se usa el desplazamiento nativo) ──
+   * El scroll-snap de la pista solo se activa con puntero grueso (pointer-coarse:): con ratón, el
+   * navegador reajustaría al punto de snap cada `scrollLeft` que escribe el arrastre o la inercia,
+   * y la galería se trabaría y luego saltaría una foto entera.
+   */
   const alPresionar = (e: React.PointerEvent<HTMLUListElement>) => {
     if (e.pointerType !== "mouse" || e.button !== 0 || !pista.current) return;
     const a = arrastre.current;
@@ -54,6 +61,9 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
     if (Math.abs(dx) > 5 && !a.movido) {
       a.movido = true;
       pista.current.setPointerCapture(e.pointerId);
+      // Que el gesto no vaya seleccionando los títulos de las fotos.
+      pista.current.style.userSelect = "none";
+      window.getSelection()?.removeAllRanges();
     }
     if (!a.movido) return;
     const ahora = performance.now();
@@ -69,6 +79,7 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
     a.activo = false;
     if (pista.current?.hasPointerCapture(e.pointerId))
       pista.current.releasePointerCapture(e.pointerId);
+    if (pista.current) pista.current.style.userSelect = "";
     if (!a.movido || !movimientoPermitido()) return;
     let v = a.v * 16; // px por fotograma
     const inercia = () => {
@@ -108,6 +119,15 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
     dialogo.current?.close();
   }, []);
 
+  /*
+   * Cierre al pulsar fuera: solo cuenta un gesto que empieza Y termina fuera de la foto, su pie y
+   * los controles. Si empezara dentro (p. ej. seleccionando la descripción del pie) y se soltara
+   * fuera, el `click` llegaría al ancestro común y cerraría el lightbox perdiendo la selección.
+   */
+  const gestoFuera = useRef({ inicio: false, fin: false });
+  const fueraDelContenido = (t: EventTarget | null, d: Element) =>
+    t instanceof Element && (t === d || !t.closest("img, figcaption, button, a"));
+
   useEffect(() => {
     const d = dialogo.current;
     if (!d) return;
@@ -139,7 +159,7 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
       aria-labelledby="titulo-inventario"
       className="con-grano bg-ink relative py-24 md:py-32"
       data-revelar="cinta"
-      data-whatsapp="Hola MAVI, vi su inventario en la web y quiero cotizar equipos para una obra en ___"
+      data-whatsapp={home.inventario.mensajeWhatsApp}
     >
       <div className="revelar-contenido">
         <div className="reticula items-end gap-y-6">
@@ -160,18 +180,21 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
         <div className="reticula mt-12 gap-y-4">
           <div
             role="group"
-            aria-label="Filtrar por línea"
+            aria-label={tg.filtrar}
             className="col-span-12 flex flex-wrap gap-2 md:col-span-9"
           >
             {(["todo", ...Object.keys(categoriasGaleria)] as Filtro[]).map((c) => {
               const activo = filtro === c;
               const n = c === "todo" ? fotos.length : (conteos.get(c) ?? 0);
               if (n === 0) return null;
+              const etiqueta = c === "todo" ? home.inventario.todos : categoriasGaleria[c];
               return (
                 <button
                   key={c}
                   type="button"
                   aria-pressed={activo}
+                  // Nombre explícito: con el conteo en su propio nodo se oía «Todo22» o «Todo , 22».
+                  aria-label={`${etiqueta}, ${tg.conteo(n)}`}
                   onClick={() => setFiltro(c)}
                   className={`mono-etiqueta border-2 px-3 py-2 transition-colors duration-[var(--dur-micro)] ${
                     activo
@@ -179,7 +202,7 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                       : "border-line text-bone hover:border-bone"
                   }`}
                 >
-                  {c === "todo" ? home.inventario.todos : categoriasGaleria[c]}
+                  {etiqueta}
                   <span className="cifras ml-2 opacity-70">{String(n).padStart(2, "0")}</span>
                 </button>
               );
@@ -190,7 +213,7 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
               type="button"
               onClick={() => desplazar(-1)}
               className="boton boton-secundario h-12 w-12 justify-center p-0"
-              aria-label="Fotos anteriores"
+              aria-label={tg.fotosAnteriores}
             >
               <span aria-hidden="true">←</span>
             </button>
@@ -198,21 +221,21 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
               type="button"
               onClick={() => desplazar(1)}
               className="boton boton-secundario h-12 w-12 justify-center p-0"
-              aria-label="Fotos siguientes"
+              aria-label={tg.fotosSiguientes}
             >
               <span aria-hidden="true">→</span>
             </button>
           </div>
           <p className="mono-etiqueta text-concrete col-span-12" aria-live="polite">
-            {visibles.length} fotos · {home.inventario.ayudaArrastre}
+            {`${tg.conteo(visibles.length)} · ${home.inventario.ayudaArrastre}`}
           </p>
         </div>
 
         <ul
           ref={pista}
-          className="mt-8 flex snap-x snap-proximity scroll-px-[var(--margin)] [scrollbar-width:thin] [scrollbar-color:var(--color-concrete-dark)_transparent] gap-[var(--gutter)] overflow-x-auto px-[var(--margin)] pb-6"
+          className="mt-8 flex scroll-px-[var(--margin)] [scrollbar-width:thin] [scrollbar-color:var(--color-concrete-dark)_transparent] gap-[var(--gutter)] overflow-x-auto px-[var(--margin)] pb-6 pointer-coarse:snap-x pointer-coarse:snap-proximity"
           data-cursor="gancho"
-          aria-label="Fotografías del inventario"
+          aria-label={tg.pista}
           onPointerDown={alPresionar}
           onPointerMove={alMover}
           onPointerUp={alSoltar}
@@ -232,7 +255,7 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                   className="group block w-full text-left"
                   data-cursor="mas"
                   onClick={(e) => abrir(i, e.currentTarget)}
-                  aria-label={`Ampliar: ${f.titulo}`}
+                  aria-label={tg.ampliar(f.titulo)}
                   draggable={false}
                 >
                   <FotoBodega
@@ -259,21 +282,40 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
       <dialog
         ref={dialogo}
         aria-labelledby="titulo-lightbox"
-        className="bg-ink/97 text-bone backdrop:bg-ink/90 m-0 h-[100dvh] max-h-none w-screen max-w-none p-0"
+        // overscroll-contain: sin Lenis (táctil, movimiento reducido o «Animaciones» apagado) la rueda
+        // sobre el visor ya no arrastra la página de atrás.
+        className="bg-ink/97 text-bone backdrop:bg-ink/90 m-0 h-[100dvh] max-h-none w-full max-w-none overscroll-contain p-0"
         onKeyDown={(e) => {
           if (e.key === "ArrowRight") mover(1);
           if (e.key === "ArrowLeft") mover(-1);
         }}
+        onPointerDown={(e) => {
+          gestoFuera.current = { inicio: fueraDelContenido(e.target, e.currentTarget), fin: false };
+        }}
+        onPointerUp={(e) => {
+          gestoFuera.current.fin = fueraDelContenido(e.target, e.currentTarget);
+        }}
         onClick={(e) => {
-          if (e.target === e.currentTarget) cerrar();
+          // El <dialog> ocupa toda la pantalla, así que el ::backdrop nunca recibe el clic: se cierra
+          // con un clic que empiece y termine fuera de la foto, su pie o un control.
+          const { inicio, fin } = gestoFuera.current;
+          gestoFuera.current = { inicio: false, fin: false };
+          if (inicio && fin && fueraDelContenido(e.target, e.currentTarget)) cerrar();
         }}
       >
         {actual ? (
           <div className="flex h-full flex-col gap-4 p-4 md:p-8">
             <div className="flex items-center justify-between gap-4">
-              <p className="mono-etiqueta text-concrete-light">
+              {/* Región viva: el <p> se conserva entre fotos y solo cambia su texto, así que cada
+                  cambio con las flechas o los botones se anuncia completo (posición, línea y título). */}
+              <p
+                className="mono-etiqueta text-concrete-light"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {String((abierta ?? 0) + 1).padStart(2, "0")} /{" "}
                 {String(visibles.length).padStart(2, "0")} · {categoriasGaleria[actual.categoria]}
+                <span className="solo-lectores">: {actual.titulo}</span>
               </p>
               <button
                 type="button"
@@ -281,7 +323,7 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                 className="boton boton-secundario min-h-11 px-4 py-2"
                 autoFocus
               >
-                Cerrar <span aria-hidden="true">✕</span>
+                {tg.cerrar} <span aria-hidden="true">✕</span>
               </button>
             </div>
             <figure className="flex min-h-0 flex-1 flex-col items-center justify-center">
@@ -303,7 +345,11 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                 >
                   {actual.titulo}
                 </span>
-                <span className="text-0 text-concrete-light mt-1 block max-w-[60ch]">
+                {/* Repite el alt de la imagen: visible para quien ve, oculto al lector de pantalla. */}
+                <span
+                  aria-hidden="true"
+                  className="text-0 text-concrete-light mt-1 block max-w-[60ch]"
+                >
                   {actual.alt}
                 </span>
               </figcaption>
@@ -313,9 +359,9 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                 type="button"
                 onClick={() => mover(-1)}
                 className="boton boton-secundario"
-                aria-label="Foto anterior"
+                aria-label={tg.fotoAnterior}
               >
-                ← <span className="hidden sm:inline">Anterior</span>
+                ← <span className="hidden sm:inline">{tg.anterior}</span>
               </button>
               <a
                 href={urlWhatsApp(mensajeWhatsApp(actual.titulo))}
@@ -323,15 +369,19 @@ export function Inventario({ fotos }: { fotos: FotoCliente[] }) {
                 rel="noopener noreferrer"
                 className="boton boton-primario"
               >
-                Cotizar este equipo
+                {tg.cotizar}
+                <span className="solo-lectores">
+                  {tg.porWhatsApp}
+                  {avisoPestanaNueva}
+                </span>
               </a>
               <button
                 type="button"
                 onClick={() => mover(1)}
                 className="boton boton-secundario"
-                aria-label="Foto siguiente"
+                aria-label={tg.fotoSiguiente}
               >
-                <span className="hidden sm:inline">Siguiente</span> →
+                <span className="hidden sm:inline">{tg.siguiente}</span> →
               </button>
             </div>
           </div>

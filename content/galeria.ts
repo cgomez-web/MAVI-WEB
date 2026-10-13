@@ -7,6 +7,8 @@
  *   circundante. Se usan para eliminar por completo rótulos pintados de OTRA empresa (decisión del
  *   dueño: ese nombre no puede aparecer en el sitio) y datos personales. No basta con difuminar.
  * - `publicar: false` oculta la foto sin borrarla.
+ * - El ORDEN importa: la primera foto de cada categoría es la foto principal de su línea de servicio
+ *   (grande, 4/5) en el home y en /servicios/<línea>; las tres primeras salen en el bloque de la línea.
  *
  * Para añadir una foto: agregue una entrada, ejecute `pnpm images` y revise el resultado.
  */
@@ -150,20 +152,25 @@ export const fotosGaleria: FotoGaleria[] = [
     publicar: true,
   },
   {
+    // Camisas metálicas partidas de unos 30 cm, con placa base y pernos de cierre: el molde de los
+    // cilindros de ensayo del concreto, no formaleta. Por eso van en "otros" y no en "encofrados".
     id: "moldes-cilindricos-01",
     original: "photo_2026-10-08_10-19-10.jpg",
-    categoria: "encofrados",
-    titulo: "Moldes metálicos cilíndricos",
-    // TODO(owner): confirmar el uso exacto de estos moldes.
-    alt: "Moldes metálicos cilíndricos con abrazaderas y pernos, alineados sobre un estante.",
+    categoria: "otros",
+    titulo: "Moldes para cilindros de concreto",
+    // TODO(owner): confirmar que son moldes para cilindros de ensayo y si se alquilan.
+    alt: "Moldes metálicos partidos para cilindros de concreto, con placa base y pernos de cierre, alineados sobre un estante.",
     publicar: true,
   },
   {
-    id: "andamios-en-bodega-01",
+    // Antes figuraba como "andamios en bodega", pero la foto NO muestra andamios: muestra un carrete
+    // y caballetes hechos en varilla corrugada.
+    id: "carretes-de-varilla-01",
     original: "photo_2026-10-08_10-19-12.jpg",
-    categoria: "andamiaje",
-    titulo: "Andamios en bodega",
-    alt: "Cuerpos y plataformas de andamio almacenados en la bodega junto a una mezcladora.",
+    categoria: "otros",
+    titulo: "Carretes y estructuras de varilla",
+    // TODO(owner): confirmar qué equipo es y si se alquila (si no, poner `publicar: false`).
+    alt: "Carrete hecho en varilla corrugada sobre su base, con caballetes y más estructuras de varilla apiladas al fondo de la bodega, junto a una mezcladora.",
     // Folleto impreso en el piso.
     parches: [{ x: 276, y: 922, ancho: 132, alto: 100 }],
     publicar: true,
@@ -177,19 +184,20 @@ export const fotosGaleria: FotoGaleria[] = [
     publicar: true,
   },
   {
-    id: "esquineros-de-formaleta-01",
-    original: "photo_2026-10-08_10-19-21.jpg",
-    categoria: "encofrados",
-    titulo: "Esquineros de formaleta",
-    alt: "Esquineros metálicos de formaleta apilados en estantería, con paneles perforados debajo.",
-    publicar: true,
-  },
-  {
+    // Primera de "encofrados": es la foto principal (4/5) de esa línea en el home y en su página.
     id: "formaletas-metalicas-01",
     original: "photo_2026-10-08_10-19-40.jpg",
     categoria: "encofrados",
     titulo: "Formaletas metálicas",
     alt: "Pilas de formaletas metálicas perforadas, ordenadas en la bodega.",
+    publicar: true,
+  },
+  {
+    id: "esquineros-de-formaleta-01",
+    original: "photo_2026-10-08_10-19-21.jpg",
+    categoria: "encofrados",
+    titulo: "Esquineros de formaleta",
+    alt: "Esquineros metálicos de formaleta apilados en estantería, con paneles perforados debajo.",
     publicar: true,
   },
   {

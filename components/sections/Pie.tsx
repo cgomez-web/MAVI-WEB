@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { contacto, urlMapa, urlWhatsApp } from "@/content/contacto";
+import { contacto, correosPorEtiqueta, urlMapa, urlWhatsApp } from "@/content/contacto";
 import { lineasDeServicio } from "@/content/servicios";
 import { sitio } from "@/content/sitio";
+import { avisoPestanaNueva } from "@/content/navegacion";
+import { textosContacto, textosPie } from "@/content/interfaz";
 import { LogoCompleto } from "@/components/brand/Logo";
 import { CorreoProtegido, TelefonoProtegido } from "@/components/ui/ContactoProtegido";
 
@@ -10,18 +12,23 @@ export function Pie() {
   return (
     <footer className="con-grano border-line bg-ink relative border-t-2 pt-20 pb-16">
       <div className="reticula gap-y-14">
-        <div className="col-span-12 md:col-span-4">
-          <LogoCompleto className="h-auto w-44" idTitulo="logo-pie" />
+        <div className="col-span-12 lg:col-span-4">
+          <LogoCompleto
+            className="h-auto w-44"
+            idTitulo="logo-pie"
+            nombre={sitio.nombre}
+            lema={sitio.lema}
+          />
           <p className="text-concrete-light mt-6 max-w-[34ch]">{sitio.experiencia.texto}</p>
         </div>
 
-        <div className="col-span-12 sm:col-span-6 md:col-span-4">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-4">
           <h2 className="mono-etiqueta text-brand-yellow mb-5 font-medium tracking-[0.12em]">
-            Contacto
+            {textosContacto.titulo}
           </h2>
           <dl className="space-y-4">
             <div>
-              <dt className="mono-etiqueta text-concrete">Celular / WhatsApp</dt>
+              <dt className="mono-etiqueta text-concrete">{textosContacto.telefono}</dt>
               <dd className="cifras text-2 text-bone mt-1">
                 <TelefonoProtegido
                   e164={contacto.telefono.e164}
@@ -30,20 +37,24 @@ export function Pie() {
                 />
               </dd>
             </div>
-            {contacto.correos.map((c) => (
-              <div key={c.usuario}>
-                <dt className="mono-etiqueta text-concrete">{c.etiqueta}</dt>
-                <dd className="mt-1 break-all">
-                  <CorreoProtegido
-                    usuario={c.usuario}
-                    dominio={c.dominio}
-                    className="enlace-cinta"
-                  />
-                </dd>
+            {/* Un <dt> por rótulo distinto: hoy los dos correos comparten «Correo» (el brochure no
+                les asigna área); si el dueño les da áreas, cada uno queda bajo la suya. */}
+            {correosPorEtiqueta().map((grupo) => (
+              <div key={grupo.etiqueta}>
+                <dt className="mono-etiqueta text-concrete">{grupo.etiqueta}</dt>
+                {grupo.correos.map((c) => (
+                  <dd key={c.usuario} className="mt-1">
+                    <CorreoProtegido
+                      usuario={c.usuario}
+                      dominio={c.dominio}
+                      className="enlace-cinta"
+                    />
+                  </dd>
+                ))}
               </div>
             ))}
             <div>
-              <dt className="mono-etiqueta text-concrete">Dirección</dt>
+              <dt className="mono-etiqueta text-concrete">{textosContacto.direccion}</dt>
               <dd className="mt-1">
                 <a
                   href={urlMapa()}
@@ -51,19 +62,22 @@ export function Pie() {
                   rel="noopener noreferrer"
                   className="enlace-cinta"
                 >
-                  {contacto.direccion.linea}, {contacto.direccion.ciudad},{" "}
-                  {contacto.direccion.departamento}
-                  <span className="solo-lectores"> (abre Google Maps en una pestaña nueva)</span>
+                  {/* Un solo nodo de texto: con varios, el nombre accesible quedaba «Envigado,Antioquia». */}
+                  {`${contacto.direccion.linea}, ${contacto.direccion.ciudad}, ${contacto.direccion.departamento}`}
+                  <span className="solo-lectores">
+                    {textosContacto.enMapa}
+                    {avisoPestanaNueva}
+                  </span>
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="mono-etiqueta text-concrete">Horario</dt>
+              <dt className="mono-etiqueta text-concrete">{textosContacto.horario}</dt>
               <dd className="text-concrete-light mt-1">
                 {contacto.horario.texto}
                 {contacto.horario.aConfirmar ? (
-                  <span className="mono-etiqueta border-concrete-dark text-concrete ml-2 border px-1.5 py-0.5">
-                    a confirmar
+                  <span className="mono-etiqueta border-concrete-dark text-concrete ml-2 inline-block border px-1.5 py-0.5 whitespace-nowrap">
+                    {textosContacto.aConfirmar}
                   </span>
                 ) : null}
               </dd>
@@ -71,9 +85,9 @@ export function Pie() {
           </dl>
         </div>
 
-        <div className="col-span-12 sm:col-span-6 md:col-span-4">
+        <div className="col-span-12 sm:col-span-6 lg:col-span-4">
           <h2 className="mono-etiqueta text-brand-yellow mb-5 font-medium tracking-[0.12em]">
-            Servicios
+            {textosPie.servicios}
           </h2>
           <ul className="space-y-2">
             {lineasDeServicio.map((l) => (
@@ -90,7 +104,7 @@ export function Pie() {
               download
               className="boton boton-secundario"
             >
-              Descargar brochure (PDF)
+              {textosPie.brochure}
             </a>
             <a
               href={contacto.instagram.url}
@@ -98,7 +112,8 @@ export function Pie() {
               rel="noopener noreferrer"
               className="enlace-cinta mono-etiqueta"
             >
-              Instagram @{contacto.instagram.usuario}
+              {`${textosPie.instagram} @${contacto.instagram.usuario}`}
+              <span className="solo-lectores">{avisoPestanaNueva}</span>
             </a>
             <a
               href={urlWhatsApp()}
@@ -106,7 +121,8 @@ export function Pie() {
               rel="noopener noreferrer"
               className="enlace-cinta mono-etiqueta"
             >
-              WhatsApp {contacto.telefono.visible}
+              {`${textosPie.whatsapp} ${contacto.telefono.visible}`}
+              <span className="solo-lectores">{avisoPestanaNueva}</span>
             </a>
           </div>
         </div>
@@ -115,12 +131,12 @@ export function Pie() {
           <p>
             © {anio} {sitio.nombre}. {sitio.lema}.
           </p>
-          <nav aria-label="Legal" className="flex gap-6">
+          <nav aria-label={textosPie.navLegal} className="flex gap-6">
             <Link href="/politica-de-privacidad" className="enlace-cinta">
-              Política de datos personales
+              {textosPie.politica}
             </Link>
             <Link href="/contacto" className="enlace-cinta">
-              Contacto
+              {textosPie.contacto}
             </Link>
           </nav>
         </div>

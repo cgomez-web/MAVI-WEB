@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { urlWhatsApp } from "@/content/contacto";
+import { avisoPestanaNueva } from "@/content/navegacion";
+import { textosSistema } from "@/content/sitio";
 
 /** Error de página: mensaje genérico, sin detalles técnicos (no se filtra la traza al visitante). */
 export default function ErrorDePagina({
@@ -10,6 +12,7 @@ export default function ErrorDePagina({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = textosSistema.error;
   return (
     <section
       className="flex min-h-[80svh] items-end pt-[calc(var(--header-h)+4rem)] pb-20"
@@ -17,20 +20,20 @@ export default function ErrorDePagina({
     >
       <div className="reticula w-full gap-y-6">
         <p className="cifras text-figure text-brand-yellow col-span-12 leading-none font-bold">
-          500
+          {t.codigo}
         </p>
         <h1
           id="titulo-error"
           className="text-4 col-span-12 uppercase [font-stretch:85%] md:col-span-8"
         >
-          Algo se trabó en la obra
+          {t.titular}
         </h1>
         <p className="text-2 text-concrete-light col-span-12 max-w-[48ch] md:col-span-6">
-          Intente de nuevo. Si necesita cotizar ya, escríbanos por WhatsApp.
+          {t.texto}
         </p>
         <div className="col-span-12 flex flex-wrap gap-4">
           <button type="button" onClick={reset} className="boton boton-primario">
-            Reintentar
+            {t.reintentar}
           </button>
           <a
             href={urlWhatsApp()}
@@ -38,10 +41,11 @@ export default function ErrorDePagina({
             rel="noopener noreferrer"
             className="boton boton-secundario"
           >
-            WhatsApp
+            {t.whatsapp}
+            <span className="solo-lectores">{avisoPestanaNueva}</span>
           </a>
           <Link href="/" className="boton boton-secundario">
-            Inicio
+            {t.inicio}
           </Link>
         </div>
       </div>

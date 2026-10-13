@@ -1,5 +1,7 @@
 "use client";
 
+import { sitio, textosSistema } from "@/content/sitio";
+
 /** Último recurso si falla el layout raíz. Sin estilos externos ni detalles técnicos. */
 export default function ErrorGlobal({
   reset,
@@ -7,8 +9,12 @@ export default function ErrorGlobal({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = textosSistema.errorGlobal;
   return (
     <html lang="es-CO">
+      <head>
+        <title>{`${t.titular} | ${sitio.nombreCorto}`}</title>
+      </head>
       <body
         style={{
           background: "#0B0B0C",
@@ -17,8 +23,8 @@ export default function ErrorGlobal({
           padding: "10vh 6vw",
         }}
       >
-        <h1 style={{ fontSize: "2.5rem" }}>Algo salió mal</h1>
-        <p>Intente de nuevo en unos segundos o escríbanos por WhatsApp al 322 559 9325.</p>
+        <h1 style={{ fontSize: "2.5rem" }}>{t.titular}</h1>
+        <p>{t.texto}</p>
         <button
           type="button"
           onClick={reset}
@@ -31,7 +37,7 @@ export default function ErrorGlobal({
             fontWeight: 700,
           }}
         >
-          Reintentar
+          {t.reintentar}
         </button>
       </body>
     </html>

@@ -23,7 +23,7 @@ El sitio es de contenido; la **única entrada de datos** es el formulario de cot
 
 ## 2. Cabeceras HTTP
 
-Definidas en `next.config.ts` (estáticas, todas las rutas) y `middleware.ts` (CSP por petición). Verificadas por la prueba E2E `cabeceras de seguridad`.
+Definidas en `next.config.ts` (estáticas, todas las rutas) y `middleware.ts` (CSP por petición, solo en documentos HTML). `/api/cotizacion` no pasa por el middleware y no lleva CSP: responde JSON, y si el middleware la procesara, Next copiaría el cuerpo completo antes de llamar a la ruta, con lo que la lectura acotada a 16 KB no cortaría a tiempo. Sí recibe las cabeceras estáticas, incluida `X-Content-Type-Options: nosniff`. Un 404 (también bajo `/img/`, `/api/` o `/_next/image`) sí lleva CSP. Verificadas por las pruebas E2E de `cabeceras de seguridad` y por `tests/unit/seguridad.test.ts` (matcher del middleware).
 
 ```
 Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-…' 'strict-dynamic';
@@ -56,8 +56,10 @@ X-Permitted-Cross-Domain-Policies: none
 ## 3. Formulario de cotización
 
 - **Validación**: `lib/validacion.ts` (Zod mini, el mismo esquema en cliente y servidor): longitudes máximas, nombre solo letras, teléfono colombiano (`3xx…` o `60x…`, con o sin +57), correo opcional, municipio y línea en listas cerradas, consentimiento obligatorio (Ley 1581 de 2012).
-- **Orden de controles** (`lib/cotizacion.ts`): Origin → tipo y tamaño → rate limit → JSON + Zod → honeypot y tiempo → Turnstile → envío.
-- A un bot detectado por honeypot/tiempo se le responde `200 ok` sin enviar nada (no recibe señales para adaptarse).
+- **Orden de controles** (`lib/cotizacion.ts`): Origin → tipo y tamaño → rate limit → lectura acotada (16 KB, con o sin Content-Length) + JSON → honeypot → Zod → tiempo de llenado (medido en el navegador) → Turnstile → envío.
+- Honeypot lleno (`sitioWeb`): `200 ok` sin enviar nada, para que el bot no reciba señales con las que adaptarse. Tiempo fuera de rango: `400 'verificacion'`; el formulario ofrece WhatsApp y la persona puede reintentar, así que ninguna cotización real se pierde en silencio. El tiempo de llenado lo mide el navegador con `performance.now()` (`transcurridoMs`): no se compara con el reloj del servidor.
+- **Turnstile**: el token es de un solo uso y el cliente lo renueva tras cualquier respuesta. Si el widget no carga o falla, el envío sigue y decide el servidor. Si solo está configurada una de las dos claves, el servidor no verifica y registra `turnstile_config_incompleta`.
+- **Sin JavaScript** no hay `<form>` que enviar (se pinta un esqueleto inerte con la salida por WhatsApp): ningún dato puede terminar en la URL. El formulario real se descarga al acercarse a la sección y usa `method="post"`.
 - **Rate limit** (`lib/limite.ts`): Upstash REST si está configurado; si no, memoria del proceso. ⚠️ En serverless la memoria es **por instancia**: configure Upstash en producción. Si Upstash falla, se degrada a memoria (nunca queda sin límite).
 - `X-Forwarded-For`: en Vercel lo fija la plataforma. En un servidor propio, el proxy debe sobrescribirlo; si no, un atacante podría rotar IPs falsas.
 - **Sin subida de archivos** en v1. Si se requiere: lista blanca MIME + verificación de _magic bytes_, ≤ 5 MB, almacenamiento fuera del webroot con nombres aleatorios y escaneo antivirus.
@@ -65,7 +67,7 @@ X-Permitted-Cross-Domain-Policies: none
 ## 4. Datos personales
 
 - Se recogen solo los datos del formulario; no se guardan en el servidor: viajan por correo al buzón de MAVI.
-- Política en `/politica-de-privacidad` (`content/legal.ts`). **TODO(owner)**: NIT y revisión legal.
+- Política en `/politica-de-privacidad` (`content/legal.ts`). La casilla del formulario autoriza las mismas finalidades que declara la política. **TODO(owner)**: NIT, fecha de vigencia, quién atiende los reclamos y revisión legal (ver `docs/PENDIENTES.md`).
 - Sin cookies de analítica ni publicidad. `localStorage` solo guarda la preferencia de animaciones.
 
 ## 5. Secretos y rotación de claves
@@ -100,6 +102,9 @@ Si una clave se filtra a git: revocarla **primero**, luego limpiar el historial 
 | `X-Powered-By` ausente                                             | ✅     | E2E                                                                  |
 | Validación servidor aunque se salte el cliente                     | ✅     | E2E "el servidor valida…" + unitarias                                |
 | Origin ajeno → 403                                                 | ✅     | E2E + unitarias                                                      |
+| Honeypot → 200 sin envío; envío instantáneo → 400 `verificacion`   | ✅     | E2E + `tests/unit/cotizacion.test.ts`                                |
+| `/api/cotizacion` sin CSP pero con `nosniff`; 404 con CSP          | ✅     | E2E + `tests/unit/seguridad.test.ts`                                 |
+| `/_next/image` desactivado (404)                                   | ✅     | E2E                                                                  |
 | Correo escapado, asunto sin texto libre                            | ✅     | `tests/unit/cotizacion.test.ts`                                      |
 | Rate limit 429 + `Retry-After`                                     | ✅     | unitarias                                                            |
 | Errores genéricos sin trazas                                       | ✅     | unitarias + E2E 404                                                  |

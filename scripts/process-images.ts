@@ -9,17 +9,22 @@
  *     del borde (relleno tipo Coons) + grano, de modo que el contenido original queda destruido —no
  *     difuminado— y no puede recuperarse. Así se eliminan rótulos de otra empresa y datos personales.
  *  2. Aplica el recorte.
- *  3. Exporta AVIF y WebP en varios anchos (sin ampliar nunca el original) SIN metadatos.
+ *  3. Exporta AVIF y WebP en varios anchos (sin ampliar nunca el original) SIN metadatos. El nombre
+ *     de cada archivo lleva un hash del contenido generado (`<id>-<ancho>.<hash>.<formato>`): /img se
+ *     sirve con caché `immutable` de un año, así que una foto corregida (p. ej. un parche nuevo que
+ *     tapa un rótulo) debe estrenar URL para que nadie siga viendo la versión vieja.
  *  4. Genera un LQIP WebP diminuto en base64.
  *  5. Escribe content/galeria.generated.json y una hoja de verificación en docs/img/.
  *
  * Los originales nunca se modifican.
  */
+import { createHash } from "node:crypto";
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 import { fotosGaleria, type FotoGaleria, type Rect } from "../content/galeria";
+import { archivoFoto, type FormatoFoto } from "../lib/imagenes";
 
 const RAIZ = path.resolve(import.meta.dirname, "..");
 const ORIGENES = path.resolve(process.env.MAVI_ASSETS_DIR ?? path.join(RAIZ, ".."));
@@ -30,12 +35,15 @@ const HOJA = path.join(RAIZ, "docs", "img", "verificacion-galeria.jpg");
 const ANCHOS = [480, 800, 1280] as const;
 const BORDE = 3; // píxeles de muestreo fuera del parche
 const FUNDIDO = 3; // píxeles de transición en el contorno del parche
+const LARGO_HASH = 8; // caracteres hexadecimales del hash de contenido en el nombre de archivo
 
 export interface ImagenGenerada {
   id: string;
   ancho: number;
   alto: number;
   anchos: number[];
+  /** Hash del contenido de todos los archivos de la foto; forma parte de cada nombre de archivo. */
+  version: string;
   lqip: string;
 }
 
@@ -169,17 +177,29 @@ async function procesar(foto: FotoGaleria): Promise<ImagenGenerada> {
   if (ancho < mayor && anchos[anchos.length - 1] !== ancho) anchos.push(ancho);
   const unicos = [...new Set(anchos)].sort((p, q) => p - q);
 
+  const salidas: { ancho: number; formato: FormatoFoto; datos: Buffer }[] = [];
   for (const a of unicos) {
     const redim = sharp(maestro).resize({ width: a, withoutEnlargement: true });
     // sharp no copia metadatos (EXIF/XMP/ICC) salvo que se pida con withMetadata(): se omite a propósito.
-    await redim
-      .clone()
-      .avif({ quality: 52, effort: 6 })
-      .toFile(path.join(SALIDA, `${foto.id}-${a}.avif`));
-    await redim
-      .clone()
-      .webp({ quality: 74, effort: 6 })
-      .toFile(path.join(SALIDA, `${foto.id}-${a}.webp`));
+    salidas.push({
+      ancho: a,
+      formato: "avif",
+      datos: await redim.clone().avif({ quality: 52, effort: 6 }).toBuffer(),
+    });
+    salidas.push({
+      ancho: a,
+      formato: "webp",
+      datos: await redim.clone().webp({ quality: 74, effort: 6 }).toBuffer(),
+    });
+  }
+
+  // Hash de contenido: cambia si cambia cualquier píxel, recorte, parche o parámetro de compresión.
+  const hash = createHash("sha256");
+  for (const s of salidas) hash.update(`${s.ancho}.${s.formato}:`).update(s.datos);
+  const version = hash.digest("hex").slice(0, LARGO_HASH);
+  for (const s of salidas) {
+    const nombre = archivoFoto({ id: foto.id, version }, s.ancho, s.formato);
+    await writeFile(path.join(SALIDA, nombre), s.datos);
   }
 
   const lqipBuf = await sharp(maestro)
@@ -192,6 +212,7 @@ async function procesar(foto: FotoGaleria): Promise<ImagenGenerada> {
     ancho,
     alto,
     anchos: unicos,
+    version,
     lqip: `data:image/webp;base64,${lqipBuf.toString("base64")}`,
   };
 }
@@ -203,7 +224,8 @@ async function hojaDeVerificacion(generadas: ImagenGenerada[]) {
   const filas = Math.ceil(generadas.length / columnas);
   const piezas = await Promise.all(
     generadas.map(async (g, n) => {
-      const archivo = path.join(SALIDA, `${g.id}-${g.anchos[g.anchos.length - 1]}.webp`);
+      const mayor = g.anchos[g.anchos.length - 1] ?? g.ancho;
+      const archivo = path.join(SALIDA, archivoFoto(g, mayor, "webp"));
       const input = await sharp(archivo)
         .resize({ width: celda - 8, height: celda - 8, fit: "inside" })
         .toBuffer();

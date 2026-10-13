@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const fecha = new Date("2026-10-12");
   return [
     { url: `${base}/`, lastModified: fecha, changeFrequency: "monthly", priority: 1 },
+    { url: `${base}/servicios`, lastModified: fecha, changeFrequency: "monthly", priority: 0.9 },
     ...lineasDeServicio.map((l) => ({
       url: `${base}/servicios/${l.slug}`,
       lastModified: fecha,

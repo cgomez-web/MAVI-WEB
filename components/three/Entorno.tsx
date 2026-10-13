@@ -6,7 +6,7 @@
  */
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import type { DirectionalLight, Group, HemisphereLight, Points } from "three";
+import type { DirectionalLight, Group, HemisphereLight, Mesh, Points } from "three";
 import {
   AdditiveBlending,
   BackSide,
@@ -20,6 +20,7 @@ import {
   Vector3,
 } from "three";
 import { CIELOS, PALETA } from "./paleta";
+import { PUNTOS_M } from "./marca";
 import { enFase, limitar, tramo } from "./fases";
 
 const tmpA = new Color();
@@ -129,6 +130,9 @@ export function Luces({ progreso, sombras }: { progreso: { p: number }; sombras:
   return (
     <>
       <hemisphereLight ref={hemi} args={["#E08A1E", PALETA.tierraOscura, 0.8]} />
+      {/* Relleno cálido desde el lado de la cámara: las máquinas se leen amarillas aunque el sol
+          venga de atrás (amanecer y atardecer). Sin sombras. */}
+      <directionalLight position={[10, 7, 24]} intensity={0.75} color="#FFD9A6" />
       <directionalLight
         ref={sol}
         castShadow={sombras}
@@ -265,9 +269,24 @@ export function Polvo({
   return <points ref={puntos} geometry={geometria} material={material} frustumCulled={false} />;
 }
 
-/** Engranaje del logo MAVI extruido. Protagonista al inicio y al cierre. */
-export function Engranaje({ progreso }: { progreso: { p: number } }) {
+/**
+ * Posición del engranaje: en el hero, al fondo y en la zona libre de texto (arriba a la derecha en
+ * escritorio; arriba a la izquierda de la excavadora en vertical); en el cierre, sobre la obra.
+ */
+const ENGRANAJE_INICIO: [number, number, number] = [9.8, 13.2, -14];
+const ENGRANAJE_INICIO_VERTICAL: [number, number, number] = [2.1, 1.9, -12];
+const ENGRANAJE_CIERRE: [number, number, number] = [0, 9.6, -6];
+
+/** Engranaje del logo MAVI extruido, con la "M" del isotipo. Protagonista al inicio y al cierre. */
+export function Engranaje({
+  estado,
+  progreso,
+}: {
+  estado: { vertical: boolean };
+  progreso: { p: number };
+}) {
   const grupo = useRef<Group>(null);
+  const anillo = useRef<Mesh>(null);
   const geometria = useMemo(() => {
     const dientes = 16;
     const rExt = 2.0;
@@ -305,7 +324,25 @@ export function Engranaje({ progreso }: { progreso: { p: number } }) {
     g.center();
     return g;
   }, []);
-  useEffect(() => () => geometria.dispose(), [geometria]);
+  const geometriaM = useMemo(() => {
+    const escala = 0.0135;
+    const forma = new Shape();
+    PUNTOS_M.forEach(([x, y], i) => {
+      const px = (x - 40) * escala;
+      const py = (50 - y) * escala;
+      if (i === 0) forma.moveTo(px, py);
+      else forma.lineTo(px, py);
+    });
+    forma.closePath();
+    return new ExtrudeGeometry(forma, { depth: 0.12, bevelEnabled: false });
+  }, []);
+  useEffect(
+    () => () => {
+      geometria.dispose();
+      geometriaM.dispose();
+    },
+    [geometria, geometriaM],
+  );
 
   useFrame(({ clock }) => {
     const p = progreso.p;
@@ -315,15 +352,20 @@ export function Engranaje({ progreso }: { progreso: { p: number } }) {
     const cierre = enFase(p, "cierre", 0, 0.7);
     const s = Math.max(inicio, cierre);
     g.visible = s > 0.001;
-    g.scale.setScalar(Math.max(0.001, s) * 1.25);
-    // Inicio: al fondo a la derecha, sobre el horizonte. Cierre: sobre la obra terminada.
-    g.position.set(5 - cierre * 5, 5.6 + cierre * 6.2, -12 + cierre * 7);
-    g.rotation.z = clock.elapsedTime * 0.12;
+    g.scale.setScalar(Math.max(0.001, s) * (estado.vertical && cierre < 0.5 ? 0.7 : 1.25));
+    const a = estado.vertical ? ENGRANAJE_INICIO_VERTICAL : ENGRANAJE_INICIO;
+    g.position.set(
+      a[0] + (ENGRANAJE_CIERRE[0] - a[0]) * cierre,
+      a[1] + (ENGRANAJE_CIERRE[1] - a[1]) * cierre,
+      a[2] + (ENGRANAJE_CIERRE[2] - a[2]) * cierre,
+    );
+    // Solo gira la corona: la "M" queda derecha, como en el logo.
+    if (anillo.current) anillo.current.rotation.z = clock.elapsedTime * 0.12;
   });
 
   return (
-    <group ref={grupo} position={[5, 5.6, -12]}>
-      <mesh geometry={geometria} castShadow>
+    <group ref={grupo} position={ENGRANAJE_INICIO}>
+      <mesh ref={anillo} geometry={geometria} castShadow>
         <meshStandardMaterial
           color={PALETA.amarillo}
           roughness={0.35}
@@ -334,6 +376,9 @@ export function Engranaje({ progreso }: { progreso: { p: number } }) {
       <mesh position={[0, 0, 0.02]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[1.25, 1.25, 0.32, 32]} />
         <meshStandardMaterial color={PALETA.tinta} roughness={0.6} />
+      </mesh>
+      <mesh geometry={geometriaM} position={[0, 0, 0.17]}>
+        <meshStandardMaterial color={PALETA.hueso} roughness={0.55} flatShading />
       </mesh>
     </group>
   );

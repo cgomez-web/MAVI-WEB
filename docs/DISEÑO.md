@@ -4,14 +4,14 @@ Principio rector: **hoja de especificaciones de máquina + señalética de obra*
 
 ## 1. Tipografía
 
-Todas OFL 1.1, self-hosted (`app/fonts/*.woff2`, subconjunto latino, `font-display: swap`) vía `next/font/local`. Nada se carga de Google en runtime.
+Todas OFL 1.1, self-hosted (`app/fonts/*.woff2`, subconjunto latino) vía `next/font/local`, con `font-display: swap` salvo Saira Stencil (`optional`: es decorativa y no debe provocar un intercambio de fuente). Archivo y Hanken se precargan. Nada se carga de Google en runtime.
 
-| Rol       | Familia                       | Ejes usados                             | Uso                                                        |
-| --------- | ----------------------------- | --------------------------------------- | ---------------------------------------------------------- |
-| Display   | **Archivo** (variable)        | `wdth 62→125`, `wght 500→900`           | Titulares, cifras protagonistas, navegación grande         |
-| Texto     | **Hanken Grotesk** (variable) | `wght 400→700`                          | Párrafos, formularios, botones                             |
-| Datos     | **Martian Mono** (variable)   | `wdth 75→112.5`, `wght 300→700`, `tnum` | HP, toneladas, m³, teléfonos, códigos de sección, fichas   |
-| Estarcido | **Saira Stencil One**         | —                                       | 3–5 sellos en todo el sitio ("LÍNEA 03", "CAP. MÁX 100 T") |
+| Rol       | Familia                       | Ejes usados                             | Uso                                                                                                     |
+| --------- | ----------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Display   | **Archivo** (variable)        | `wdth 62→125`, `wght 500→900`           | Titulares, cifras protagonistas, navegación grande                                                      |
+| Texto     | **Hanken Grotesk** (variable) | `wght 400→700`                          | Párrafos, formularios, botones                                                                          |
+| Datos     | **Martian Mono** (variable)   | `wdth 75→112.5`, `wght 300→700`, `tnum` | HP, toneladas, m³, teléfonos, códigos de sección, fichas                                                |
+| Estarcido | **Saira Stencil One**         | —                                       | 4 sellos en las líneas del inicio ("HASTA 330 HP", "CAP. MÁX 100 T", "CERTIFICADOS", "CAP. MÁX 250 KG") |
 
 ### Por qué Archivo y no Big Shoulders Display
 
@@ -51,7 +51,7 @@ Reglas: **nunca texto amarillo sobre hueso/blanco** (1.5:1). Sin gradientes de c
 - Bordes de **2–3 px** en ink o amarillo. Sombra dura `6px 6px 0 var(--color-ink)` sobre fondos claros, `6px 6px 0 var(--color-brand-yellow)` en el CTA principal; nada de `blur`.
 - Retícula de **12 columnas**, gutter 24 px (16 px móvil), márgenes 6vw. La asimetría es deliberada: los titulares arrancan en la col. 1 y sangran a la 10; el texto de apoyo empieza en la col. 7.
 - **Códigos de sección verticales** (`writing-mode: vertical-rl`) en mono: `01 — MAQUINARIA PESADA`.
-- **Cintas diagonales** (`clip-path: polygon(...)`, ángulo −6°) como cortes entre secciones.
+- **Cintas diagonales**: cortes `.cinta-corte` entre secciones (`clip-path: polygon(...)`) y la banda amarilla inclinada −12° que barre cada sección al entrar y la ventana en cada cambio de página (`docs/MOTION.md` #5).
 - **Franja de peligro** amarillo/negro: **una sola vez**, bajo el marquee de equipos.
 - **Regla/cinta métrica**: ticks cada 8 px (cada 5º más largo) como ornamento de separadores y barra de progreso de scroll.
 - Grano: SVG `feTurbulence` estático (data URI, 2 kB) a 6 % de opacidad sobre fondos ink.
@@ -63,12 +63,12 @@ excavadora · retroexcavadora · volqueta · grúa · puntal · andamio · encof
 
 ## 5. Logo
 
-Redibujado en SVG (`components/brand/Logo.tsx`): engranaje de 12 dientes en amarillo con aro negro, silueta simplificada de excavadora + volqueta, wordmark "MAVI" en Archivo `wdth 125 wght 900` convertido a trazos, banda "PROYECTOS E INVERSIONES" y lema "Facilitamos su avance". Variante compacta (engranaje + MAVI) para header y favicon.
+Redibujado en SVG (`components/brand/Logo.tsx`): engranaje dentado en amarillo (16 dientes; 12 en el isotipo) con aro negro, wordmark "MAVI" en polígonos propios (la "A" conserva el triángulo amarillo del original), banda "PROYECTOS E INVERSIONES" y lema (el nombre y el lema llegan de `content/sitio.ts`). Variante compacta (engranaje + M) para header y favicon, y wordmark solo.
 
 ## 6. Composiciones de referencia
 
-**A — Hero (desktop 1440)**: fondo ink con la escena 3D a sangre. Eyebrow mono amarillo en col. 1–6: `ALQUILER DE MAQUINARIA Y EQUIPOS · ENVIGADO, ANTIOQUIA`. H1 en dos líneas a todo el ancho, `--step-hero`: "Su obra avanza. / Nosotros la movemos." — la segunda línea desplazada 1 columna a la derecha. Abajo a la izquierda, CTA amarillo cuadrado "Cotizar por WhatsApp" con sombra dura + CTA secundario de borde hueso "Ver equipos". Abajo a la derecha, ficha mono: `+15 AÑOS · 6 LÍNEAS · ENVIGADO`. Barra de progreso tipo cinta métrica en el borde superior.
+**A — Hero (desktop 1440)**: fondo ink con la escena 3D a sangre. Antetítulo mono amarillo en col. 1–7 (`ALQUILER DE MAQUINARIA Y EQUIPOS PARA CONSTRUCCIÓN · ENVIGADO, ANTIOQUIA`), dentro del mismo H1 para que las palabras clave formen parte del encabezado. Debajo, en dos líneas a todo el ancho, `--step-hero`: "Su obra avanza. / Nosotros la movemos." — la segunda línea desplazada 1 columna a la derecha. Abajo a la izquierda, CTA amarillo cuadrado "Cotizar por WhatsApp" con sombra dura + CTA secundario de borde hueso "Ver equipos". Abajo a la derecha, ficha mono: `+15 AÑOS · 6 LÍNEAS · ENVIGADO`. Barra de progreso tipo cinta métrica en el borde superior.
 
-**B — Línea de servicio (dentro del home)**: código vertical `03 — EQUIPOS PARA LOSAS` en col. 1. Titular `--step-5` sticky en col. 2–9 que se comprime (wdth 125→62) al fijarse. En col. 7–12, tabla de especificaciones con filetes de 1 px, columnas `EQUIPO / RANGO / USO`, cifras en Martian Mono tabulares. Sello estarcido rotado −4° "LÍNEA 03". Debajo, 3 fotos reales en mosaico asimétrico (una ocupa 2 filas).
+**B — Línea de servicio (dentro del home)**: ventana a la escena con el código vertical `03 — EQUIPOS PARA LOSAS` y la cifra protagonista (odómetro con la cifra del brochure o, si el brochure no la da, su dato textual). Luego, titular en col. 1–5 (tamaño acotado a min(3,25 rem, 3,7vw) para que «Formaletería» quepa entera) que se comprime (wdth 112→62) al fijarse; es sticky y va en dos columnas solo desde lg (1024 px); por debajo, el titular va encima de la ficha a ancho completo. En col. 6–12, tabla de especificaciones con filetes de 1 px, columnas `EQUIPO / RANGO / USO`, cifras en Martian Mono tabulares; en columnas estrechas cada fila pasa a bloque (consulta de contenedor `ficha`). Sello estarcido rotado −4° (p. ej. "CAP. MÁX 100 T"). Debajo, hasta 3 fotos reales en mosaico asimétrico (una ocupa 2 filas) o una lámina técnica si la línea no tiene fotos.
 
 **C — Cotización (fondo hueso)**: la única sección clara del home, como un formulario de obra impreso. Titular ink `--step-5` "Cuéntenos qué necesita su obra". Formulario en 2 columnas con campos de borde inferior grueso (3 px ink), etiquetas mono, checkbox cuadrado de habeas data. A la derecha, bloque ink con contacto directo: teléfono en `--step-4` mono, correo, dirección y botón de WhatsApp con relleno diagonal al hover.

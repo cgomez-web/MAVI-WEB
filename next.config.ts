@@ -23,14 +23,20 @@ const cabecerasDeSeguridad = [
 ];
 
 const nextConfig: NextConfig = {
+  // Permite un servidor de desarrollo en otra carpeta (NEXT_DIST_DIR=.next-dev) sin pisar el build.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   // Metadatos siempre en el <head> (sin "streaming metadata"): los rastreadores y Lighthouse
   // leen title/description/canonical/OG del HTML inicial.
   htmlLimitedBots: /.*/,
+  // El sitio no usa next/image: las fotos se sirven con <picture> (AVIF/WebP pregenerados). Con el
+  // optimizador apagado, /_next/image responde 404 y nadie puede pedir miles de transformaciones que
+  // cuestan CPU o cuota. Si algún día se usa next/image, reactivarlo con límites:
+  // { formats: ["image/avif", "image/webp"], qualities: [75], localPatterns: [{ pathname: "/img/**", search: "" }] }
   images: {
-    formats: ["image/avif", "image/webp"],
+    unoptimized: true,
   },
   experimental: {
     // Importa solo lo usado de estas librerías grandes.

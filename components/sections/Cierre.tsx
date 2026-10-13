@@ -1,5 +1,7 @@
+import { home } from "@/content/home";
 import { sitio } from "@/content/sitio";
 import { urlWhatsApp } from "@/content/contacto";
+import { avisoPestanaNueva } from "@/content/navegacion";
 import { IsotipoMavi } from "@/components/brand/Logo";
 
 /**
@@ -7,6 +9,8 @@ import { IsotipoMavi } from "@/components/brand/Logo";
  * Sin fondo propio: deja ver la capa 3D (o el póster).
  */
 export function Cierre() {
+  // El lema en dos voces: la primera palabra extendida y el resto condensado en amarillo.
+  const [lemaInicio = "", ...lemaResto] = sitio.lema.split(" ");
   return (
     <section
       aria-labelledby="titulo-cierre"
@@ -21,8 +25,8 @@ export function Cierre() {
           className="col-span-12 text-[clamp(2.75rem,0.5rem+7.2vw,8.5rem)] leading-[0.86] uppercase md:col-span-10"
         >
           {/* En móvil, ancho moderado: "FACILITAMOS" a 112 % no cabe en 360 px y ensancharía la página. */}
-          <span className="block [font-stretch:88%] sm:[font-stretch:112%]">Facilitamos</span>
-          <span className="text-brand-yellow block [font-stretch:66%]">su avance.</span>
+          <span className="block [font-stretch:88%] sm:[font-stretch:112%]">{lemaInicio}</span>{" "}
+          <span className="text-brand-yellow block [font-stretch:66%]">{lemaResto.join(" ")}.</span>
         </h2>
         <p className="text-2 text-bone/90 col-span-12 max-w-[44ch] md:col-span-6">
           {sitio.frases.compromiso} {sitio.frases.atencion}
@@ -34,10 +38,11 @@ export function Cierre() {
             rel="noopener noreferrer"
             className="boton boton-primario text-1"
           >
-            Cotizar por WhatsApp <span aria-hidden="true">→</span>
+            {home.hero.ctaPrimario} <span aria-hidden="true">→</span>
+            <span className="solo-lectores">{avisoPestanaNueva}</span>
           </a>
           <a href="#cotizacion" className="boton boton-secundario text-1">
-            Llenar el formulario
+            {home.cierre.ctaFormulario}
           </a>
         </div>
       </div>

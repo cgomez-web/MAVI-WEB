@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  duracionDeLlenado,
   esquemaCotizacion,
+  esquemaFormulario,
   normalizarTelefono,
   tiempoDeLlenadoValido,
+  TIEMPO_MAXIMO_MS,
   TIEMPO_MINIMO_MS,
 } from "@/lib/validacion";
 
@@ -17,7 +20,7 @@ const valido = {
   mensaje: "Necesito 40 cuerpos de andamio para fachada durante un mes.",
   consentimiento: true,
   sitioWeb: "",
-  iniciado: 1_700_000_000_000,
+  transcurridoMs: 20_000,
 };
 
 describe("esquemaCotizacion", () => {
@@ -91,6 +94,16 @@ describe("esquemaCotizacion", () => {
       esquemaCotizacion.safeParse({ ...valido, sitioWeb: "http://spam.example" }).success,
     ).toBe(false);
   });
+
+  it("el envío exige la duración del llenado (entera y no negativa); el formulario no", () => {
+    const sinTiempo: Record<string, unknown> = { ...valido };
+    delete sinTiempo.transcurridoMs;
+    expect(esquemaCotizacion.safeParse(sinTiempo).success).toBe(false);
+    expect(esquemaCotizacion.safeParse({ ...valido, transcurridoMs: -1 }).success).toBe(false);
+    expect(esquemaCotizacion.safeParse({ ...valido, transcurridoMs: 1.5 }).success).toBe(false);
+    expect(esquemaCotizacion.safeParse({ ...valido, transcurridoMs: "20000" }).success).toBe(false);
+    expect(esquemaFormulario.safeParse(sinTiempo).success).toBe(true);
+  });
 });
 
 describe("utilidades", () => {
@@ -98,10 +111,19 @@ describe("utilidades", () => {
     expect(normalizarTelefono("(322) 559-9325")).toBe("3225599325");
   });
 
-  it("tiempoDeLlenadoValido descarta envíos instantáneos y formularios viejos", () => {
-    const ahora = 2_000_000_000_000;
-    expect(tiempoDeLlenadoValido(ahora - 500, ahora)).toBe(false);
-    expect(tiempoDeLlenadoValido(ahora - TIEMPO_MINIMO_MS, ahora)).toBe(true);
-    expect(tiempoDeLlenadoValido(ahora - 2 * 24 * 60 * 60 * 1000, ahora)).toBe(false);
+  it("tiempoDeLlenadoValido descarta envíos instantáneos y valores imposibles", () => {
+    expect(tiempoDeLlenadoValido(500)).toBe(false);
+    expect(tiempoDeLlenadoValido(TIEMPO_MINIMO_MS)).toBe(true);
+    // Una pestaña abierta desde ayer sigue siendo válida (ya no se compara con el reloj del servidor).
+    expect(tiempoDeLlenadoValido(25 * 60 * 60 * 1000)).toBe(true);
+    expect(tiempoDeLlenadoValido(TIEMPO_MAXIMO_MS)).toBe(true);
+    expect(tiempoDeLlenadoValido(TIEMPO_MAXIMO_MS + 1)).toBe(false);
+  });
+
+  it("duracionDeLlenado redondea y recorta al tope: el navegador nunca cae fuera de rango", () => {
+    expect(duracionDeLlenado(1000.4, 21_000.9)).toBe(20_001);
+    expect(duracionDeLlenado(5000, 4000)).toBe(0);
+    expect(duracionDeLlenado(0, TIEMPO_MAXIMO_MS * 3)).toBe(TIEMPO_MAXIMO_MS);
+    expect(tiempoDeLlenadoValido(duracionDeLlenado(0, TIEMPO_MAXIMO_MS * 3))).toBe(true);
   });
 });

@@ -2,11 +2,12 @@ import * as z from "zod/mini";
 import {
   ciudadesFormulario,
   duracionesFormulario,
+  mensajesValidacion as m,
   serviciosFormulario,
 } from "@/content/formulario";
 
 /**
- * Esquema único del formulario de cotización (cliente + servidor).
+ * Esquemas del formulario de cotización (los mismos campos se validan en cliente y servidor).
  * Se usa `zod/mini` (API funcional, tree-shakable) para no sumar ~25 kB gz al JS inicial.
  * Listas cerradas, longitudes máximas y sin caracteres de control (evita inyección de cabeceras).
  */
@@ -32,76 +33,86 @@ const textoOpcional = (max: number) =>
         .string()
         .check(
           z.trim(),
-          z.maxLength(max, `Máximo ${max} caracteres.`),
-          z.regex(SIN_CONTROL, "Contiene caracteres no permitidos."),
+          z.maxLength(max, m.maximo(max)),
+          z.regex(SIN_CONTROL, m.caracteresNoPermitidos),
         ),
     ]),
   );
 
-export const esquemaCotizacion = z.object({
+/**
+ * Lo que el usuario llena en el navegador (lo valida react-hook-form en el cliente).
+ * El servidor valida el mismo esquema más los campos anti-spam que agrega el envío (`esquemaCotizacion`).
+ */
+export const esquemaFormulario = z.object({
   nombre: z
     .string()
     .check(
       z.trim(),
-      z.minLength(2, "Escriba su nombre."),
-      z.maxLength(80, "Máximo 80 caracteres."),
-      z.regex(NOMBRE, "Use solo letras y espacios."),
+      z.minLength(2, m.nombre),
+      z.maxLength(80, m.maximo(80)),
+      z.regex(NOMBRE, m.nombreLetras),
     ),
   empresa: textoOpcional(100),
   telefono: z.pipe(
-    z.string().check(z.trim(), z.maxLength(20, "Número demasiado largo.")),
-    z
-      .transform(normalizarTelefono)
-      .check(
-        z.refine(
-          (v: string) => TELEFONO_CO.test(v),
-          "Escriba un celular colombiano de 10 dígitos (ej. 322 559 9325).",
-        ),
-      ),
+    z.string().check(z.trim(), z.maxLength(20, m.telefonoLargo)),
+    z.transform(normalizarTelefono).check(z.refine((v: string) => TELEFONO_CO.test(v), m.telefono)),
   ),
   correo: z.optional(
     z.union([
       vacio,
-      z
-        .string()
-        .check(
-          z.trim(),
-          z.maxLength(120, "Máximo 120 caracteres."),
-          z.regex(CORREO, "Revise el correo electrónico."),
-        ),
+      z.string().check(z.trim(), z.maxLength(120, m.maximo(120)), z.regex(CORREO, m.correo)),
     ]),
   ),
-  ciudad: z.enum(ciudadesFormulario, "Seleccione el municipio de la obra."),
-  servicio: z.enum(serviciosFormulario, "Seleccione una línea de servicio."),
-  duracion: z.optional(z.union([vacio, z.enum(duracionesFormulario, "Seleccione una opción.")])),
+  ciudad: z.enum(ciudadesFormulario, m.ciudad),
+  servicio: z.enum(serviciosFormulario, m.servicio),
+  duracion: z.optional(z.union([vacio, z.enum(duracionesFormulario, m.duracion)])),
   mensaje: z
     .string()
     .check(
       z.trim(),
-      z.minLength(10, "Cuéntenos un poco más (mínimo 10 caracteres)."),
-      z.maxLength(1500, "Máximo 1.500 caracteres."),
-      z.regex(SIN_CONTROL_SALVO_SALTOS, "Contiene caracteres no permitidos."),
+      z.minLength(10, m.mensajeCorto),
+      z.maxLength(1500, m.maximoMensaje),
+      z.regex(SIN_CONTROL_SALVO_SALTOS, m.caracteresNoPermitidos),
     ),
-  consentimiento: z.literal(
-    true,
-    "Debe autorizar el tratamiento de sus datos para enviar la solicitud.",
-  ),
+  consentimiento: z.literal(true, m.consentimiento),
   // Campos anti-spam:
-  /** Honeypot: invisible para personas; los bots lo llenan. */
+  /**
+   * Honeypot: invisible para personas; los bots lo llenan. En el navegador debe venir vacío; el servidor
+   * lo revisa antes de este esquema y, si viene lleno, responde "ok" sin enviar nada.
+   */
   sitioWeb: z.optional(z.string().check(z.maxLength(0))),
-  /** Momento (ms) en que se mostró el formulario. */
-  iniciado: z.number().check(z.int(), z.positive()),
   turnstileToken: z.optional(z.string().check(z.maxLength(2048))),
 });
 
+/** Un envío humano tarda al menos unos segundos desde que el formulario aparece en pantalla. */
+export const TIEMPO_MINIMO_MS = 3000;
+/**
+ * Tope de cordura (7 días). No filtra a nadie: el navegador recorta su medición a este valor, así que una
+ * pestaña abierta durante días sigue enviando. Solo rechaza valores absurdos de clientes que no son el sitio.
+ */
+export const TIEMPO_MAXIMO_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Lo que recibe el endpoint: el formulario más la duración del llenado medida en el navegador. */
+export const esquemaCotizacion = z.extend(esquemaFormulario, {
+  /**
+   * Milisegundos entre la aparición del formulario y el envío, medidos con `performance.now()` (reloj
+   * monótono del navegador). No se compara con el reloj del servidor: un PC con la hora mal puesta no
+   * debe hacer perder una cotización.
+   */
+  transcurridoMs: z.number().check(z.int(), z.nonnegative()),
+});
+
+export type DatosFormulario = z.infer<typeof esquemaFormulario>;
+export type EntradaFormulario = z.input<typeof esquemaFormulario>;
 export type DatosCotizacion = z.infer<typeof esquemaCotizacion>;
 export type EntradaCotizacion = z.input<typeof esquemaCotizacion>;
 
-/** Un envío humano tarda al menos unos segundos y no más de un día desde que se abrió el formulario. */
-export const TIEMPO_MINIMO_MS = 3000;
-export const TIEMPO_MAXIMO_MS = 24 * 60 * 60 * 1000;
+/** Rango razonable para un envío humano: ni instantáneo ni un valor imposible. */
+export function tiempoDeLlenadoValido(transcurridoMs: number): boolean {
+  return transcurridoMs >= TIEMPO_MINIMO_MS && transcurridoMs <= TIEMPO_MAXIMO_MS;
+}
 
-export function tiempoDeLlenadoValido(iniciado: number, ahora = Date.now()): boolean {
-  const transcurrido = ahora - iniciado;
-  return transcurrido >= TIEMPO_MINIMO_MS && transcurrido <= TIEMPO_MAXIMO_MS;
+/** Duración que envía el navegador: entera y recortada al tope para no caer nunca fuera de rango. */
+export function duracionDeLlenado(desdeMs: number, hastaMs: number): number {
+  return Math.min(TIEMPO_MAXIMO_MS, Math.max(0, Math.round(hastaMs - desdeMs)));
 }

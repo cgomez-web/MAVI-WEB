@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import { empresa } from "@/content/empresa";
+import { paginas } from "@/content/sitio";
+import { metaPagina } from "@/lib/metadatos";
 import { Nosotros } from "@/components/sections/Nosotros";
 import { Proceso } from "@/components/sections/Proceso";
 import { Cotizacion } from "@/components/sections/Cotizacion";
 
-export const metadata: Metadata = {
-  title: "Quiénes somos",
-  description: `${empresa.presentacion} Más de 15 años en el sector de la construcción en Envigado y Antioquia.`,
-  alternates: { canonical: "/nosotros" },
-};
+export const metadata = metaPagina({
+  titulo: paginas.nosotros.titulo,
+  descripcion: paginas.nosotros.descripcion,
+  ruta: "/nosotros",
+});
 
 export default function PaginaNosotros() {
   return (

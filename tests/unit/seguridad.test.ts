@@ -2,6 +2,13 @@ import { describe, expect, it } from "vitest";
 import { construirCsp, generarNonce } from "@/lib/csp";
 import { escaparHtml, limpiarCabecera } from "@/lib/escape";
 import { serializarJsonLd } from "@/lib/jsonld";
+import { config as configMiddleware, esFichaDesconocida } from "@/middleware";
+// Misma función con la que Next compila el matcher del middleware (no está en sus tipos públicos).
+import * as infoEstatica from "next/dist/build/analysis/get-page-static-info";
+
+const { getMiddlewareMatchers } = infoEstatica as unknown as {
+  getMiddlewareMatchers: (matcher: unknown, nextConfig: object) => Array<{ regexp: string }>;
+};
 
 const directiva = (csp: string, nombre: string) =>
   csp
@@ -69,5 +76,70 @@ describe("escape", () => {
     const s = serializarJsonLd({ nombre: "</script><script>alert(1)</script>" });
     expect(s).not.toContain("</script>");
     expect(JSON.parse(s)).toEqual({ nombre: "</script><script>alert(1)</script>" });
+  });
+});
+
+describe("matcher del middleware (qué rutas reciben CSP)", () => {
+  const [compilado] = getMiddlewareMatchers(configMiddleware.matcher, {});
+  const recibeCsp = (ruta: string) => new RegExp(compilado!.regexp).test(ruta);
+
+  it("las páginas y cualquier ruta nueva o inexistente llevan CSP", () => {
+    for (const ruta of [
+      "/",
+      "/contacto",
+      "/servicios/andamiaje",
+      "/no-existe",
+      "/iconos",
+      "/iconos-falsos",
+      "/favicon.ico",
+      "/apple-icon",
+      "/brochure-2027",
+      "/fonts/x",
+      "/img/no-existe.html",
+      "/opengraph-image-x",
+      "/_next/image",
+      "/api/no-existe",
+      "/api/cotizacion-x",
+      "/api/cotizacion/x",
+    ]) {
+      expect(recibeCsp(ruta), ruta).toBe(true);
+    }
+  });
+
+  it("los assets reales y la API JSON quedan fuera", () => {
+    for (const ruta of [
+      // Sin middleware Next no copia el cuerpo: la lectura acotada a 16 KB corta a tiempo (#44).
+      "/api/cotizacion",
+      "/_next/static/chunks/main.js",
+      "/img/bodega/puntal-01-1280.avif",
+      "/img/bodega/puntal-01-1280.3f9a1c2b.webp",
+      "/icon.svg",
+      "/opengraph-image",
+      "/robots.txt",
+      "/sitemap.xml",
+      "/.well-known/security.txt",
+      "/brochure-mavi-proyectos-e-inversiones.pdf",
+    ]) {
+      expect(recibeCsp(ruta), ruta).toBe(false);
+    }
+  });
+});
+
+describe("fichas de servicio inexistentes (#71)", () => {
+  it("se reescriben a la 404 renderizada en el servidor", () => {
+    for (const ruta of ["/servicios/xyz", "/servicios/no-existe/", "/servicios/%E0%A4%A"])
+      expect(esFichaDesconocida(ruta), ruta).toBe(true);
+  });
+
+  it("las fichas reales, el índice y sus imágenes no se tocan", () => {
+    for (const ruta of [
+      "/servicios",
+      "/servicios/",
+      "/servicios/andamiaje",
+      "/servicios/maquinaria-pesada/",
+      "/servicios/andamiaje/opengraph-image/ficha",
+      "/contacto",
+    ])
+      expect(esFichaDesconocida(ruta), ruta).toBe(false);
   });
 });

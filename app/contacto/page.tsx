@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+import { paginas } from "@/content/sitio";
+import { metaPagina } from "@/lib/metadatos";
 import { Cotizacion } from "@/components/sections/Cotizacion";
 import { PreguntasFrecuentes } from "@/components/sections/PreguntasFrecuentes";
 
-export const metadata: Metadata = {
-  title: "Contacto y cotizaciones",
-  description:
-    "Cotice alquiler de maquinaria, transporte, equipos para losas, formaletería y andamios en Envigado: WhatsApp 322 559 9325, Cr 25 # 41B Sur 37, Envigado, Antioquia.",
-  alternates: { canonical: "/contacto" },
-};
+export const metadata = metaPagina({
+  titulo: paginas.contacto.titulo,
+  descripcion: paginas.contacto.descripcion,
+  ruta: "/contacto",
+});
 
 export default function PaginaContacto() {
   return (

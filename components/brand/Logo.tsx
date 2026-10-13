@@ -42,15 +42,15 @@ interface PropsWordmark {
   className?: string;
   /** Color de las letras; la "A" siempre lleva el triángulo amarillo. */
   tono?: "hueso" | "tinta";
+  /** Nombre accesible (p. ej. sitio.nombre). Sin él, o vacío, el wordmark es decorativo. */
   titulo?: string;
 }
 
-/** Wordmark "MAVI" solo (para header y pie). */
-export function WordmarkMavi({
-  className,
-  tono = "hueso",
-  titulo = "MAVI Proyectos e Inversiones",
-}: PropsWordmark) {
+/**
+ * Wordmark "MAVI" solo (para header y pie). Este archivo no importa content/: va en el JS de la
+ * cabecera, así que los textos (nombre, lema) llegan como props desde quien lo pinta.
+ */
+export function WordmarkMavi({ className, tono = "hueso", titulo }: PropsWordmark) {
   const color = tono === "hueso" ? "var(--color-bone)" : "var(--color-ink)";
   // Con título vacío el wordmark es decorativo (el enlace contenedor ya tiene nombre accesible).
   const accesible = titulo
@@ -96,17 +96,21 @@ export function IsotipoMavi({ className, titulo }: { className?: string; titulo?
   );
 }
 
-/** Logo completo: engranaje que enmarca el wordmark, banda y lema. */
+/** Logo completo: engranaje que enmarca el wordmark, banda y lema (content/sitio.ts → nombre, lema). */
 export function LogoCompleto({
   className,
   idTitulo = "logo-mavi",
+  nombre,
+  lema,
 }: {
   className?: string;
   idTitulo?: string;
+  nombre: string;
+  lema: string;
 }) {
   return (
     <svg viewBox="0 0 400 400" className={className} role="img" aria-labelledby={idTitulo}>
-      <title id={idTitulo}>MAVI Proyectos e Inversiones — Facilitamos su avance</title>
+      <title id={idTitulo}>{`${nombre} — ${lema}`}</title>
       <path d={rutaEngranaje(200, 200, 196, 168, 16)} fill="var(--color-brand-yellow)" />
       <circle cx="200" cy="200" r="150" fill="var(--color-ink)" />
       <circle
@@ -162,7 +166,7 @@ export function LogoCompleto({
           fontSize: "19px",
         }}
       >
-        Facilitamos su avance
+        {lema}
       </text>
     </svg>
   );

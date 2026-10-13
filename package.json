@@ -22,6 +22,7 @@
     "analyze": "cross-env ANALYZE=true next build",
     "secrets": "secretlint \"**/*\"",
     "lhci": "lhci autorun",
+    "presupuesto:js": "node scripts/presupuesto-js.mjs",
     "prepare": "husky"
   },
   "dependencies": {

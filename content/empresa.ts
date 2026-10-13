@@ -1,3 +1,5 @@
+import { sitio } from "./sitio";
+
 /** Quiénes somos — brochure págs. 1 y 2. */
 export const empresa = {
   presentacion:
@@ -10,7 +12,7 @@ export const empresa = {
   compromiso:
     "Nuestro compromiso es facilitar su trabajo, optimizar sus recursos y contribuir al cumplimiento de sus proyectos.",
   valores: [
-    { nombre: "Experiencia", texto: "Más de 15 años en el sector." },
+    { nombre: "Experiencia", texto: `Más de ${sitio.experiencia.anios} años en el sector.` },
     { nombre: "Confianza", texto: "Comprometidos con cada cliente." },
     { nombre: "Calidad", texto: "Equipos en óptimas condiciones." },
     { nombre: "Cobertura", texto: "Acompañamiento en todo el proceso." },

@@ -58,8 +58,8 @@ Hallazgos técnicos: todas JPEG sRGB, 576–1280 px de lado mayor (fotos de What
 | 12  | 10-19-00 | Mezcladora de concreto (trompo) roja con volante; puntales y tableros alrededor                                            | Otros equipos · menores       | `mezcladora-de-concreto-01`   | **Usar** (rótulo ajeno al fondo → recortar/tapar)                                  |
 | 13  | 10-19-03 | Plumas de cargue almacenadas en estantería (toma vertical)                                                                 | Otros equipos · plumas        | `plumas-de-cargue-02`         | **Usar**                                                                           |
 | 14  | 10-19-07 | Equipos de izaje rojos con motor y brazo, mangueras negras; **rótulo de otra empresa**                                     | Otros equipos                 | `equipos-de-izaje-01`         | **Usar solo con el rótulo ajeno tapado**; identificación exacta a confirmar        |
-| 15  | 10-19-10 | Moldes metálicos cilíndricos con abrazaderas sobre estante                                                                 | Encofrados · accesorios       | `moldes-cilindricos-01`       | **Usar**; uso exacto a confirmar                                                   |
-| 16  | 10-19-12 | Cuerpos y plataformas de andamio, mezcladora al costado                                                                    | Andamiaje                     | `andamios-en-bodega-01`       | **Usar**                                                                           |
+| 15  | 10-19-10 | Moldes metálicos partidos para cilindros de ensayo de concreto, con placa base y pernos (uso a confirmar)                  | Otros equipos                 | `moldes-cilindricos-01`       | **Usar**; confirmar uso y si se alquilan                                           |
+| 16  | 10-19-12 | Carrete y caballetes hechos en varilla corrugada; mezcladora al costado (no son andamios)                                  | Otros equipos                 | `carretes-de-varilla-01`      | **Usar**; confirmar qué equipo es y si se alquila                                  |
 | 17  | 10-19-15 | Panorámica de la estantería con decenas de plumas de cargue                                                                | Otros equipos · plumas        | `plumas-de-cargue-03`         | **Usar**                                                                           |
 | 18  | 10-19-19 | —                                                                                                                          | —                             | —                             | **Duplicado exacto de #16** → descartar                                            |
 | 19  | 10-19-21 | Esquineros metálicos de formaleta apilados en estantería; paneles perforados debajo                                        | Encofrados                    | `esquineros-de-formaleta-01`  | **Usar**                                                                           |
@@ -75,21 +75,21 @@ Hallazgos técnicos: todas JPEG sRGB, 576–1280 px de lado mayor (fotos de What
 | 29  | 10-19-54 | —                                                                                                                          | —                             | —                             | Casi duplicado de #23 → descartar                                                  |
 | 30  | 10-19-58 | Logo MAVI                                                                                                                  | Marca                         | —                             | Referencia para SVG; no se publica                                                 |
 
-**Resultado**: 21 fotos publicables, 2 duplicados exactos + 5 casi duplicados descartados, 1 logo de referencia.
+**Resultado**: 22 fotos publicables, 2 duplicados exactos + 5 casi duplicados descartados, 1 logo de referencia (22 + 2 + 5 + 1 = 30 archivos). Es lo que publica `content/galeria.ts`.
 
 ### Cobertura por línea de servicio
 
-| Línea                      | Fotos reales                                                                                   | Estrategia visual                          |
-| -------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| Maquinaria pesada          | 0                                                                                              | Ilustración 3D propia + iconos SVG propios |
-| Transporte y elevación     | 0                                                                                              | Ilustración 3D propia + iconos SVG propios |
-| Equipos para losas         | 3 (puntales ×2, tableros)                                                                      | Fotos reales                               |
-| Encofrados y formaletería  | 5 (formaletas ×3, esquineros, moldes)                                                          | Fotos reales                               |
-| Andamiaje                  | 5 (2 en obra, 3 en bodega)                                                                     | Fotos reales                               |
-| Otros equipos y accesorios | 9 (plumas ×3, compresor, mezcladora, compactador, apisonador, allanadora, rotomartillo, izaje) | Fotos reales                               |
+| Línea                      | Fotos reales                                                                                                                                | Estrategia visual                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| Maquinaria pesada          | 0                                                                                                                                           | Ilustración 3D propia + iconos SVG propios |
+| Transporte y elevación     | 0                                                                                                                                           | Ilustración 3D propia + iconos SVG propios |
+| Equipos para losas         | 3 (puntales ×2, tableros)                                                                                                                   | Fotos reales                               |
+| Encofrados y formaletería  | 4 (formaletas ×3, esquineros)                                                                                                               | Fotos reales                               |
+| Andamiaje                  | 3 (2 en obra, 1 en bodega)                                                                                                                  | Fotos reales                               |
+| Otros equipos y accesorios | 12 (plumas ×3, compresor, mezcladora, compactador, apisonador, allanadora, rotomartillo, izaje, moldes para cilindros, carretes de varilla) | Fotos reales                               |
 
 ### Observaciones para el dueño (también en `PENDIENTES.md`)
 
 1. **Rótulos de otra empresa** (decisión del dueño, 2026-10-12): el compresor (#9), los equipos de izaje (#14) y fondos de #11/#12 llevan pintado el nombre y número de **otra empresa**. **Ese nombre no puede aparecer en el sitio ni en ningún asset publicado.** El pipeline (`scripts/process-images.ts`) los tapa con parches opacos o los recorta, y la verificación visual queda registrada en `docs/REPORTE-FINAL.md`. Por la misma razón, ese nombre no se escribe en ningún archivo del repositorio.
 2. **Personas**: #2 y #6 muestran trabajadores lejanos, sin rostros identificables a la resolución publicada. Confirmar autorización de uso de imagen de la obra.
-3. **Identificación**: confirmar #14 (equipos de izaje) y #15 (moldes cilíndricos) para afinar los textos alternativos.
+3. **Identificación**: confirmar #14 (equipos de izaje), #15 (moldes para cilindros de ensayo de concreto; hoy en "Otros equipos") y #16 (carrete y caballetes de varilla, antes rotulados como andamios) para afinar los textos alternativos y decidir si se publican.

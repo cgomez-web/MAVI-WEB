@@ -8,6 +8,7 @@ export function Proceso() {
       id="proceso"
       aria-labelledby="titulo-proceso"
       className="bg-ink relative py-24 md:py-32"
+      data-revelar="cinta"
     >
       <div className="reticula items-end gap-y-6">
         <p className="mono-etiqueta text-brand-yellow col-span-12 md:col-span-3">
@@ -23,7 +24,8 @@ export function Proceso() {
 
       <div className="contenedor mt-16">
         <div className="regla text-bone" aria-hidden="true" />
-        <ol className="grid grid-cols-1 gap-[var(--gutter)] sm:grid-cols-2 lg:grid-cols-4">
+        {/* 2×2 hasta xl: con 4 columnas a 1024–1279 px "Disponibilidad" no cabía en la suya. */}
+        <ol className="grid grid-cols-1 gap-[var(--gutter)] sm:grid-cols-2 xl:grid-cols-4">
           {pasos.map((p, i) => (
             <li
               key={p.codigo}
@@ -38,7 +40,9 @@ export function Proceso() {
               <span className="cifras text-brand-yellow block text-[clamp(3rem,2rem+3vw,5rem)] leading-none font-bold">
                 {p.codigo}
               </span>
-              <h3 className="text-3 mt-4 uppercase [font-stretch:80%]">{p.titulo}</h3>
+              <h3 className="text-3 mt-4 uppercase [font-stretch:80%] xl:[font-stretch:68%]">
+                {p.titulo}
+              </h3>
               <p className="text-concrete-light mt-3 max-w-[32ch]">{p.texto}</p>
             </li>
           ))}

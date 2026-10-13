@@ -83,16 +83,16 @@ Tres corridas sucesivas del inicio: 91 / 90 / 96 (variación por carga de la má
 
 ## 6. Definición de "hecho"
 
-| Criterio                                                   | Estado                                                                                           |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `pnpm build` sin warnings relevantes                       | ✅                                                                                               |
-| CI verde                                                   | ⏳ al subir a GitHub                                                                             |
-| Lighthouse móvil ≥ 90/90/90/90                             | ✅ (local) — confirmar en dominio                                                                |
-| securityheaders A/A+                                       | ⏳ dominio                                                                                       |
-| Escena 3D en presupuesto + sitio 100 % funcional sin WebGL | ✅ (E2E con WebGL desactivado)                                                                   |
-| Formulario envía correo real y rechaza spam básico         | ✅ rechazo de spam probado · ⏳ correo real con claves del dueño                                 |
-| Contenido del brochure completo y sin erratas              | ✅ (prueba automática de erratas y datos prohibidos)                                             |
-| Documentos de entrega                                      | ✅ README, SECURITY, ASSETS-LICENSES, PLAN, DISEÑO, MOTION, INVENTARIO, PENDIENTES, este reporte |
+| Criterio                                                   | Estado                                                                                                                                                                 |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm build` sin warnings relevantes                       | ✅                                                                                                                                                                     |
+| CI verde                                                   | ⏳ al subir a GitHub                                                                                                                                                   |
+| Lighthouse móvil ≥ 90/90/90/90                             | ✅ (local) — confirmar en dominio                                                                                                                                      |
+| securityheaders A/A+                                       | ⏳ dominio                                                                                                                                                             |
+| Escena 3D en presupuesto + sitio 100 % funcional sin WebGL | ✅ (E2E con WebGL desactivado)                                                                                                                                         |
+| Formulario envía correo real y rechaza spam básico         | ✅ rechazo de spam probado · ⏳ correo real con claves del dueño                                                                                                       |
+| Contenido del brochure completo y sin erratas              | ✅ (prueba automática de erratas y datos prohibidos) · las líneas 03, 04 y 05 muestran un dato textual del brochure en lugar de una cifra, porque el brochure no la da |
+| Documentos de entrega                                      | ✅ README, SECURITY, ASSETS-LICENSES, PLAN, DISEÑO, MOTION, INVENTARIO, PENDIENTES, este reporte                                                                       |
 
 ## 7. Próximas iteraciones (técnicas)
 

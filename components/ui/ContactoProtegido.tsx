@@ -19,8 +19,19 @@ export function CorreoProtegido({
   const [href, setHref] = useState<string | undefined>(undefined);
   useEffect(() => setHref(`mailto:${usuario}@${dominio}`), [usuario, dominio]);
   return (
-    <a href={href} className={className} translate="no">
+    // Corte de línea preferente antes de la @ (<wbr>); solo si el usuario no cabe ni solo se parte
+    // dentro de él. `word-break: normal` anula un `break-all` heredado del contenedor, que partiría el
+    // dominio en cualquier letra («gmail.c / om»).
+    <a
+      href={href}
+      className={`[overflow-wrap:anywhere] [word-break:normal] ${className ?? ""}`.trim()}
+      translate="no"
+    >
       <span>{usuario}</span>
+      {/* aria-hidden: Chrome convierte el <wbr> en un espacio del nombre accesible ("usuario @gmail.com"). */}
+      <span aria-hidden="true">
+        <wbr />
+      </span>
       <span>@</span>
       <span>{dominio}</span>
     </a>
@@ -40,12 +51,12 @@ export function TelefonoProtegido({
   useEffect(() => setHref(`tel:${e164}`), [e164]);
   const partes = visible.split(" ");
   return (
-    <a href={href} className={className} translate="no">
+    // Nunca se parte en dos renglones («322 559» / «9325»).
+    <a href={href} className={`whitespace-nowrap ${className ?? ""}`.trim()} translate="no">
       {partes.map((p, i) => (
-        <span key={`${p}-${i}`}>
-          {p}
-          {i < partes.length - 1 ? " " : ""}
-        </span>
+        // Un solo nodo de texto por grupo, con su espacio dentro: así el nombre accesible es
+        // "322 559 9325" y no "3225599325" (un espacio suelto tras <!-- --> se pierde en Chrome).
+        <span key={`${p}-${i}`}>{i < partes.length - 1 ? `${p} ` : p}</span>
       ))}
     </a>
   );

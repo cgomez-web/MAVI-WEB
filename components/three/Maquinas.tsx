@@ -8,7 +8,7 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import type { Group } from "three";
 import { PALETA } from "./paleta";
-import { enFase, limitar } from "./fases";
+import { enFase, limitar, tramo } from "./fases";
 import type { EstadoEscena } from "./estado";
 
 const Y = PALETA.amarillo;
@@ -32,6 +32,9 @@ function Rueda({
 }
 
 /* ───────────────────────── Excavadora ───────────────────────── */
+/** Fuera de cuadro a la derecha: de aquí arranca la excavadora al entrar en el hero. */
+const ENTRADA_X = 14.5;
+
 export function Excavadora({
   estado,
   progreso,
@@ -44,30 +47,47 @@ export function Excavadora({
   const pluma = useRef<Group>(null);
   const brazo = useRef<Group>(null);
   const cucharon = useRef<Group>(null);
+  const t0 = useRef<number | null>(null);
 
   useFrame(({ clock }) => {
     const p = progreso.p;
     const t = clock.elapsedTime;
-    // Entrada en el hero: visible desde el primer instante, avanza de x=10 a x=6.
-    const entrada = enFase(p, "inicio", 0, 0.9);
-    if (raiz.current) raiz.current.position.x = 10 - 4 * entrada;
+    if (t0.current === null) t0.current = t;
+    // Entrada en el hero: llega sola desde la derecha en cuanto la escena aparece (no espera al
+    // scroll) y queda en primer plano, a la derecha del titular; bajar por el hero también la trae.
+    const llegada = Math.max(tramo(t - t0.current, 0.5, 3.1), enFase(p, "inicio", 0, 0.5));
+    const destino = estado.vertical ? 6.1 : 6.6;
+    const enMarcha = 1 - llegada;
+    if (raiz.current) {
+      raiz.current.position.x = ENTRADA_X - (ENTRADA_X - destino) * llegada;
+      // Traqueteo de las orugas mientras avanza.
+      raiz.current.position.y = Math.abs(Math.sin(t * 11)) * 0.035 * Math.min(1, enMarcha * 4);
+    }
+    // En el hero la máquina reacciona al puntero (en táctil, al scroll): gira la cabina y sube la pluma.
+    const enHero = 1 - enFase(p, "inicio", 0.75, 1);
+    const reaccion = enHero * Math.min(1, llegada * 1.4);
     // Ciclo de excavación durante "maquinaria pesada" (y suavemente en reposo el resto del tiempo).
     const cavando =
       enFase(p, "maquinaria-pesada", 0.05, 0.6) * (1 - enFase(p, "maquinaria-pesada", 0.9, 1));
     const ciclo = (Math.sin(t * 1.6) + 1) / 2;
-    if (pluma.current) pluma.current.rotation.z = 0.55 - cavando * (0.25 + ciclo * 0.35);
-    if (brazo.current) brazo.current.rotation.z = -1.25 + cavando * ciclo * 0.7;
+    const plumaHero = 0.55 + enMarcha * 0.25 + reaccion * estado.puntero.y * 0.22;
+    if (pluma.current) {
+      const objetivoPluma = plumaHero - cavando * (0.25 + ciclo * 0.35);
+      pluma.current.rotation.z += (objetivoPluma - pluma.current.rotation.z) * 0.1;
+    }
+    if (brazo.current) brazo.current.rotation.z = -1.25 + cavando * ciclo * 0.7 + enMarcha * 0.35;
     if (cucharon.current) cucharon.current.rotation.z = -0.4 + cavando * (ciclo - 0.5) * 1.2;
-    // La cabina mira hacia el puntero en el hero (solo puntero fino); luego gira hacia la obra.
+    // La cabina mira hacia el puntero: a la izquierda sigue mirando la obra; a la derecha gira hacia
+    // quien mira. Fuera del hero vuelve a la obra.
     if (tornamesa.current) {
-      const haciaPuntero = (1 - enFase(p, "inicio", 0.8, 1)) * estado.puntero.x * 0.6;
+      const haciaPuntero = reaccion * (0.3 + estado.puntero.x * 0.8);
       const objetivo = Math.PI + haciaPuntero - cavando * 0.5 + Math.sin(t * 0.8) * cavando * 0.25;
       tornamesa.current.rotation.y += (objetivo - tornamesa.current.rotation.y) * 0.08;
     }
   });
 
   return (
-    <group ref={raiz} position={[10, 0, 4.2]}>
+    <group ref={raiz} position={[ENTRADA_X, 0, 4.2]}>
       {/* Orugas */}
       {[0.68, -0.68].map((z) => (
         <mesh key={z} position={[0, 0.28, z]} castShadow>
@@ -124,10 +144,12 @@ export function Minicargador({ progreso }: { progreso: { p: number } }) {
   useFrame(({ clock }) => {
     const p = progreso.p;
     const activo = enFase(p, "maquinaria-pesada", 0.15, 0.4);
-    const vaiven = activo * (Math.sin(clock.elapsedTime * 0.9) * 1.6);
+    // Terminado el nivelado, despeja la vía hacia la izquierda para que entre la volqueta.
+    const sale = enFase(p, "transporte-y-elevacion", 0, 0.3);
+    const vaiven = activo * (1 - sale) * (Math.sin(clock.elapsedTime * 0.9) * 1.6);
     if (raiz.current) {
-      raiz.current.visible = activo > 0.01;
-      raiz.current.position.x = 10 - 3 * activo + vaiven;
+      raiz.current.visible = activo > 0.01 && sale < 0.99;
+      raiz.current.position.x = 10 - 3 * activo + vaiven - sale * 22;
       raiz.current.scale.setScalar(Math.max(0.001, activo));
     }
     if (brazos.current)
@@ -167,23 +189,26 @@ export function Minicargador({ progreso }: { progreso: { p: number } }) {
 }
 
 /* ───────────────────────── Volqueta ───────────────────────── */
+const VOLQUETA_X0 = 26;
+const VOLQUETA_X = 10.6;
+
 export function Volqueta({ progreso }: { progreso: { p: number } }) {
   const raiz = useRef<Group>(null);
   const platon = useRef<Group>(null);
   useFrame(() => {
     const p = progreso.p;
-    const llega = enFase(p, "transporte-y-elevacion", 0, 0.45);
+    const llega = enFase(p, "transporte-y-elevacion", 0.02, 0.42);
     const bascula =
       enFase(p, "transporte-y-elevacion", 0.5, 0.8) *
       (1 - enFase(p, "equipos-para-losas", 0.2, 0.5));
     if (raiz.current) {
       raiz.current.visible = llega > 0.001;
-      raiz.current.position.x = 26 - 18 * llega;
+      raiz.current.position.x = VOLQUETA_X0 - (VOLQUETA_X0 - VOLQUETA_X) * llega;
     }
     if (platon.current) platon.current.rotation.z = -bascula * 0.75;
   });
   return (
-    <group ref={raiz} position={[26, 0, 7.4]} visible={false}>
+    <group ref={raiz} position={[VOLQUETA_X0, 0, 7.4]} visible={false}>
       <mesh position={[0, 0.55, 0]} castShadow>
         <boxGeometry args={[4.4, 0.3, 1.3]} />
         <meshStandardMaterial color={OSC} roughness={0.8} flatShading />
@@ -213,22 +238,33 @@ export function Volqueta({ progreso }: { progreso: { p: number } }) {
 }
 
 /* ───────────────────────── Grúa telescópica ───────────────────────── */
+const GRUA_X0 = 27;
+const GRUA_X = 9;
+
 export function Grua({ progreso }: { progreso: { p: number } }) {
+  const raiz = useRef<Group>(null);
   const pluma = useRef<Group>(null);
-  const tramo = useRef<Group>(null);
+  const extension = useRef<Group>(null);
   const torre = useRef<Group>(null);
   const cable = useRef<Group>(null);
   const carga = useRef<Group>(null);
   useFrame(() => {
     const p = progreso.p;
-    const eleva = enFase(p, "transporte-y-elevacion", 0.25, 0.6);
-    const extiende = enFase(p, "transporte-y-elevacion", 0.4, 0.75);
-    const iza = enFase(p, "transporte-y-elevacion", 0.6, 1);
+    // Entra por la vía de atrás en "transporte y elevación" (antes no está: el hero es terreno
+    // vacío), despliega la pluma e iza el paquete de formaletas.
+    const llega = enFase(p, "transporte-y-elevacion", 0.1, 0.42);
+    const eleva = enFase(p, "transporte-y-elevacion", 0.4, 0.66);
+    const extiende = enFase(p, "transporte-y-elevacion", 0.48, 0.78);
+    const iza = enFase(p, "transporte-y-elevacion", 0.66, 1);
     const gira = enFase(p, "equipos-para-losas", 0, 0.5);
+    if (raiz.current) {
+      raiz.current.visible = llega > 0.001;
+      raiz.current.position.x = GRUA_X0 - (GRUA_X0 - GRUA_X) * llega;
+    }
     // La grúa está detrás a la derecha de la obra; la torreta apunta hacia el edificio y gira al descargar.
     if (torre.current) torre.current.rotation.y = -2.45 - gira * 0.6;
     if (pluma.current) pluma.current.rotation.z = 0.15 + eleva * 0.75;
-    if (tramo.current) tramo.current.position.x = 1.2 + extiende * 2.6;
+    if (extension.current) extension.current.position.x = 1.2 + extiende * 2.6;
     // El cable cuelga siempre vertical desde la punta: se compensa la rotación de la pluma.
     const largo = 4.2 - iza * 3.2;
     if (cable.current) {
@@ -246,7 +282,7 @@ export function Grua({ progreso }: { progreso: { p: number } }) {
     }
   });
   return (
-    <group position={[9, 0, -3.5]}>
+    <group ref={raiz} position={[GRUA_X0, 0, -3.5]} visible={false}>
       {/* Portador */}
       <mesh position={[0, 0.7, 0]} castShadow>
         <boxGeometry args={[4.6, 0.5, 1.5]} />
@@ -271,7 +307,7 @@ export function Grua({ progreso }: { progreso: { p: number } }) {
             <boxGeometry args={[3.8, 0.42, 0.42]} />
             <meshStandardMaterial color={Y} roughness={0.5} flatShading />
           </mesh>
-          <group ref={tramo} position={[1.2, 0, 0]}>
+          <group ref={extension} position={[1.2, 0, 0]}>
             <mesh position={[1.8, 0, 0]} castShadow>
               <boxGeometry args={[3.6, 0.3, 0.3]} />
               <meshStandardMaterial color={PALETA.amarilloOscuro} roughness={0.5} flatShading />

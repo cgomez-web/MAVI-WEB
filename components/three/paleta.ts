@@ -6,6 +6,7 @@ export const PALETA = {
   amarilloOscuro: "#D99A00",
   grafito: "#1A1A1C",
   tinta: "#0B0B0C",
+  hueso: "#F4F1EA",
   concreto: "#8A8A85",
   concretoClaro: "#A9A7A1",
   concretoFresco: "#5E5C58",

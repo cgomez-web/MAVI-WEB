@@ -9,7 +9,23 @@ export function turnstileActivo(): boolean {
   return Boolean(process.env.TURNSTILE_SECRET_KEY && process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 }
 
+let avisoConfigIncompleta = false;
+
+/**
+ * Si solo está una de las dos claves, el widget puede verse en el navegador mientras el servidor no
+ * verifica nada (o al revés). El formulario sigue funcionando con las otras capas, pero se deja un
+ * error en los registros (una vez por proceso) para que el dueño lo note y complete la configuración.
+ */
+export function avisarConfigIncompleta(): void {
+  const secreta = Boolean(process.env.TURNSTILE_SECRET_KEY);
+  const publica = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  if (secreta === publica || avisoConfigIncompleta) return;
+  avisoConfigIncompleta = true;
+  registrar("error", "turnstile_config_incompleta", { secreta, publica });
+}
+
 export async function verificarTurnstile(token: string | undefined, ip?: string): Promise<boolean> {
+  avisarConfigIncompleta();
   if (!turnstileActivo()) return true;
   if (!token) return false;
   const cuerpo = new URLSearchParams({
@@ -34,4 +50,9 @@ export async function verificarTurnstile(token: string | undefined, ip?: string)
     });
     return false;
   }
+}
+
+/** Solo para pruebas. */
+export function reiniciarAvisoTurnstile(): void {
+  avisoConfigIncompleta = false;
 }

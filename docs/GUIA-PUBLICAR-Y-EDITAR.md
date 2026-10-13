@@ -15,16 +15,16 @@ Escrita para alguien sin experiencia técnica. Tiempo total estimado: **una tard
 
 ## Costos
 
-| Concepto | Proveedor recomendado | Costo aproximado |
-|---|---|---|
-| Dominio `.com` | Vercel Domains o Cloudflare Registrar | US$10–20 por año |
-| Hosting del sitio | **Vercel Pro** | **US$20 al mes** |
-| Correo de cotizaciones | Resend | Gratis en el volumen de un sitio de cotizaciones |
-| Anti-spam | Cloudflare Turnstile | Gratis |
-| Límite de envíos | Upstash Redis | Gratis en este volumen |
-| Código | GitHub (repositorio privado) | Gratis |
+| Concepto               | Proveedor recomendado                 | Costo aproximado                                 |
+| ---------------------- | ------------------------------------- | ------------------------------------------------ |
+| Dominio `.com`         | Vercel Domains o Cloudflare Registrar | US$10–20 por año                                 |
+| Hosting del sitio      | **Vercel Pro**                        | **US$20 al mes**                                 |
+| Correo de cotizaciones | Resend                                | Gratis en el volumen de un sitio de cotizaciones |
+| Anti-spam              | Cloudflare Turnstile                  | Gratis                                           |
+| Límite de envíos       | Upstash Redis                         | Gratis en este volumen                           |
+| Código                 | GitHub (repositorio privado)          | Gratis                                           |
 
-> **Importante:** el plan gratuito de Vercel (*Hobby*) es **solo para uso personal no comercial**, y un sitio que ofrece servicios de una empresa es uso comercial. Por eso se recomienda **Vercel Pro**.
+> **Importante:** el plan gratuito de Vercel (_Hobby_) es **solo para uso personal no comercial**, y un sitio que ofrece servicios de una empresa es uso comercial. Por eso se recomienda **Vercel Pro**.
 >
 > **Alternativa más económica (~US$5 al mes):** Cloudflare Workers (plan de pago) + dominio en Cloudflare a precio de costo. Exige adaptar el proyecto con el adaptador `@opennextjs/cloudflare` y volver a probarlo. Si prefiere esta opción, pídamela y la preparo.
 
@@ -77,6 +77,7 @@ Busque disponibilidad (en Vercel → **Domains → Buy**, o en <https://www.clou
 **Opción B — en Cloudflare Registrar** (a precio de costo, sin margen): compre el dominio en el panel de Cloudflare. Luego, en Vercel → Settings → **Domains → Add**, escriba el dominio y copie en Cloudflare → **DNS** los registros que Vercel le indique (normalmente un registro `A` para `su-dominio.com` y un `CNAME` para `www`). Use los valores **exactos** que muestre Vercel y déjelos en modo **"DNS only"** (nube gris).
 
 En cualquier caso:
+
 - Ponga el dominio **a nombre de la empresa o del dueño**, con el correo de la empresa.
 - Active la **renovación automática** y la privacidad de datos (suele ser gratis).
 - **No compre extras** como "SSL", "protección premium" o "constructor web": el HTTPS es gratis en Vercel.
@@ -99,7 +100,7 @@ En cualquier caso:
 
 ## Paso 6 — Anti-spam
 
-1. **Turnstile** (Cloudflare → Turnstile → Add site → dominio, modo *Managed*): copie la *Site Key* en `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y la *Secret Key* en `TURNSTILE_SECRET_KEY`.
+1. **Turnstile** (Cloudflare → Turnstile → Add site → dominio, modo _Managed_): copie la _Site Key_ en `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y la _Secret Key_ en `TURNSTILE_SECRET_KEY`.
 2. **Upstash** → Create Database (Redis, región cercana a Washington/`us-east-1`) → pestaña **REST API**: copie `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`.
 3. Agréguelas en Vercel y haga **Redeploy**.
 
@@ -120,17 +121,17 @@ En cualquier caso:
 
 Todo el contenido está separado del diseño, en la carpeta **`content/`**. No hace falta tocar nada más para cambiar textos, teléfonos o servicios.
 
-| Quiere cambiar… | Archivo |
-|---|---|
-| Teléfono, correos, dirección, Instagram, horario | `content/contacto.ts` |
-| Servicios, equipos, rangos (HP, t, m³), textos de cada línea | `content/servicios.ts` |
-| Textos del inicio (titular, secciones, cinta de equipos) | `content/home.ts` |
-| Quiénes somos, misión, visión | `content/empresa.ts` |
-| Pasos de "Cómo trabajamos" | `content/proceso.ts` |
-| Preguntas frecuentes | `content/faq.ts` |
-| Municipios del formulario | `content/formulario.ts` |
-| Política de datos | `content/legal.ts` |
-| Títulos y textos alternativos de las fotos, ocultar una foto | `content/galeria.ts` |
+| Quiere cambiar…                                              | Archivo                 |
+| ------------------------------------------------------------ | ----------------------- |
+| Teléfono, correos, dirección, Instagram, horario             | `content/contacto.ts`   |
+| Servicios, equipos, rangos (HP, t, m³), textos de cada línea | `content/servicios.ts`  |
+| Textos del inicio (titular, secciones, cinta de equipos)     | `content/home.ts`       |
+| Quiénes somos, misión, visión                                | `content/empresa.ts`    |
+| Pasos de "Cómo trabajamos"                                   | `content/proceso.ts`    |
+| Preguntas frecuentes                                         | `content/faq.ts`        |
+| Municipios del formulario                                    | `content/formulario.ts` |
+| Política de datos                                            | `content/legal.ts`      |
+| Títulos y textos alternativos de las fotos, ocultar una foto | `content/galeria.ts`    |
 
 ### Forma 1 — Desde el navegador, sin instalar nada (textos pequeños)
 
@@ -171,7 +172,7 @@ Abra <http://localhost:3000>, edite, y antes de subir ejecute `pnpm lint`, `pnpm
 
 ### Si algo sale mal
 
-En Vercel → **Deployments**, busque la versión anterior que funcionaba → menú **⋯** → **Promote to Production** (o *Instant Rollback*). En segundos vuelve a estar en línea, sin perder nada.
+En Vercel → **Deployments**, busque la versión anterior que funcionaba → menú **⋯** → **Promote to Production** (o _Instant Rollback_). En segundos vuelve a estar en línea, sin perder nada.
 
 ---
 

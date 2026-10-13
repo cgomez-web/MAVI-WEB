@@ -56,6 +56,12 @@
           {
             "maxNumericValue": 1600000
           }
+        ],
+        "resource-summary:script:size": [
+          "warn",
+          {
+            "maxNumericValue": 215000
+          }
         ]
       }
     },

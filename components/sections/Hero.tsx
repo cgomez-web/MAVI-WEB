@@ -1,6 +1,8 @@
 import { Fragment } from "react";
 import { home } from "@/content/home";
 import { urlWhatsApp } from "@/content/contacto";
+import { avisoPestanaNueva } from "@/content/navegacion";
+import { textosInicio } from "@/content/interfaz";
 
 /**
  * Hero. El titular se anima solo con CSS (palabras que caen y asientan) para no depender de la
@@ -21,14 +23,16 @@ export function Hero() {
     >
       <p className="solo-lectores">{hero.descripcionEscena}</p>
       <div className="reticula">
-        <p className="mono-etiqueta text-brand-yellow col-span-12 mb-4 md:col-span-7 md:mb-6">
-          {hero.eyebrow}
-        </p>
         <h1
           id="titulo-hero"
           className="titular-peso titular-hero font-display col-span-12 font-black [letter-spacing:-0.035em] uppercase"
           style={{ ["--n" as string]: totalPalabras }}
         >
+          {/* El antetítulo (palabras clave del negocio) forma parte del H1 sin cambiar su aspecto:
+              sin .linea ni .palabra, no entra en la animación ni en el conteo de palabras. */}
+          <span className="mono-etiqueta text-brand-yellow mb-4 block leading-[1.5] text-pretty md:mb-6 md:max-w-[58%]">
+            {hero.eyebrow}
+          </span>{" "}
           {hero.titular.map((linea, l) => (
             // Dos voces del mismo eje wdth: línea 1 extendida, línea 2 condensada y en amarillo.
             <span
@@ -62,7 +66,12 @@ export function Hero() {
           {hero.entradilla}
         </p>
 
-        <div className="col-span-12 mt-7 flex flex-wrap items-center gap-4 md:col-span-7 md:mt-10 md:gap-5">
+        {/* data-cta-hero: mientras estos botones están a la vista, la barra fija de WhatsApp
+            (que repite la acción) se retira en móvil y tablet para no taparlos. */}
+        <div
+          data-cta-hero=""
+          className="col-span-12 mt-7 flex flex-wrap items-center gap-4 md:col-span-7 md:mt-10 md:gap-5"
+        >
           <a
             href={urlWhatsApp()}
             target="_blank"
@@ -71,6 +80,7 @@ export function Hero() {
           >
             {hero.ctaPrimario}
             <span aria-hidden="true">→</span>
+            <span className="solo-lectores">{avisoPestanaNueva}</span>
           </a>
           <a href="#servicios" className="boton boton-secundario text-1">
             {hero.ctaSecundario}
@@ -79,7 +89,7 @@ export function Hero() {
 
         <ul
           className="mono-etiqueta text-concrete-light col-span-12 hidden flex-wrap gap-x-6 gap-y-2 md:col-span-5 md:col-start-8 md:flex md:justify-end md:self-end"
-          aria-label="Datos clave"
+          aria-label={textosInicio.datosClave}
         >
           {hero.ficha.map((dato) => (
             <li key={dato}>{dato}</li>

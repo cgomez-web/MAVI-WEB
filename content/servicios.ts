@@ -15,12 +15,25 @@ export interface Equipo {
   icono: IconoId;
 }
 
-export interface CifraDestacada {
-  prefijo?: string;
-  valor: number;
-  unidad: string;
-  etiqueta: string;
-}
+/**
+ * Dato protagonista de cada línea (franja del home, índice y cabecera de su página).
+ * Solo es una cifra cuando el brochure da el número (330 HP, 100 t, 250 kg). En las demás
+ * líneas es un dato textual del brochure: nunca un conteo que pueda leerse como inventario.
+ */
+export type CifraDestacada =
+  | {
+      tipo: "cifra";
+      prefijo?: string;
+      valor: number;
+      unidad: string;
+      etiqueta: string;
+    }
+  | {
+      tipo: "texto";
+      /** Dato literal del brochure que ocupa el lugar de la cifra. */
+      texto: string;
+      etiqueta: string;
+    };
 
 export interface LineaDeServicio {
   slug: string;
@@ -52,7 +65,7 @@ export const lineasDeServicio: LineaDeServicio[] = [
     nombre: "Maquinaria pesada",
     subtitulo: "Equipos de alto rendimiento para trabajos exigentes y de gran escala.",
     icono: "excavadora",
-    cifra: { valor: 330, unidad: "HP", etiqueta: "Potencia máxima en excavadoras" },
+    cifra: { tipo: "cifra", valor: 330, unidad: "HP", etiqueta: "Potencia máxima en excavadoras" },
     sello: "HASTA 330 HP",
     equipos: [
       {
@@ -97,7 +110,7 @@ export const lineasDeServicio: LineaDeServicio[] = [
     subtitulo: "Soluciones confiables para movilizar, cargar y elevar sus proyectos.",
     frase: "En movimiento para que su proyecto avance.",
     icono: "grua",
-    cifra: { valor: 100, unidad: "T", etiqueta: "Capacidad de izaje en grúas" },
+    cifra: { tipo: "cifra", valor: 100, unidad: "T", etiqueta: "Capacidad de izaje en grúas" },
     sello: "CAP. MÁX 100 T",
     equipos: [
       {
@@ -141,7 +154,11 @@ export const lineasDeServicio: LineaDeServicio[] = [
     subtitulo: "Sistemas seguros y eficientes para la construcción de losas.",
     frase: "Cada detalle cuenta para un trabajo seguro y eficiente.",
     icono: "puntal",
-    cifra: { valor: 5, unidad: "PIEZAS", etiqueta: "Componentes del sistema de losa" },
+    cifra: {
+      tipo: "texto",
+      texto: "Correas, portacorreas, sopandas, puntales y tableros",
+      etiqueta: "Componentes del sistema de losa",
+    },
     equipos: [
       { nombre: "Correas", descripcion: "Soportan el peso de la losa.", icono: "correa" },
       {
@@ -178,7 +195,11 @@ export const lineasDeServicio: LineaDeServicio[] = [
     subtitulo: "Sistemas versátiles y de alta calidad para todo tipo de estructuras.",
     frase: "Precisión y calidad en cada estructura.",
     icono: "encofrado",
-    cifra: { valor: 3, unidad: "ELEMENTOS", etiqueta: "Columnas, vigas y muros" },
+    cifra: {
+      tipo: "texto",
+      texto: "Columnas, vigas y muros",
+      etiqueta: "Encofrados metálicos y de madera",
+    },
     equipos: [
       {
         nombre: "Encofrados metálicos y de madera",
@@ -205,7 +226,7 @@ export const lineasDeServicio: LineaDeServicio[] = [
     nombre: "Andamiaje",
     subtitulo: "Seguridad y soporte en cada nivel.",
     icono: "andamio",
-    cifra: { valor: 2, unidad: "SISTEMAS", etiqueta: "Andamio de fachada y en torre" },
+    cifra: { tipo: "texto", texto: "Fachada y en torre", etiqueta: "Andamios certificados" },
     sello: "CERTIFICADOS",
     equipos: [
       {
@@ -246,7 +267,12 @@ export const lineasDeServicio: LineaDeServicio[] = [
     subtitulo: "Todo lo que necesita para complementar su proyecto.",
     frase: "Soluciones completas para todas sus necesidades.",
     icono: "pluma",
-    cifra: { valor: 250, unidad: "KG", etiqueta: "Capacidad de las plumas de cargue" },
+    cifra: {
+      tipo: "cifra",
+      valor: 250,
+      unidad: "KG",
+      etiqueta: "Capacidad de las plumas de cargue",
+    },
     sello: "CAP. MÁX 250 KG",
     equipos: [
       {

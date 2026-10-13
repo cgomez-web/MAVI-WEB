@@ -1,12 +1,13 @@
-import { contacto } from "@/content/contacto";
+import { contacto, urlMapa } from "@/content/contacto";
 import { preguntasFrecuentes } from "@/content/faq";
-import type { LineaDeServicio } from "@/content/servicios";
+import { lineasDeServicio, type LineaDeServicio } from "@/content/servicios";
 import { sitio, urlDelSitio } from "@/content/sitio";
 
 const idNegocio = () => `${urlDelSitio()}/#negocio`;
 
 export function jsonLdNegocio() {
   const url = urlDelSitio();
+  const { geo, codigoPostal } = contacto.direccion;
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -25,7 +26,15 @@ export function jsonLdNegocio() {
       addressLocality: contacto.direccion.ciudad,
       addressRegion: contacto.direccion.departamento,
       addressCountry: contacto.direccion.codigoPais,
+      ...(codigoPostal ? { postalCode: codigoPostal } : {}),
     },
+    // Coordenadas y código postal solo cuando el dueño los confirme (content/contacto.ts): unas
+    // coordenadas aproximadas confundirían a Maps más que su ausencia. No se publica priceRange:
+    // el alquiler se cotiza caso por caso.
+    ...(geo
+      ? { geo: { "@type": "GeoCoordinates", latitude: geo.latitud, longitude: geo.longitud } }
+      : {}),
+    hasMap: urlMapa(),
     areaServed: contacto.zonaDeServicio.map((nombre) => ({
       "@type": "AdministrativeArea",
       name: nombre,
@@ -87,6 +96,23 @@ export function jsonLdMigas(migas: Array<{ nombre: string; ruta: string }>) {
       position: i + 1,
       name: m.nombre,
       item: `${url}${m.ruta}`,
+    })),
+  };
+}
+
+/** Índice /servicios: las seis líneas como lista ordenada de servicios del negocio. */
+export function jsonLdIndiceServicios() {
+  const url = urlDelSitio();
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Líneas de servicio",
+    numberOfItems: lineasDeServicio.length,
+    itemListElement: lineasDeServicio.map((l, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${url}/servicios/${l.slug}`,
+      name: l.nombre,
     })),
   };
 }

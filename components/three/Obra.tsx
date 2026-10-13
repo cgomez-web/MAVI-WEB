@@ -101,6 +101,7 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
   const formaletas = useRef<InstancedMesh>(null);
   const marcos = useRef<InstancedMesh>(null);
   const columnas = useRef<Group>(null);
+  const placa = useRef<Mesh>(null);
   const ultimo = useRef({ losas: -1, encofrados: -1, andamios: -1 });
 
   const concreto = useMemo(crearMaterialConcreto, []);
@@ -132,6 +133,13 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
   useFrame(() => {
     const p = progreso.p;
     const u = ultimo.current;
+
+    /* ── Placa: aparece cuando la maquinaria termina de nivelar (el hero es terreno vacío) ── */
+    if (placa.current) {
+      const k = enFase(p, "maquinaria-pesada", 0.55, 1);
+      placa.current.visible = k > 0.001;
+      placa.current.scale.set(Math.max(0.001, k), Math.max(0.001, k), 1);
+    }
 
     /* ── Equipos para losas ── */
     const fLosas = enFase(p, "equipos-para-losas", 0, 1);
@@ -261,7 +269,13 @@ export function Obra({ progreso, sombras }: { progreso: { p: number }; sombras: 
   return (
     <group>
       {/* Placa de concreto bajo la obra */}
-      <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <mesh
+        ref={placa}
+        position={[0, 0.02, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        receiveShadow
+        visible={false}
+      >
         <planeGeometry args={[ANCHO + 3, FONDO + 3]} />
         <meshStandardMaterial color={PALETA.concreto} roughness={1} />
       </mesh>
