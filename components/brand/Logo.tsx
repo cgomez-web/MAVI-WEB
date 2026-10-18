@@ -121,7 +121,8 @@ export function LogoCompleto({
         stroke="var(--color-brand-yellow)"
         strokeWidth="4"
       />
-      <g transform="translate(73 120) scale(0.87)">
+      {/* Escala y posición para que las esquinas del wordmark queden dentro del aro (r 138). */}
+      <g transform="translate(89 142) scale(0.76)">
         <g fill="var(--color-bone)">
           <path d={LETRAS.M} />
           <g transform="translate(88 0)">
