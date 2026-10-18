@@ -39,3 +39,4 @@ pnpm-debug.log*
 # lighthouse
 /.lighthouseci/
 /.next-*/
+.brochure-tmp/

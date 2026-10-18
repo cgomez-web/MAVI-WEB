@@ -19,6 +19,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "images": "tsx scripts/process-images.ts",
+    "brochure": "tsx scripts/generar-brochure.mts",
     "analyze": "cross-env ANALYZE=true next build",
     "secrets": "secretlint \"**/*\"",
     "lhci": "lhci autorun",

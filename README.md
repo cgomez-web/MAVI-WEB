@@ -71,7 +71,7 @@ Sin `RESEND_API_KEY` el formulario responde con un error genérico y ofrece What
 
 Cada archivo generado lleva en el nombre un hash de su contenido (`<id>-<ancho>.<hash>.avif|webp`), así que una foto corregida estrena URL y la caché `immutable` de `/img` nunca sirve la versión vieja. No renombre los archivos a mano.
 
-**Brochure PDF**: `python scripts/comprimir-brochure.py "<ruta al PDF>"` regenera `public/brochure-mavi-proyectos-e-inversiones.pdf`.
+**Brochure PDF**: `corepack pnpm brochure` lo genera desde cero (texto vectorial, logo SVG y fotos procesadas, datos de `content/`) en `public/brochure-mavi-proyectos-e-inversiones.pdf`. Ejecútelo de nuevo cuando cambie un dato.
 
 ## Calidad
 
