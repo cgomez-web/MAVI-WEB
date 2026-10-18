@@ -57,13 +57,43 @@ async function fotoJpeg(id: string, fondo = false): Promise<string> {
   const p = procesadas.find((f) => f.id === id);
   if (!p) throw new Error(`Foto sin procesar: ${id}`);
   const ancho = Math.max(...p.anchos);
-  const origen = join(RAIZ, "public", "img", "bodega", `${id}-${ancho}.${p.version}.webp`);
+  return aJpeg(
+    join(RAIZ, "public", "img", "bodega", `${id}-${ancho}.${p.version}.webp`),
+    id,
+    fondo,
+  );
+}
+
+async function aJpeg(origen: string, id: string, fondo = false): Promise<string> {
   const salida = join(TEMPORAL, `${id}${fondo ? "-fondo" : ""}.jpg`);
   // El fondo de portada se oscurece aquí: un filtro CSS haría que Chromium rasterizara la página entera.
-  const imagen = fondo ? sharp(origen).grayscale().linear(0.4, 0) : sharp(origen);
-  await imagen.jpeg({ quality: 76, progressive: true, mozjpeg: true }).toFile(salida);
+  const base = sharp(origen).resize({ width: 1400, withoutEnlargement: true });
+  const imagen = fondo ? base.modulate({ brightness: 0.8, saturation: 0.9 }) : base;
+  await imagen.jpeg({ quality: 72, progressive: true, mozjpeg: true }).toFile(salida);
   return pathToFileURL(salida).href;
 }
+
+/**
+ * Las líneas sin fotos propias (maquinaria y transporte) llevan imágenes de referencia de Unsplash
+ * (licencia libre, uso comercial), ya limpias de nombres de otras empresas: assets/referencia/CREDITOS.md.
+ * Se rotulan como referencia en el PDF: no son la flota de MAVI.
+ */
+const REFERENCIAS: Record<string, Array<{ archivo: string; titulo: string }>> = {
+  "maquinaria-pesada": [
+    { archivo: "excavadora-01", titulo: "Excavadora" },
+    { archivo: "retroexcavadora-01", titulo: "Retroexcavadora cargadora" },
+    { archivo: "mini-excavadora-01", titulo: "Mini retroexcavadora" },
+    { archivo: "minicargador-01", titulo: "Mini cargador" },
+  ],
+  "transporte-y-elevacion": [
+    { archivo: "volqueta-01", titulo: "Volqueta" },
+    { archivo: "grua-01", titulo: "Grúa" },
+    { archivo: "camabaja-01", titulo: "Camabaja" },
+    { archivo: "volqueta-02", titulo: "Volqueta en obra" },
+  ],
+};
+const referencia = (archivo: string, fondo = false) =>
+  aJpeg(join(RAIZ, "assets", "referencia", `${archivo}.jpg`), `ref-${archivo}`, fondo);
 
 const publicadas = fotosGaleria.filter((f) => f.publicar);
 const fotosDe = (l: LineaDeServicio) =>
@@ -141,7 +171,12 @@ function cifra(l: LineaDeServicio) {
   return `<div class="cifra cifra-texto"><b>${esc(l.cifra.texto)}</b><span>${esc(l.cifra.etiqueta)}</span></div>`;
 }
 
-function linea(l: LineaDeServicio, n: number, fotos: Array<{ url: string; titulo: string }>) {
+function linea(
+  l: LineaDeServicio,
+  n: number,
+  fotos: Array<{ url: string; titulo: string }>,
+  deReferencia: boolean,
+) {
   const oscura = n % 2 === 1;
   const equipos = l.equipos
     .map(
@@ -156,7 +191,9 @@ function linea(l: LineaDeServicio, n: number, fotos: Array<{ url: string; titulo
           (f) =>
             `<figure><img src="${f.url}" alt=""><figcaption>${esc(f.titulo)}</figcaption></figure>`,
         )
-        .join("")}</div><p class="nota-fotos">Fotos reales de nuestro inventario.</p>`
+        .join(
+          "",
+        )}</div><p class="nota-fotos">${deReferencia ? "Imágenes de referencia." : "Fotos reales de nuestro inventario."}</p>`
     : `<div class="icono-gigante">${icono(l.icono)}</div>`;
   const atributos = l.atributos?.length
     ? `<ul class="atributos">${l.atributos.map((a) => `<li>${esc(a)}</li>`).join("")}</ul>`
@@ -194,6 +231,7 @@ function contactoFinal() {
     <dl class="datos">${datos}</dl>
     <div class="zona"><h3>Zona de servicio</h3><p>${contacto.zonaDeServicio.map(esc).join(" · ")}</p></div>
     <p class="cierre">${esc(empresa.cierre)}</p>
+    <p class="nota-fotos">Portada y fotos de maquinaria y transporte: imágenes de referencia.</p>
     <div class="contacto-iso">${svg(createElement(IsotipoMavi, {}))}</div>
     ${pie(TOTAL)}
   </section>`;
@@ -223,8 +261,8 @@ h1,h2,h3,.titulo-grande{font-family:Archivo,sans-serif;font-weight:900;font-stre
 .sub{font-size:15pt;margin:7mm 0 3mm}
 /* Portada */
 .portada{padding:0}
-.portada-foto{position:absolute;inset:0;background-size:cover;background-position:center}
-.portada-velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.92) 55%,#0b0b0c 100%)}
+.portada-foto{position:absolute;inset:0;background-size:cover;background-position:70% 0;height:62%}
+.portada-velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,12,.25) 0%,rgba(11,11,12,.55) 30%,rgba(11,11,12,.9) 62%,#0b0b0c 80%)}
 .franja-diagonal{position:absolute;left:-20mm;right:-20mm;bottom:58mm;height:14mm;background:repeating-linear-gradient(-45deg,var(--color-brand-yellow) 0 9mm,var(--color-ink) 9mm 18mm);transform:rotate(-4deg);opacity:.95}
 .portada-cuerpo{position:relative;padding:16mm 16mm 0;flex:1}
 .portada-logo{width:78mm;height:78mm;margin-bottom:8mm}
@@ -311,15 +349,20 @@ figcaption{position:absolute;left:0;bottom:0;background:var(--color-ink);color:v
 
 async function main() {
   mkdirSync(TEMPORAL, { recursive: true });
-  const fondo = await fotoJpeg("andamio-tubular-en-obra-01", true);
+  const fondo = await referencia("excavadora-02", true);
   const paginas = [portada(fondo), nosotros()];
   for (const [i, l] of lineasDeServicio.entries()) {
-    const fotos = await Promise.all(
-      fotosDe(l)
-        .slice(0, 4)
-        .map(async (f) => ({ url: await fotoJpeg(f.id), titulo: f.titulo })),
-    );
-    paginas.push(linea(l, i + 3, fotos));
+    const refs = REFERENCIAS[l.slug];
+    const fotos = refs
+      ? await Promise.all(
+          refs.map(async (r) => ({ url: await referencia(r.archivo), titulo: r.titulo })),
+        )
+      : await Promise.all(
+          fotosDe(l)
+            .slice(0, 4)
+            .map(async (f) => ({ url: await fotoJpeg(f.id), titulo: f.titulo })),
+        );
+    paginas.push(linea(l, i + 3, fotos, Boolean(refs)));
   }
   paginas.push(contactoFinal());
 
