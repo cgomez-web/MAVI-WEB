@@ -143,6 +143,9 @@ export function LogoCompleto({
         x="200"
         y="253"
         textAnchor="middle"
+        // Ancho fijo: sin él la frase se sale de la banda si la fuente no aplica fontStretch.
+        textLength="244"
+        lengthAdjust="spacingAndGlyphs"
         fill="var(--color-ink)"
         style={{
           fontFamily: "var(--font-display)",
