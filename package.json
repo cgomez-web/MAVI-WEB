@@ -41,11 +41,11 @@
     "zod": "4.6.6"
   },
   "devDependencies": {
-    "@axe-core/playwright": "4.13.0",
+    "@axe-core/playwright": "4.14.0",
     "@eslint/eslintrc": "3.3.7",
     "@lhci/cli": "0.15.1",
     "@next/bundle-analyzer": "15.5.27",
-    "@playwright/test": "1.64.0",
+    "@playwright/test": "1.64.1",
     "@secretlint/secretlint-rule-preset-recommend": "13.0.7",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.19.2",
@@ -63,7 +63,7 @@
     "tailwindcss": "4.3.3",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
-    "vitest": "5.0.4"
+    "vitest": "5.0.5"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
